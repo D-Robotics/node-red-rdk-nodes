@@ -8,8 +8,9 @@ module.exports = function(RED) {
 
     var checkCommand = 'sudo apt list --installed 2>/dev/null ';
     var installCommand = 'sudo apt install -y ';
-    var runCommand = 'source /opt/tros/setup.bash';
+    var sourceCommand = 'source /opt/tros/setup.bash';
     var launchCommand = 'ros2 launch ';
+    var runCommand = 'ros2 run ';
 
     function sleep(ms) {
         return new Promise((resolve) => {
@@ -53,6 +54,7 @@ module.exports = function(RED) {
             }
             var packageName = msg.payload;
             var launchName = msg.launch;
+            var runName = msg.run;
             if(typeof packageName != 'string'){
                 node.status({fill:"red",shape:"dot",text:"rdk-checkexecute.errors.inputtype"});
             }
@@ -86,21 +88,30 @@ module.exports = function(RED) {
                 execSync(installCommand + packageName);
             }
 
-            if(typeof launchName != 'string'){
+            if(typeof launchName != 'string' && typeof runName != 'string'){
                 node.status({fill:"red",shape:"dot",text:"rdk-checkexecute.errors.launchtype"});
                 msg.payload = RED._('rdk-checkexecute.errors.launchtype');
                 node.send([null, msg])
                 return;
             }
-            // console.log(runCommand + launchName)
-            var commands = [runCommand, launchCommand];
+            var commands = [sourceCommand, launchCommand];
             if(Object.hasOwnProperty.call(msg, 'insert') && typeof msg.insert == 'string'){
                 commands.push(commands[1]);
                 commands[1] = msg.insert;
             }
+            if(typeof launchName != 'string'){
+                commands.pop();
+                commands.push(runCommand);
+            }
             var assembledCommand = commands.join(' && ');
-            // console.log(assembledCommand);
-            var childProcess = exec(assembledCommand + launchName, {
+            if(typeof launchName != 'string'){
+                assembledCommand += runName;
+            }
+            else{
+                assembledCommand += launchName;
+            }
+            console.log(assembledCommand);
+            var childProcess = exec(assembledCommand, {
                 shell: '/bin/bash'
             }, function(e, out, err){
                 if(err){

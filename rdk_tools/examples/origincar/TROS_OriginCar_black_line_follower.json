@@ -1,0 +1,392 @@
+[
+    {
+        "id": "f4a50d9fdd3ed26f",
+        "type": "inject",
+        "z": "adc7434e918504cb",
+        "name": "  启动",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 90,
+        "y": 160,
+        "wires": [
+            [
+                "e0c5fb312ff8875b"
+            ]
+        ]
+    },
+    {
+        "id": "1b64c0132f041bd0",
+        "type": "inject",
+        "z": "adc7434e918504cb",
+        "name": "关闭",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 90,
+        "y": 260,
+        "wires": [
+            [
+                "f41a93f675a8226a",
+                "28a24148f8ad9bec",
+                "283e1123baa7b244"
+            ]
+        ]
+    },
+    {
+        "id": "fc826a830876959d",
+        "type": "debug",
+        "z": "adc7434e918504cb",
+        "name": "正常结束提示",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "39089ab5e8e93478",
+        "type": "debug",
+        "z": "adc7434e918504cb",
+        "name": "异常结束提示",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "03e3a17c7df019b6",
+        "type": "comment",
+        "z": "adc7434e918504cb",
+        "name": "名称：OriginCar巡黑线小车    版本：0.0.1",
+        "info": "",
+        "x": 170,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "0a2e29583d4c91a5",
+        "type": "comment",
+        "z": "adc7434e918504cb",
+        "name": "注意：该示例需要将Gitee中的模型拷贝到/opt/tros/share/line_follower_perception/目录下",
+        "info": "",
+        "x": 750,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "f3153d8f69483518",
+        "type": "inject",
+        "z": "adc7434e918504cb",
+        "name": "查看Gitee中的黑线识别模型",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://gitee.com/guyuehome/originbot_desktop/blob/master/originbot_deeplearning/line_follower_model/resnet18_224x224_nv12.bin",
+        "payloadType": "str",
+        "x": 580,
+        "y": 80,
+        "wires": [
+            [
+                "8c17a9f277abe5aa"
+            ]
+        ]
+    },
+    {
+        "id": "8c17a9f277abe5aa",
+        "type": "rdk-tools openurl",
+        "z": "adc7434e918504cb",
+        "name": "",
+        "x": 860,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "e0c5fb312ff8875b",
+        "type": "rdk-tools smartupdate",
+        "z": "adc7434e918504cb",
+        "g": "86b08348d150d836",
+        "name": "",
+        "x": 280,
+        "y": 160,
+        "wires": [
+            [
+                "5b57e1da72d9cb66",
+                "ea428e7bff032718",
+                "b0fe085ad536c143",
+                "d1601526e6e51eb5"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "5b57e1da72d9cb66",
+        "type": "change",
+        "z": "adc7434e918504cb",
+        "g": "86b08348d150d836",
+        "name": "更新提示",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "智能更新已完成",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 160,
+        "wires": [
+            [
+                "7549f154e7741d13"
+            ]
+        ]
+    },
+    {
+        "id": "7549f154e7741d13",
+        "type": "rdk-tools texttoaudio",
+        "z": "adc7434e918504cb",
+        "g": "86b08348d150d836",
+        "name": "",
+        "x": 670,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "ea428e7bff032718",
+        "type": "change",
+        "z": "adc7434e918504cb",
+        "g": "497098960581f5f8",
+        "name": "设定USB摄像头节点",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "tros-hobot-usb-cam",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "launch",
+                "pt": "msg",
+                "to": "hobot_usb_cam hobot_usb_cam.launch.py usb_video_device:=/dev/video8",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 260,
+        "wires": [
+            [
+                "f41a93f675a8226a"
+            ]
+        ]
+    },
+    {
+        "id": "f41a93f675a8226a",
+        "type": "rdk-tools checkexecute",
+        "z": "adc7434e918504cb",
+        "g": "497098960581f5f8",
+        "name": "",
+        "x": 770,
+        "y": 260,
+        "wires": [
+            [
+                "fc826a830876959d"
+            ],
+            [
+                "39089ab5e8e93478"
+            ]
+        ]
+    },
+    {
+        "id": "b0fe085ad536c143",
+        "type": "delay",
+        "z": "adc7434e918504cb",
+        "g": "b1302ed8fb0fd923",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 400,
+        "y": 360,
+        "wires": [
+            [
+                "a8d45d73517625d8"
+            ]
+        ]
+    },
+    {
+        "id": "a8d45d73517625d8",
+        "type": "change",
+        "z": "adc7434e918504cb",
+        "g": "b1302ed8fb0fd923",
+        "name": "设定巡线节点",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "tros-line-follower-perception tros-line-follower-model",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "run",
+                "pt": "msg",
+                "to": "line_follower_perception line_follower_perception --ros-args -p model_path:=/opt/tros/share/line_follower_perception/resnet18_224x224_nv12.bin -p model_name:=resnet18_224x224_nv12",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 580,
+        "y": 360,
+        "wires": [
+            [
+                "28a24148f8ad9bec"
+            ]
+        ]
+    },
+    {
+        "id": "28a24148f8ad9bec",
+        "type": "rdk-tools checkexecute",
+        "z": "adc7434e918504cb",
+        "g": "b1302ed8fb0fd923",
+        "name": "",
+        "x": 770,
+        "y": 360,
+        "wires": [
+            [
+                "fc826a830876959d"
+            ],
+            [
+                "39089ab5e8e93478"
+            ]
+        ]
+    },
+    {
+        "id": "d1601526e6e51eb5",
+        "type": "change",
+        "z": "adc7434e918504cb",
+        "g": "55b91155b6aae41b",
+        "name": "设定底盘节点",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "tros-hobot-usb-cam",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "launch",
+                "pt": "msg",
+                "to": "origincar_base origincar_bringup.launch.py",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 420,
+        "y": 460,
+        "wires": [
+            [
+                "283e1123baa7b244"
+            ]
+        ]
+    },
+    {
+        "id": "283e1123baa7b244",
+        "type": "rdk-tools checkexecute",
+        "z": "adc7434e918504cb",
+        "g": "55b91155b6aae41b",
+        "name": "",
+        "x": 770,
+        "y": 460,
+        "wires": [
+            [
+                "fc826a830876959d"
+            ],
+            [
+                "39089ab5e8e93478"
+            ]
+        ]
+    }
+]
