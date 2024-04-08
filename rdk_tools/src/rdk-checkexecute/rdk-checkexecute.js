@@ -110,7 +110,7 @@ module.exports = function(RED) {
             else{
                 assembledCommand += launchName;
             }
-            console.log(assembledCommand);
+            // console.log(assembledCommand);
             var childProcess = exec(assembledCommand, {
                 shell: '/bin/bash'
             }, function(e, out, err){
