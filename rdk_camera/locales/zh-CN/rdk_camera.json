@@ -73,8 +73,10 @@
             "invalidFileName": "自定义文件名出错，请检查！",
             "invalidPort": "端口号不满足要求，请检查！",
             "badEnv": "未检测到摄像头依赖的软件包，请检查！",
-            "badCamera": "开启摄像头失败！",
-            "badConnection": "连接建立失败，请检查！"
+            "badCamera": "开启摄像头失败！请检查摄像头类型是否匹配！",
+            "badConnection": "连接建立失败，请检查！",
+            "usbCamNotFound": "未找到USB摄像头，请检查！",
+            "mipiCamNotFound": "未找到MIPI摄像头，请检查！"
         }
     }
 }

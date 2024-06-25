@@ -74,7 +74,9 @@
             "invalidPort": "Invalid port!",
             "badEnv": "Lack of lib for camera!",
             "badCamera": "Open camera failed!",
-            "badConnection": "Establish connection failed!"
+            "badConnection": "Establish connection failed!",
+            "usbCamNotFound": "USB Camera Not Found!",
+            "mipiCamNotFound": "MIPI Camera Not Found!"
         }
     }
 }

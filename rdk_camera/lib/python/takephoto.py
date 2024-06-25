@@ -31,7 +31,7 @@ def latest_buffer(cam):
         cam_data = cam.get_img(2, width, height)
         t2 = perf_counter()
         # print('interval: ', t2 - t1)
-        if (t2 - t1) > 0.01:
+        if (t2 - t1) > 0.03:
             return cam_data
     
 def get_datetime_str():

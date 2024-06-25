@@ -125,7 +125,7 @@
             });
         },
         label: function() {
-            return this.name || this._('rdk-camera.names.takephoto');
+            return (this.name || this._('rdk-camera.names.takephoto')) + (this.cameratype === "0" ? '(MIPI)' : '(USB)');
         }
     });
 </script>

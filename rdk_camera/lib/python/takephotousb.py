@@ -27,8 +27,9 @@ def latest_buffer(cap):
         t1 = perf_counter()
         _ ,frame = cap.read()
         t2 = perf_counter()
-        #print('interval: ', t2 - t1)
-        if (t2 - t1) > 0.01:
+        # print('interval: ', t2 - t1)
+        interval = t2 - t1
+        if interval > 0.03:
             return frame
 
 def get_datetime_str():

@@ -61,7 +61,16 @@ module.exports = function(RED) {
         var node = this;
         var readyForAll = true;
 
-        function startCamera(command, params){
+        function startCamera(command, params, type){
+            //check camera
+            if(type === 'usb'){
+                const result = execSync('v4l2-ctl --list-devices');
+                if(result.toString().indexOf('USB') < 0){
+                    node.status({fill:"red",shape:"dot",text:"rdk-camera.errors.usbCamNotFound"});
+                    return;
+                }
+            }
+
             //spawn
             node.child = spawn(command, params);
             node.running = true;
@@ -92,11 +101,11 @@ module.exports = function(RED) {
         }
 
         function startMipiCamera(params){
-            startCamera(mipiCameraCommandSudo, params);
+            startCamera(mipiCameraCommandSudo, params, 'mipi');
         }
 
         function startUsbCamera(params){
-            startCamera(usbCameraCommand, params);
+            startCamera(usbCameraCommand, params, 'usb');
         }
 
         // step 1: pick necessary variables
@@ -149,9 +158,15 @@ module.exports = function(RED) {
                 imagePath = this.filepath;
             }
             else{
-                RED.log.warn(RED._("rdk-camera.errors.invalidPath"));
-                node.status({fill:"grey",shape:"ring",text:"rdk-camera.errors.invalidPath"});
-                readyForAll = false;
+                fs.mkdirSync(this.filepath, { recursive: true});
+                if(fs.existsSync(this.filepath)){
+                    imagePath = this.filepath;
+                }
+                else{
+                    RED.log.warn(RED._("rdk-camera.errors.invalidPath"));
+                    node.status({fill:"grey",shape:"ring",text:"rdk-camera.errors.invalidPath"});
+                    readyForAll = false;
+                }
             }
         }
         else{
