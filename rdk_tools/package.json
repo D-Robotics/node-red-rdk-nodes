@@ -1,6 +1,6 @@
 {
     "name": "node-red-node-rdk-tools",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "description": "配合RDK硬件及TROS使用的Node-RED功能包(Node-RED nodes for using TROS on a RDK hardware and TROS)",
     "license": "Apache-2.0",
     "main": "none",
@@ -20,7 +20,7 @@
     },
     "repository": {
       "type": "git",
-      "url": "https://github.com/HorizonRDK/node-red-rdk-nodes/tree/develop/rdk_tools"
+      "url": "https://github.com/D-Robotics/node-red-rdk-nodes/tree/master/rdk_tools"
     },
     "node-red": {
       "version": ">=3.1.3",

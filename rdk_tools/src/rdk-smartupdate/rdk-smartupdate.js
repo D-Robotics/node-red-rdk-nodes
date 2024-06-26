@@ -57,8 +57,9 @@ module.exports = function(RED) {
                     processExecQueue(tasks, msg);
                 }
                 else{
-                    node.status({fill:"red",shape:"ring",text: task.error});
-                    node.send([null, {payload: task.error}])
+                    node.status({fill:"gray",shape:"ring",text: task.error});
+                    // node.send([null, {payload: task.error}])
+                    processExecQueue(tasks, msg);
                 }
             })
         }
