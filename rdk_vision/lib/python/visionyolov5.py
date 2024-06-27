@@ -174,6 +174,8 @@ def process_image(img):
     # 解析JSON字符串  
     data = json.loads(result_str[16:])  
 
+    filteredList = []
+
     # 遍历每一个结果  
     for result in data:  
         bbox = result['bbox']  # 矩形框位置信息  
@@ -181,6 +183,8 @@ def process_image(img):
         id = result['id']  # id  
         name = result['name']  # 类别名称  
     
+        filteredList.append({'id': id, 'score': score, 'name': name})
+
         # 打印信息  
         # print(f"bbox: {bbox}, score: {score}, id: {id}, name: {name}")
 
@@ -196,7 +200,8 @@ def process_image(img):
     img_name = 'yolov5-' + img_name
     new_img = os.path.join(path_name, img_name)
     cv2.imwrite(new_img, img_file)
-    print(new_img)
+    print(json.dumps({'file': new_img, 'list': filteredList}))
+
 
 
 def wait_for_image():

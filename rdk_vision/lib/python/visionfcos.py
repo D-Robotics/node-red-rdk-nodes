@@ -305,7 +305,6 @@ def process_image(frame):
     # imgBuffer = cv2.imencode('.jpg', box_bgr)[1].tobytes()
 
     # return imgBuffer
-
     url = draw_bboxs(frame, data)
     return url
 

@@ -4,6 +4,7 @@ import numpy as np
 import cv2
 from PIL import Image
 from matplotlib import pyplot as plt
+import json
 import os
 import sys
 
@@ -114,7 +115,7 @@ def plot_image(origin_image, onnx_output, url):
     img_name = 'unet-' + img_name
     new_img = os.path.join(path_name, img_name)
     plt.savefig(new_img)
-    print(new_img)
+    print(json.dumps({'file': new_img, 'list': []}))
 
 
 def postprocess(model_output, origin_image, url):
