@@ -1,0 +1,478 @@
+[
+    {
+        "id": "12968d8e6d293d36",
+        "type": "tab",
+        "label": "TROS YOLO (Object Detection)",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "066503b3d6970aa6",
+        "type": "group",
+        "z": "12968d8e6d293d36",
+        "name": "软件包智能更新",
+        "style": {
+            "fill": "#ffffbf",
+            "fill-opacity": "0.46",
+            "label": true
+        },
+        "nodes": [
+            "03ec710ce15011c6",
+            "3cce5b544cb1dc11",
+            "4c2aae306b973fa7"
+        ],
+        "x": 354,
+        "y": 79,
+        "w": 572,
+        "h": 82
+    },
+    {
+        "id": "87e48fcb4b3e5624",
+        "type": "group",
+        "z": "12968d8e6d293d36",
+        "name": "检查及运行YOLO节点",
+        "style": {
+            "label": true,
+            "fill": "#e3f3d3",
+            "fill-opacity": "0.5"
+        },
+        "nodes": [
+            "51a3eed1b6416649",
+            "0ad500d26f951360"
+        ],
+        "x": 394,
+        "y": 199,
+        "w": 392,
+        "h": 82
+    },
+    {
+        "id": "33b8054c1430e801",
+        "type": "group",
+        "z": "12968d8e6d293d36",
+        "name": "YOLO结果展示",
+        "style": {
+            "fill": "#bfdbef",
+            "fill-opacity": "0.47",
+            "label": true
+        },
+        "nodes": [
+            "18eb2475bde9ce88",
+            "af06295e01463bcb",
+            "6e7f9e0660da2756"
+        ],
+        "x": 174,
+        "y": 319,
+        "w": 372,
+        "h": 122
+    },
+    {
+        "id": "4137f3de5dcb592d",
+        "type": "comment",
+        "z": "12968d8e6d293d36",
+        "name": "名称：TROS目标检测 YOLO",
+        "info": "",
+        "x": 180,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "662ac22051cef124",
+        "type": "inject",
+        "z": "12968d8e6d293d36",
+        "name": "了解更多",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://developer.horizon.cc/documents_tros/boxs/detection/yolo",
+        "payloadType": "str",
+        "x": 440,
+        "y": 40,
+        "wires": [
+            [
+                "3321799fc3b4092b"
+            ]
+        ]
+    },
+    {
+        "id": "3321799fc3b4092b",
+        "type": "rdk-tools openurl",
+        "z": "12968d8e6d293d36",
+        "name": "",
+        "x": 620,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "03ec710ce15011c6",
+        "type": "rdk-tools smartupdate",
+        "z": "12968d8e6d293d36",
+        "g": "066503b3d6970aa6",
+        "name": "",
+        "x": 440,
+        "y": 120,
+        "wires": [
+            [
+                "3cce5b544cb1dc11",
+                "51a3eed1b6416649",
+                "18eb2475bde9ce88"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "3cce5b544cb1dc11",
+        "type": "change",
+        "z": "12968d8e6d293d36",
+        "g": "066503b3d6970aa6",
+        "name": "更新提示",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "智能更新已完成",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 620,
+        "y": 120,
+        "wires": [
+            [
+                "4c2aae306b973fa7"
+            ]
+        ]
+    },
+    {
+        "id": "4c2aae306b973fa7",
+        "type": "rdk-tools texttoaudio",
+        "z": "12968d8e6d293d36",
+        "g": "066503b3d6970aa6",
+        "name": "",
+        "x": 830,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "b76495f50b4965fc",
+        "type": "comment",
+        "z": "12968d8e6d293d36",
+        "name": "注意：选择对应的摄像头类型",
+        "info": "",
+        "x": 220,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "411e6a11f2121bd5",
+        "type": "inject",
+        "z": "12968d8e6d293d36",
+        "name": "启动（USB摄像头）",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "camera",
+                "v": "usb",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "iso",
+        "payloadType": "date",
+        "x": 190,
+        "y": 100,
+        "wires": [
+            [
+                "03ec710ce15011c6"
+            ]
+        ]
+    },
+    {
+        "id": "0406a4b83c9aa49d",
+        "type": "inject",
+        "z": "12968d8e6d293d36",
+        "name": "启动（MIPI摄像头）",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "mipi",
+        "payload": "iso",
+        "payloadType": "date",
+        "x": 190,
+        "y": 140,
+        "wires": [
+            [
+                "03ec710ce15011c6"
+            ]
+        ]
+    },
+    {
+        "id": "91c6db8938234092",
+        "type": "inject",
+        "z": "12968d8e6d293d36",
+        "name": "关闭",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 240,
+        "wires": [
+            [
+                "0ad500d26f951360"
+            ]
+        ]
+    },
+    {
+        "id": "9e8695d324cb5778",
+        "type": "comment",
+        "z": "12968d8e6d293d36",
+        "name": "注意：使用结束后请主动关闭",
+        "info": "",
+        "x": 220,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "51a3eed1b6416649",
+        "type": "change",
+        "z": "12968d8e6d293d36",
+        "g": "87e48fcb4b3e5624",
+        "name": "设定YOLO节点",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "launch",
+                "pt": "msg",
+                "to": "dnn_node_example dnn_node_example.launch.py dnn_example_config_file:=config/yolov2workconfig.json dnn_example_image_width:=480 dnn_example_image_height:=272",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "insert",
+                "pt": "msg",
+                "to": "$join(['export CAM_TYPE=', msg.camera])",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 500,
+        "y": 240,
+        "wires": [
+            [
+                "0ad500d26f951360"
+            ]
+        ]
+    },
+    {
+        "id": "0ad500d26f951360",
+        "type": "rdk-tools checkexecute",
+        "z": "12968d8e6d293d36",
+        "g": "87e48fcb4b3e5624",
+        "name": "",
+        "x": 690,
+        "y": 240,
+        "wires": [
+            [
+                "c429380e158b52d9"
+            ],
+            [
+                "ad5152297f9bdf3a"
+            ]
+        ]
+    },
+    {
+        "id": "c429380e158b52d9",
+        "type": "debug",
+        "z": "12968d8e6d293d36",
+        "name": "正确执行提示",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "ad5152297f9bdf3a",
+        "type": "debug",
+        "z": "12968d8e6d293d36",
+        "name": "错误执行提示",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "d3e2311eaa0e99c2",
+        "type": "debug",
+        "z": "12968d8e6d293d36",
+        "name": "算法结果输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "8032c5cc644bd0e1",
+        "type": "debug",
+        "z": "12968d8e6d293d36",
+        "name": "性能信息输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "18eb2475bde9ce88",
+        "type": "delay",
+        "z": "12968d8e6d293d36",
+        "g": "33b8054c1430e801",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 260,
+        "y": 360,
+        "wires": [
+            [
+                "af06295e01463bcb"
+            ]
+        ]
+    },
+    {
+        "id": "af06295e01463bcb",
+        "type": "change",
+        "z": "12968d8e6d293d36",
+        "g": "33b8054c1430e801",
+        "name": "设定链接",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "ws://${host}:8080",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 260,
+        "y": 400,
+        "wires": [
+            [
+                "6e7f9e0660da2756"
+            ]
+        ]
+    },
+    {
+        "id": "6e7f9e0660da2756",
+        "type": "rdk-tools videows",
+        "z": "12968d8e6d293d36",
+        "g": "33b8054c1430e801",
+        "name": "",
+        "fps": "4",
+        "width": 640,
+        "active": true,
+        "x": 440,
+        "y": 380,
+        "wires": [
+            [
+                "d3e2311eaa0e99c2"
+            ],
+            [
+                "8032c5cc644bd0e1"
+            ],
+            []
+        ]
+    }
+]
