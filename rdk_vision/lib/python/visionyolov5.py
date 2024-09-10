@@ -198,6 +198,8 @@ def process_image(img):
     path_name = os.path.dirname(img)
     img_name = os.path.basename(img)
     img_name = 'yolov5-' + img_name
+    path_home = os.path.expanduser("~")
+    path_pic = os.path.join(path_home, 'Pictures')
     new_img = os.path.join(path_name, img_name)
     cv2.imwrite(new_img, img_file)
     print(json.dumps({'file': new_img, 'list': filteredList}))
