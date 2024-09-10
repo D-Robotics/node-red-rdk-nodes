@@ -17,8 +17,26 @@ port = int(sys.argv[4])
 def signal_handler(signal, frame):
     sys.exit(0)
 
+def is_usb_camera(device):
+    try:
+        cap = cv2.VideoCapture(device)
+        if not cap.isOpened():
+            return False
+        cap.release()
+        return True
+    except Exception:
+        return False
+
+def find_first_usb_camera():
+    video_devices = [os.path.join('/dev', dev) for dev in os.listdir('/dev') if dev.startswith('video')]
+    for dev in video_devices:
+        if is_usb_camera(dev):
+            return dev
+    return None
+
 async def send_image_stream(websocket, path):
-    cap = cv2.VideoCapture(8)
+    video_device = find_first_usb_camera()
+    cap = cv2.VideoCapture(video_device)
     if(not cap.isOpened()):
         print('failed')
         await websocket.close(reason='exit')
