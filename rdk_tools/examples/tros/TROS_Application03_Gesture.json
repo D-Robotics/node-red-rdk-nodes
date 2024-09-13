@@ -22,9 +22,9 @@
             "87c11fc2fd2dd9de",
             "e2b342c3f3867141"
         ],
-        "x": 334,
+        "x": 314,
         "y": 79,
-        "w": 572,
+        "w": 592,
         "h": 82
     },
     {
@@ -43,7 +43,7 @@
         ],
         "x": 354,
         "y": 199,
-        "w": 412,
+        "w": 432,
         "h": 82
     },
     {
@@ -95,7 +95,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "https://developer.horizon.cc/documents_tros/boxs/function/hand_gesture_detection",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/function/hand_gesture_detection",
         "payloadType": "str",
         "x": 400,
         "y": 40,
@@ -121,7 +121,7 @@
         "name": "注意：选择对应的摄像头类型",
         "info": "",
         "x": 220,
-        "y": 180,
+        "y": 200,
         "wires": []
     },
     {
@@ -147,10 +147,11 @@
         "payload": "iso",
         "payloadType": "date",
         "x": 190,
-        "y": 100,
+        "y": 120,
         "wires": [
             [
-                "c3b47f294717a9f7"
+                "4dae9608b405b9fe",
+                "e440d874650c7017"
             ]
         ]
     },
@@ -176,10 +177,11 @@
         "payload": "iso",
         "payloadType": "date",
         "x": 190,
-        "y": 140,
+        "y": 160,
         "wires": [
             [
-                "c3b47f294717a9f7"
+                "4dae9608b405b9fe",
+                "e440d874650c7017"
             ]
         ]
     },
@@ -228,9 +230,7 @@
         "y": 120,
         "wires": [
             [
-                "87c11fc2fd2dd9de",
-                "4dae9608b405b9fe",
-                "e440d874650c7017"
+                "87c11fc2fd2dd9de"
             ],
             []
         ]
@@ -407,7 +407,7 @@
         "g": "7c31035d3e72fd1d",
         "name": "",
         "pauseType": "delay",
-        "timeout": "10",
+        "timeout": "12",
         "timeoutUnits": "seconds",
         "rate": "1",
         "nbRateUnits": "1",
@@ -437,7 +437,7 @@
                 "t": "set",
                 "p": "payload",
                 "pt": "msg",
-                "to": "ws://${host}:8080",
+                "to": "ws://{host}:8080",
                 "tot": "str"
             }
         ],
@@ -474,5 +474,72 @@
             ],
             []
         ]
+    },
+    {
+        "id": "5497ee03328a5b0d",
+        "type": "inject",
+        "z": "0fb6acb0a2342a75",
+        "name": "更新软件包",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "c3b47f294717a9f7"
+            ]
+        ]
+    },
+    {
+        "id": "936e6e06634d4118",
+        "type": "inject",
+        "z": "0fb6acb0a2342a75",
+        "name": "打开可视化页面",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http:{host}:8000",
+        "payloadType": "str",
+        "x": 620,
+        "y": 320,
+        "wires": [
+            [
+                "52626d30784b5478"
+            ]
+        ]
+    },
+    {
+        "id": "52626d30784b5478",
+        "type": "rdk-tools openurl",
+        "z": "0fb6acb0a2342a75",
+        "name": "",
+        "x": 820,
+        "y": 320,
+        "wires": []
     }
 ]

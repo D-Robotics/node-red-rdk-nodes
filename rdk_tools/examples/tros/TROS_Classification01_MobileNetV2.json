@@ -95,7 +95,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "https://developer.horizon.cc/documents_tros/boxs/classification/mobilenetv2",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/classification/mobilenetv2",
         "payloadType": "str",
         "x": 460,
         "y": 40,

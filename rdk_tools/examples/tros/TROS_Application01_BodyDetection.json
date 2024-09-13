@@ -22,9 +22,9 @@
             "561682ff65d38d33",
             "1fc8ec23ae9f57fe"
         ],
-        "x": 334,
+        "x": 314,
         "y": 79,
-        "w": 572,
+        "w": 592,
         "h": 82
     },
     {
@@ -43,7 +43,7 @@
         ],
         "x": 354,
         "y": 199,
-        "w": 452,
+        "w": 472,
         "h": 82
     },
     {
@@ -95,7 +95,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "https://developer.horizon.cc/documents_tros/boxs/function/mono2d_body_detection",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/function/mono2d_body_detection",
         "payloadType": "str",
         "x": 460,
         "y": 40,
@@ -121,7 +121,7 @@
         "name": "注意：选择对应的摄像头类型",
         "info": "",
         "x": 220,
-        "y": 180,
+        "y": 200,
         "wires": []
     },
     {
@@ -147,10 +147,11 @@
         "payload": "iso",
         "payloadType": "date",
         "x": 190,
-        "y": 100,
+        "y": 120,
         "wires": [
             [
-                "d9c9df8dd8448df0"
+                "f47ecfa3e9526f84",
+                "046afce708038e27"
             ]
         ]
     },
@@ -176,10 +177,11 @@
         "payload": "iso",
         "payloadType": "date",
         "x": 190,
-        "y": 140,
+        "y": 160,
         "wires": [
             [
-                "d9c9df8dd8448df0"
+                "f47ecfa3e9526f84",
+                "046afce708038e27"
             ]
         ]
     },
@@ -228,9 +230,7 @@
         "y": 120,
         "wires": [
             [
-                "561682ff65d38d33",
-                "f47ecfa3e9526f84",
-                "046afce708038e27"
+                "561682ff65d38d33"
             ],
             []
         ]
@@ -437,7 +437,7 @@
                 "t": "set",
                 "p": "payload",
                 "pt": "msg",
-                "to": "ws://${host}:8080",
+                "to": "ws://{host}:8080",
                 "tot": "str"
             }
         ],
@@ -474,5 +474,72 @@
             ],
             []
         ]
+    },
+    {
+        "id": "bcd85829230a9ae2",
+        "type": "inject",
+        "z": "ebc530f442100d39",
+        "name": "更新软件包",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "d9c9df8dd8448df0"
+            ]
+        ]
+    },
+    {
+        "id": "7333296a960a957e",
+        "type": "inject",
+        "z": "ebc530f442100d39",
+        "name": "打开可视化页面",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http:{host}:8000",
+        "payloadType": "str",
+        "x": 700,
+        "y": 320,
+        "wires": [
+            [
+                "629eeb683d3dad98"
+            ]
+        ]
+    },
+    {
+        "id": "629eeb683d3dad98",
+        "type": "rdk-tools openurl",
+        "z": "ebc530f442100d39",
+        "name": "",
+        "x": 900,
+        "y": 320,
+        "wires": []
     }
 ]

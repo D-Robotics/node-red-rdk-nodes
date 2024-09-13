@@ -22,9 +22,9 @@
             "71f59c4d4b715a11",
             "f12cfad3b74b3321"
         ],
-        "x": 354,
+        "x": 334,
         "y": 79,
-        "w": 572,
+        "w": 592,
         "h": 82
     },
     {
@@ -43,7 +43,7 @@
         ],
         "x": 414,
         "y": 199,
-        "w": 412,
+        "w": 432,
         "h": 82
     },
     {
@@ -83,7 +83,7 @@
         "name": "注意：选择对应的摄像头类型",
         "info": "",
         "x": 220,
-        "y": 180,
+        "y": 200,
         "wires": []
     },
     {
@@ -105,7 +105,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "https://developer.horizon.cc/documents_tros/boxs/detection/fcos",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/detection/fcos",
         "payloadType": "str",
         "x": 420,
         "y": 40,
@@ -147,10 +147,11 @@
         "payload": "iso",
         "payloadType": "date",
         "x": 190,
-        "y": 100,
+        "y": 120,
         "wires": [
             [
-                "3dcace4b163bc682"
+                "868b2da5ad39c31d",
+                "7f36299e8dc30fdb"
             ]
         ]
     },
@@ -176,10 +177,11 @@
         "payload": "iso",
         "payloadType": "date",
         "x": 190,
-        "y": 140,
+        "y": 160,
         "wires": [
             [
-                "3dcace4b163bc682"
+                "868b2da5ad39c31d",
+                "7f36299e8dc30fdb"
             ]
         ]
     },
@@ -193,9 +195,7 @@
         "y": 120,
         "wires": [
             [
-                "71f59c4d4b715a11",
-                "868b2da5ad39c31d",
-                "7f36299e8dc30fdb"
+                "71f59c4d4b715a11"
             ],
             []
         ]
@@ -403,7 +403,7 @@
                 "t": "set",
                 "p": "payload",
                 "pt": "msg",
-                "to": "ws://${host}:8080",
+                "to": "ws://{host}:8080",
                 "tot": "str"
             }
         ],
@@ -474,5 +474,72 @@
         "x": 680,
         "y": 400,
         "wires": []
+    },
+    {
+        "id": "2c8983ad195d6889",
+        "type": "inject",
+        "z": "41bd393e9b93f02f",
+        "name": "更新软件包",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "3dcace4b163bc682"
+            ]
+        ]
+    },
+    {
+        "id": "a5f5e623839368d3",
+        "type": "rdk-tools openurl",
+        "z": "41bd393e9b93f02f",
+        "name": "",
+        "x": 860,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "ef78cfefcc74efdc",
+        "type": "inject",
+        "z": "41bd393e9b93f02f",
+        "name": "打开浏览器",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 680,
+        "y": 320,
+        "wires": [
+            [
+                "a5f5e623839368d3"
+            ]
+        ]
     }
 ]

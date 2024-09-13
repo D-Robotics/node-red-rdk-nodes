@@ -22,9 +22,9 @@
             "52f0550f586ca9ec",
             "357da92b25b02598"
         ],
-        "x": 334,
+        "x": 314,
         "y": 79,
-        "w": 572,
+        "w": 592,
         "h": 82
     },
     {
@@ -43,7 +43,7 @@
         ],
         "x": 354,
         "y": 199,
-        "w": 412,
+        "w": 432,
         "h": 82
     },
     {
@@ -95,7 +95,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "https://developer.horizon.cc/documents_tros/boxs/detection/mobilenet",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/detection/mobilenet",
         "payloadType": "str",
         "x": 500,
         "y": 40,
@@ -121,7 +121,7 @@
         "name": "注意：选择对应的摄像头类型",
         "info": "",
         "x": 220,
-        "y": 180,
+        "y": 200,
         "wires": []
     },
     {
@@ -147,10 +147,11 @@
         "payload": "iso",
         "payloadType": "date",
         "x": 190,
-        "y": 100,
+        "y": 120,
         "wires": [
             [
-                "82f33478063682f1"
+                "465e36742a771514",
+                "7dcabb5cd3f8f445"
             ]
         ]
     },
@@ -176,10 +177,11 @@
         "payload": "iso",
         "payloadType": "date",
         "x": 190,
-        "y": 140,
+        "y": 160,
         "wires": [
             [
-                "82f33478063682f1"
+                "465e36742a771514",
+                "7dcabb5cd3f8f445"
             ]
         ]
     },
@@ -228,9 +230,7 @@
         "y": 120,
         "wires": [
             [
-                "52f0550f586ca9ec",
-                "465e36742a771514",
-                "7dcabb5cd3f8f445"
+                "52f0550f586ca9ec"
             ],
             []
         ]
@@ -437,7 +437,7 @@
                 "t": "set",
                 "p": "payload",
                 "pt": "msg",
-                "to": "ws://${host}:8080",
+                "to": "ws://{host}:8080",
                 "tot": "str"
             }
         ],
@@ -474,5 +474,72 @@
             ],
             []
         ]
+    },
+    {
+        "id": "a4bf39e5c94a96d7",
+        "type": "inject",
+        "z": "5143258bfe846b74",
+        "name": "更新软件包",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "82f33478063682f1"
+            ]
+        ]
+    },
+    {
+        "id": "68cb4d922209bdd7",
+        "type": "inject",
+        "z": "5143258bfe846b74",
+        "name": "打开可视化页面",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 680,
+        "y": 320,
+        "wires": [
+            [
+                "51a89e5debb6f4fe"
+            ]
+        ]
+    },
+    {
+        "id": "51a89e5debb6f4fe",
+        "type": "rdk-tools openurl",
+        "z": "5143258bfe846b74",
+        "name": "",
+        "x": 880,
+        "y": 320,
+        "wires": []
     }
 ]

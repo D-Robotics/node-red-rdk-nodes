@@ -22,9 +22,9 @@
             "2ccdb79308791667",
             "37d89643c47a484c"
         ],
-        "x": 334,
+        "x": 314,
         "y": 79,
-        "w": 572,
+        "w": 592,
         "h": 82
     },
     {
@@ -43,7 +43,7 @@
         ],
         "x": 354,
         "y": 199,
-        "w": 392,
+        "w": 412,
         "h": 82
     },
     {
@@ -95,7 +95,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "https://developer.horizon.cc/documents_tros/boxs/function/hand_lmk_detection",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/function/hand_lmk_detection",
         "payloadType": "str",
         "x": 440,
         "y": 40,
@@ -121,7 +121,7 @@
         "name": "注意：选择对应的摄像头类型",
         "info": "",
         "x": 220,
-        "y": 180,
+        "y": 200,
         "wires": []
     },
     {
@@ -147,10 +147,11 @@
         "payload": "iso",
         "payloadType": "date",
         "x": 190,
-        "y": 100,
+        "y": 120,
         "wires": [
             [
-                "6251e752069de4f6"
+                "85304b2d6a0ef624",
+                "d362cf39fdcce5b6"
             ]
         ]
     },
@@ -176,10 +177,11 @@
         "payload": "iso",
         "payloadType": "date",
         "x": 190,
-        "y": 140,
+        "y": 160,
         "wires": [
             [
-                "6251e752069de4f6"
+                "85304b2d6a0ef624",
+                "d362cf39fdcce5b6"
             ]
         ]
     },
@@ -228,9 +230,7 @@
         "y": 120,
         "wires": [
             [
-                "2ccdb79308791667",
-                "85304b2d6a0ef624",
-                "d362cf39fdcce5b6"
+                "2ccdb79308791667"
             ],
             []
         ]
@@ -474,5 +474,72 @@
             ],
             []
         ]
+    },
+    {
+        "id": "892256b192875318",
+        "type": "inject",
+        "z": "d857afa8400d1b28",
+        "name": "更新软件包",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "6251e752069de4f6"
+            ]
+        ]
+    },
+    {
+        "id": "739d674aebb5eab4",
+        "type": "inject",
+        "z": "d857afa8400d1b28",
+        "name": "打开可视化页面",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 680,
+        "y": 320,
+        "wires": [
+            [
+                "4bc34c6ebc335de5"
+            ]
+        ]
+    },
+    {
+        "id": "4bc34c6ebc335de5",
+        "type": "rdk-tools openurl",
+        "z": "d857afa8400d1b28",
+        "name": "",
+        "x": 880,
+        "y": 320,
+        "wires": []
     }
 ]
