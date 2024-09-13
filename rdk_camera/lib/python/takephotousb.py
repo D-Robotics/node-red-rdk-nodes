@@ -55,9 +55,13 @@ def find_first_usb_camera():
 
 def start_camera():
     video_device = find_first_usb_camera()
+    if video_device is None:
+        print('failed')
+        sys.exit(-1)
     cap = cv2.VideoCapture(video_device)
     if(not cap.isOpened()):
-        return cap
+        print('failed')
+        sys.exit(-1)
     codec = cv2.VideoWriter_fourcc( 'M', 'J', 'P', 'G' )
     cap.set(cv2.CAP_PROP_FOURCC, codec)
     cap.set(cv2.CAP_PROP_FPS, 10)
@@ -119,5 +123,5 @@ def take_photo():
             cap.release()
     cap.release()
 
-
-take_photo()
+if __name__ == '__main__':
+    take_photo()

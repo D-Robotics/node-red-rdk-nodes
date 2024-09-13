@@ -65,7 +65,7 @@ module.exports = function(RED) {
             //check camera
             if(type === 'usb'){
                 const result = execSync('v4l2-ctl --list-devices');
-                if(result.toString().indexOf('USB') < 0){
+                if(result.toString().indexOf('USB') < 0 && result.toString.indexOf('usb') < 0 && result.toString.indexOf('webcam') < 0){
                     node.status({fill:"red",shape:"dot",text:"rdk-camera.errors.usbCamNotFound"});
                     return;
                 }
