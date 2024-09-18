@@ -145,11 +145,6 @@ def process_image(img):
     for i in range(len(models[0].outputs)):
         output_tensors[i].properties.tensorLayout = get_TensorLayout(outputs[i].properties.layout)
         # print(output_tensors[i].properties.tensorLayout)
-        if output_tensors[i].properties.tensorLayout == 2:
-            output_tensors[i].properties.quantizeAxis = 1
-        else:
-            output_tensors[i].properties.quantizeAxis = 3
-        
         if (len(outputs[i].properties.scale_data) == 0):
             output_tensors[i].properties.quantiType = 0
             output_tensors[i].sysMem[0].virAddr = ctypes.cast(outputs[i].buffer.ctypes.data_as(ctypes.POINTER(ctypes.c_float)), ctypes.c_void_p)
@@ -157,10 +152,10 @@ def process_image(img):
             output_tensors[i].properties.quantiType = 2       
             output_tensors[i].properties.scale.scaleData = outputs[i].properties.scale_data.ctypes.data_as(ctypes.POINTER(ctypes.c_float))
             output_tensors[i].sysMem[0].virAddr = ctypes.cast(outputs[i].buffer.ctypes.data_as(ctypes.POINTER(ctypes.c_int32)), ctypes.c_void_p)
+            
         for j in range(len(outputs[i].properties.shape)):
             output_tensors[i].properties.validShape.dimensionSize[j] = outputs[i].properties.shape[j]
-            output_tensors[i].properties.alignedShape.dimensionSize[j] = outputs[i].properties.shape[j]
-
+        
         libpostprocess.Yolov5doProcess(output_tensors[i], ctypes.pointer(yolov5_postprocess_info), i)
 
     result_str = get_Postprocess_result(ctypes.pointer(yolov5_postprocess_info))  
@@ -197,6 +192,7 @@ def process_image(img):
     new_img = os.path.join(path_name, img_name)
     cv2.imwrite(new_img, img_file)
     print(new_img)
+
 
 
 def wait_for_image():

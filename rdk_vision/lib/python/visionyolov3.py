@@ -124,10 +124,7 @@ def process_image(img):
     des_dim = (w, h)
     resized_data = cv2.resize(img_file, des_dim, interpolation=cv2.INTER_AREA)
     nv12_data = bgr2nv12_opencv(resized_data)
-    t0 = time.time()
     outputs = models[0].forward(nv12_data)
-    t1 = time.time()
-    # print("inferece time is :", (t1 - t0))
 
     # 获取结构体信息
     yolov3_postprocess_info = Yolov3PostProcessInfo_t()
@@ -158,20 +155,14 @@ def process_image(img):
             output_tensors[i].properties.scale.scaleData = outputs[i].properties.scale_data.ctypes.data_as(ctypes.POINTER(ctypes.c_float))
             output_tensors[i].sysMem[0].virAddr = ctypes.cast(outputs[i].buffer.ctypes.data_as(ctypes.POINTER(ctypes.c_int32)), ctypes.c_void_p)
         for j in range(len(outputs[i].properties.shape)):
-            output_tensors[i].properties.validShape.dimensionSize[j] = outputs[i].properties.shape[j]
-            output_tensors[i].properties.alignedShape.dimensionSize[j] = outputs[i].properties.shape[j]
+            output_tensors[i].properties.validShape = ctypes.cast(outputs[i].properties.validShape, ctypes.POINTER(hbDNNTensorShape_t)).contents
+            output_tensors[i].properties.alignedShape = ctypes.cast(outputs[i].properties.alignedShape, ctypes.POINTER(hbDNNTensorShape_t)).contents
 
         libpostprocess.Yolov3doProcess(output_tensors[i], ctypes.pointer(yolov3_postprocess_info), i)
 
+
     result_str = get_Postprocess_result(ctypes.pointer(yolov3_postprocess_info))  
     result_str = result_str.decode('utf-8')  
-    t2 = time.time()
-    # print("postprocess time is :", (t2 - t1))
-    # print(result_str)
-
-    t0 = time.time()
-    # draw result
-    # 解析JSON字符串  
     data = json.loads(result_str[16:])  
 
     # 遍历每一个结果  
