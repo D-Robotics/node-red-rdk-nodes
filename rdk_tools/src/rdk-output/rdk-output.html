@@ -1,0 +1,120 @@
+<script type="text/x-red" data-template-name="rdk-tools output">
+    <div class="form-row node-input-name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="rdk-output.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]rdk-output.names.output" style="width: 296px;">
+    </div>
+</script>
+
+<script type="text/javascript">
+(function() {
+    var voices;
+    let $outputpanel = undefined;
+    let canvas = undefined;
+    let canvasContext = undefined;
+    let coverRender = undefined;
+    let nodeObj = undefined;
+    let statisticsObj = {};
+
+    function createPanel(id){
+        $outputpanel = document.getElementById('rdkoutput-' + id);
+        if(!$outputpanel){
+            const $container = document.getElementById(id);
+
+            // const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            // text.setAttribute('id', 'text-' + id);
+            // text.setAttribute('style', 'fill:red');
+            // text.setAttribute('stroke', '#999999');
+            // text.setAttribute('x', '1');
+            // text.setAttribute('y', '47');
+            // text.textContent = "testtest";
+            // $container.insertBefore(text, $container.lastChild.nextSibling);
+
+            const img = document.createElementNS("http://www.w3.org/2000/svg", 'image');
+            img.setAttribute('id', 'rdkoutput-' + id);
+            img.setAttribute('x', '1');
+            img.setAttribute('y', '47');
+
+            $container.insertBefore(img, $container.lastChild.nextSibling);
+            $outputpanel = img;
+
+            canvas = document.createElement('canvas');
+            canvasContext = canvas.getContext('2d');
+            coverRender = new RenderFrame(canvas);
+        }
+    }
+
+    function updatePanel(data){
+        if(Object.hasOwnProperty.call(statisticsObj, data)){
+            statisticsObj[data] += 1;
+        }
+        else{
+            statisticsObj[data] = 1;
+        }
+
+        if($outputpanel){
+            $outputpanel.style.width = 256;
+            $outputpanel.style.height = 256;
+
+            canvas.setAttribute('width', 256);
+            canvas.setAttribute('height', 256);
+
+            // canvasContext.fillStyle = 'transparent';
+            // canvasContext.fillRect(0,0,200,200);
+
+            canvasContext.font = '32px Arial';
+            canvasContext.fillStyle = 'green';
+            let idx = 0;
+            for(var label in statisticsObj){
+                canvasContext.fillText(label + " : " + statisticsObj[label], 20, idx*40 + 40);
+                idx += 1;
+            }
+
+            $outputpanel.setAttribute('href', canvas.toDataURL('image/jpeg'))
+        }
+    }
+
+    function clearPanel(){
+        statisticsObj = {};
+    }
+
+    RED.comms.subscribe("rdkoutput", function(t, obj){
+        console.log('out put: ', obj);
+        if(!nodeObj){
+            nodeObj = RED.nodes.node(obj.id);
+        }
+        
+        if(!$outputpanel){
+            createPanel(obj.id);
+        }
+
+        updatePanel(obj.payload);
+    });
+        
+    RED.nodes.registerType("rdk-tools output",{
+        category: "RDK Tools",
+        color: "#FF804A",
+        defaults: {
+            name: {value:""}
+        },
+        inputs:1,
+        outputs:0,
+        align: 'right',
+        icon: "output.svg",
+        button: {
+            toggle: 'active',
+            onclick: function(){
+                const label = this.name || "rdkoutput";
+                var node = this;
+                clearPanel();
+            }
+        },
+        paletteLabel: function() {
+            return this._("rdk-output.names.output");
+        },
+        oneditprepare: function() {},
+        label: function() {
+            return this.name || this._("rdk-output.names.output");
+        }
+    });
+})()
+</script>

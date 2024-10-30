@@ -118,6 +118,8 @@
         if (!$videows) {
             const $container = document.getElementById(id);
             if (!$container) { return };
+            // $container.style.width = 640;
+            // $container.style.height = 500;
 
             const bubble = document.createElementNS("http://www.w3.org/2000/svg", 'polyline');
             bubble.setAttribute('id', 'bubble-' + id);
@@ -129,6 +131,7 @@
             img.setAttribute('id', 'videows-' + id);
             img.setAttribute('x', '1');
             img.setAttribute('y', '47');
+            // img.style.objectFit = 'fill';
 
             $container.insertBefore(img, $container.lastChild.nextSibling);
             $videows = img;
@@ -172,8 +175,8 @@
                 if(nodeObj.active && processedData.imageBlob){
                     const imageUrl = urlCreator.createObjectURL(processedData.imageBlob);
                     if($videows){
-                        $videows.style.width = ($videows.style.width || nodeObj.width || DEFAULT_WIDTH);
-                        $videows.style.height = ($videows.style.height || nodeObj.width * processedData.imageHeight / processedData.imageWidth);
+                        $videows.style.width = (processedData.imageWidth || $videows.style.width || nodeObj.width || DEFAULT_WIDTH);
+                        $videows.style.height = (processedData.imageHeight || $videows.style.height || nodeObj.width * processedData.imageHeight / processedData.imageWidth);
                         let width = $videows.style.width;
                         let height = $videows.style.height;
                         $videoCover.style.width = width;
@@ -182,6 +185,13 @@
                         canvas.setAttribute('height', height);
                         // canvas.width = width;
                         // canvas.height = height;
+
+                        let videoBBox = $videows.getBBox();
+                        videoBBox.x = 1;
+                        videoBBox.y = 47;
+                        videoBBox.width = width;
+                        videoBBox.height = height;
+                        // $videows.style.objectFit = 'fill';
                         $videows.setAttribute('href', imageUrl);
                         
                         coverRender.renderFrameStart(processedData);
