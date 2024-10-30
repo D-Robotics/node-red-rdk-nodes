@@ -22,9 +22,9 @@
             "52f0550f586ca9ec",
             "357da92b25b02598"
         ],
-        "x": 314,
+        "x": 334,
         "y": 79,
-        "w": 592,
+        "w": 572,
         "h": 82
     },
     {
@@ -43,7 +43,7 @@
         ],
         "x": 354,
         "y": 199,
-        "w": 432,
+        "w": 412,
         "h": 82
     },
     {
@@ -467,7 +467,8 @@
         "y": 380,
         "wires": [
             [
-                "1e09057f11bf04f1"
+                "1e09057f11bf04f1",
+                "02cbbbaa69837ff8"
             ],
             [
                 "285aabdca4dade8e"
@@ -540,6 +541,43 @@
         "name": "",
         "x": 880,
         "y": 320,
+        "wires": []
+    },
+    {
+        "id": "02cbbbaa69837ff8",
+        "type": "change",
+        "z": "5143258bfe846b74",
+        "name": "提取类型",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "attributes.type",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 140,
+        "y": 480,
+        "wires": [
+            [
+                "edbc4d294475a5ed"
+            ]
+        ]
+    },
+    {
+        "id": "edbc4d294475a5ed",
+        "type": "rdk-tools output",
+        "z": "5143258bfe846b74",
+        "name": "",
+        "active": true,
+        "x": 140,
+        "y": 520,
         "wires": []
     }
 ]

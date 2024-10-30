@@ -22,9 +22,9 @@
             "71f59c4d4b715a11",
             "f12cfad3b74b3321"
         ],
-        "x": 334,
+        "x": 354,
         "y": 79,
-        "w": 592,
+        "w": 572,
         "h": 82
     },
     {
@@ -43,7 +43,7 @@
         ],
         "x": 414,
         "y": 199,
-        "w": 432,
+        "w": 412,
         "h": 82
     },
     {
@@ -59,11 +59,11 @@
         "nodes": [
             "7f36299e8dc30fdb",
             "b97878a7a2096c59",
-            "c30e582b69f711a8"
+            "fbf750e466027ace"
         ],
         "x": 154,
         "y": 319,
-        "w": 372,
+        "w": 352,
         "h": 122
     },
     {
@@ -416,29 +416,8 @@
         "y": 400,
         "wires": [
             [
-                "c30e582b69f711a8"
+                "fbf750e466027ace"
             ]
-        ]
-    },
-    {
-        "id": "c30e582b69f711a8",
-        "type": "rdk-tools videows",
-        "z": "41bd393e9b93f02f",
-        "g": "7990eae8ec566482",
-        "name": "",
-        "fps": "4",
-        "width": 640,
-        "active": true,
-        "x": 420,
-        "y": 380,
-        "wires": [
-            [
-                "975203282da7bef8"
-            ],
-            [
-                "6b453c4c4953b34f"
-            ],
-            []
         ]
     },
     {
@@ -541,5 +520,64 @@
                 "a5f5e623839368d3"
             ]
         ]
+    },
+    {
+        "id": "fbf750e466027ace",
+        "type": "rdk-tools videows",
+        "z": "41bd393e9b93f02f",
+        "g": "7990eae8ec566482",
+        "name": "",
+        "fps": "2",
+        "width": 640,
+        "active": true,
+        "x": 400,
+        "y": 380,
+        "wires": [
+            [
+                "975203282da7bef8",
+                "f910c04de6db2536"
+            ],
+            [
+                "6b453c4c4953b34f"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "f910c04de6db2536",
+        "type": "change",
+        "z": "41bd393e9b93f02f",
+        "name": "提取类型",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "attributes.type",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 180,
+        "y": 480,
+        "wires": [
+            [
+                "17d8c38b6c59f970"
+            ]
+        ]
+    },
+    {
+        "id": "17d8c38b6c59f970",
+        "type": "rdk-tools output",
+        "z": "41bd393e9b93f02f",
+        "name": "",
+        "active": true,
+        "x": 180,
+        "y": 520,
+        "wires": []
     }
 ]

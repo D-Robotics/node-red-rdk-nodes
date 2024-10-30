@@ -3,12 +3,20 @@ module.exports = function(RED) {
 
     function RDKVideoWSNode(config) {
         RED.nodes.createNode(this,config);
+
+        this.frameCount = parseInt(config.fps);
+        let count = 0;
+
         var node = this;
         openurlid = this.id;
 
         this.on('input', function(msg) {
             if(msg.topic && msg.topic === 'videows-info'){
-                node.send([msg.payload?.result ?? null, msg.payload.performance, null])
+                if(count%this.frameCount === 0){
+                    count = 0;
+                    node.send([msg.payload?.result ?? null, msg.payload.performance, null])
+                }
+                count++;
             }
             else if(typeof msg.payload === "string") {
                 if(msg.payload.indexOf('://') < 0){
