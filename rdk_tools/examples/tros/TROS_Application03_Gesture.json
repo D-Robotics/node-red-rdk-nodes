@@ -467,7 +467,8 @@
         "y": 380,
         "wires": [
             [
-                "d52b2f962a9df3eb"
+                "d52b2f962a9df3eb",
+                "3f1542fe5b01b3bb"
             ],
             [
                 "fff36a3ae6703800"
@@ -523,7 +524,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "http:{host}:8000",
+        "payload": "http://{host}:8000",
         "payloadType": "str",
         "x": 620,
         "y": 320,
@@ -540,6 +541,283 @@
         "name": "",
         "x": 820,
         "y": 320,
+        "wires": []
+    },
+    {
+        "id": "3f1542fe5b01b3bb",
+        "type": "switch",
+        "z": "0fb6acb0a2342a75",
+        "name": "过滤出“手”",
+        "property": "attributes.type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "hand",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 210,
+        "y": 500,
+        "wires": [
+            [
+                "1b9e4100df76516b"
+            ]
+        ]
+    },
+    {
+        "id": "1b9e4100df76516b",
+        "type": "switch",
+        "z": "0fb6acb0a2342a75",
+        "name": "过滤出手势",
+        "property": "attributes.attributes.length",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 210,
+        "y": 540,
+        "wires": [
+            [
+                "ba3165785c84ca7f"
+            ]
+        ]
+    },
+    {
+        "id": "ba3165785c84ca7f",
+        "type": "switch",
+        "z": "0fb6acb0a2342a75",
+        "name": "过滤手势类别",
+        "property": "attributes.attributes[0].type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "gesture",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 220,
+        "y": 580,
+        "wires": [
+            [
+                "5b4f566b1958d175"
+            ]
+        ]
+    },
+    {
+        "id": "5b4f566b1958d175",
+        "type": "change",
+        "z": "0fb6acb0a2342a75",
+        "name": "提取手势类别",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "attributes.attributes[0].value",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 220,
+        "y": 620,
+        "wires": [
+            [
+                "da496458e74d1574",
+                "0bbef62a6b20a7d8"
+            ]
+        ]
+    },
+    {
+        "id": "da496458e74d1574",
+        "type": "switch",
+        "z": "0fb6acb0a2342a75",
+        "name": "分离手势",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Victory",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Plam",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Awesome",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Thumb Up",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "ThumbLeft",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "ThumbRight",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Okay",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 7,
+        "x": 380,
+        "y": 940,
+        "wires": [
+            [
+                "a6d193215e03e279"
+            ],
+            [],
+            [
+                "a6d193215e03e279"
+            ],
+            [],
+            [],
+            [],
+            [
+                "a6d193215e03e279"
+            ]
+        ]
+    },
+    {
+        "id": "18d9c7dfa16f43aa",
+        "type": "comment",
+        "z": "0fb6acb0a2342a75",
+        "name": "手势1: 胜利",
+        "info": "",
+        "x": 210,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "a3e6c06565e95ffa",
+        "type": "comment",
+        "z": "0fb6acb0a2342a75",
+        "name": "手势2: 手掌",
+        "info": "",
+        "x": 210,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "82a2b7f6106b803b",
+        "type": "comment",
+        "z": "0fb6acb0a2342a75",
+        "name": "手势3: 好极了",
+        "info": "",
+        "x": 210,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "73fe6ed32e119600",
+        "type": "comment",
+        "z": "0fb6acb0a2342a75",
+        "name": "手势4: 大拇指向上",
+        "info": "",
+        "x": 230,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "240859acb224e333",
+        "type": "comment",
+        "z": "0fb6acb0a2342a75",
+        "name": "手势5: 大拇指向左",
+        "info": "",
+        "x": 230,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "7e487646a6ff0f8e",
+        "type": "comment",
+        "z": "0fb6acb0a2342a75",
+        "name": "手势6: 大拇指向右",
+        "info": "",
+        "x": 230,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "c24a5bcc28d6dc36",
+        "type": "comment",
+        "z": "0fb6acb0a2342a75",
+        "name": "手势7: OK",
+        "info": "",
+        "x": 200,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "a6d193215e03e279",
+        "type": "rbe",
+        "z": "0fb6acb0a2342a75",
+        "name": "过滤相同手势",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 580,
+        "y": 1040,
+        "wires": [
+            [
+                "40ed29484d3aaf25"
+            ]
+        ]
+    },
+    {
+        "id": "40ed29484d3aaf25",
+        "type": "rdk-tools texttoaudio",
+        "z": "0fb6acb0a2342a75",
+        "name": "",
+        "x": 590,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "0bbef62a6b20a7d8",
+        "type": "rdk-tools output",
+        "z": "0fb6acb0a2342a75",
+        "name": "",
+        "active": true,
+        "x": 210,
+        "y": 660,
         "wires": []
     }
 ]

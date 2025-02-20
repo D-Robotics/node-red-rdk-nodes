@@ -456,11 +456,19 @@ function HCanvas(canvas, width, height) {
     context.textAlign = 'center';
     context.fillStyle = 'rgba(255, 255, 255, .8)';
   
-    // var text = '';
     var text = attributes['type'];
+    if (attributes.attributes.length) {
+      attributes.attributes.map(val => {
+        if(val.type === 'gesture'){
+          text = val.value
+        }
+      });
+    }
     context.fillText(text, x, y);
     context.closePath();
     context.stroke();
+
+    
   };
   
   HCanvas.prototype.drawHeadBox = function (p1, p2) {

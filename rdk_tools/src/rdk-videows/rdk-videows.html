@@ -196,6 +196,7 @@
                         videoBBox.height = height;
                         // $videows.style.objectFit = 'fill';
                         $videows.setAttribute('href', imageUrl);
+                        // console.log($videows);
                         
                         coverRender.renderFrameStart(processedData);
                         $videoCover.setAttribute('href', canvas.toDataURL('image/png'))
@@ -242,8 +243,6 @@
         _postMessage(nodeID, { payload: 'test'});
     });
 
-
-        
     RED.nodes.registerType("rdk-tools videows",{
         category: "RDK Tools",
         color: "#FF804A",
@@ -283,6 +282,14 @@
             return this.name || this._("rdk-videows.names.openurl");
         }
     });
+
+    // RED.events.on('workspace:change', function(event){
+    //     console.log('change workspace', event.id);
+    // })
+
+    // RED.events.on('runtime-event', function(event){
+    //     console.log('runtime event', event.id)
+    // })
 
 })()
 </script>

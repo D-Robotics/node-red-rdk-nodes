@@ -22,9 +22,9 @@
             "561682ff65d38d33",
             "1fc8ec23ae9f57fe"
         ],
-        "x": 334,
+        "x": 314,
         "y": 79,
-        "w": 572,
+        "w": 592,
         "h": 82
     },
     {
@@ -43,7 +43,7 @@
         ],
         "x": 354,
         "y": 199,
-        "w": 452,
+        "w": 472,
         "h": 82
     },
     {
@@ -648,6 +648,172 @@
         "statusType": "auto",
         "x": 110,
         "y": 760,
+        "wires": []
+    },
+    {
+        "id": "938c2152e6a5cca8",
+        "type": "switch",
+        "z": "ebc530f442100d39",
+        "name": "判断大小",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "lt",
+                "v": "100000",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 160,
+        "y": 840,
+        "wires": [
+            [
+                "9ee14b1972a3b3a8",
+                "73f729ac2f43b26d"
+            ],
+            [
+                "97a2506bfb80ca0c",
+                "6737071973f5fc50"
+            ]
+        ]
+    },
+    {
+        "id": "9ee14b1972a3b3a8",
+        "type": "change",
+        "z": "ebc530f442100d39",
+        "name": "设置为0",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "0",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 320,
+        "y": 780,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "97a2506bfb80ca0c",
+        "type": "change",
+        "z": "ebc530f442100d39",
+        "name": "设置为1",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "1",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 320,
+        "y": 820,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9fc960294712c1b8",
+        "type": "rbe",
+        "z": "ebc530f442100d39",
+        "name": "过滤相同输出",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 500,
+        "y": 940,
+        "wires": [
+            [
+                "46e530f30f7dea9e"
+            ]
+        ]
+    },
+    {
+        "id": "73f729ac2f43b26d",
+        "type": "change",
+        "z": "ebc530f442100d39",
+        "name": "输出关闭",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "关闭",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 320,
+        "y": 920,
+        "wires": [
+            [
+                "9fc960294712c1b8"
+            ]
+        ]
+    },
+    {
+        "id": "6737071973f5fc50",
+        "type": "change",
+        "z": "ebc530f442100d39",
+        "name": "输出开启",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "开启",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 320,
+        "y": 960,
+        "wires": [
+            [
+                "9fc960294712c1b8"
+            ]
+        ]
+    },
+    {
+        "id": "46e530f30f7dea9e",
+        "type": "rdk-tools texttoaudio",
+        "z": "ebc530f442100d39",
+        "name": "",
+        "x": 690,
+        "y": 940,
         "wires": []
     }
 ]

@@ -34,6 +34,7 @@ module.exports = function(RED) {
                 }
             }
         });
+
     }
 
     RED.nodes.registerType("rdk-tools videows", RDKVideoWSNode);
@@ -68,4 +69,24 @@ module.exports = function(RED) {
             res.sendStatus(404);
         }
     });
+
+    // RED.events.on('workspace:change', function(event){
+    //     console.log('change workspace', event.id);
+    // })
+    
+    // RED.events.on('runtime-event', function(event){
+    //     console.log('runtime event', event.id, RED.events)
+    // })
+
+    // RED.events.on('view:selection-changed', function(event){
+    //     console.log('selection-changed', event.id)
+    // })
+
+    // RED.events.on('workspace:hide', function(event){
+    //     console.log('workspace:hide', event.id)
+    // })
+
+    // RED.events.on('workspace:show', function(event){
+    //     console.log('workspace:show', event.id)
+    // })
 }

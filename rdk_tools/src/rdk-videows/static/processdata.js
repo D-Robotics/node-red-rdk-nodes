@@ -225,6 +225,8 @@ function transformData(buffer, AwesomeMessage) {
   messageShowSelect.handBox = true;
   messageShowSelect.body = true;
   messageShowSelect.face = true;
+  messageShowSelect.handMarks = true;
+  messageShowSelect.attributes = true;
   messageShowSelect.floatMatrixsMatting = true;
   // console.time('渲染计时器')
   // console.time('解析计时器')
