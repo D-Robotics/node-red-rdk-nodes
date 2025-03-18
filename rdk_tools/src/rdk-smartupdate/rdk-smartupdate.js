@@ -25,7 +25,7 @@ module.exports = function(RED) {
             error: 'rdk-smartupdate.errors.updating'
         };
         var command2 = {
-            command: 'sudo apt upgrade -y',
+            command: 'sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y',
             status: 'rdk-smartupdate.status.upgrading',
             error: 'rdk-smartupdate.errors.upgrading'
         };

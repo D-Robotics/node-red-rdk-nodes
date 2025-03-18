@@ -29,7 +29,7 @@
         "payload": "",
         "payloadType": "str",
         "x": 110,
-        "y": 220,
+        "y": 380,
         "wires": [
             [
                 "fc8dbc67f529db48"
@@ -49,7 +49,7 @@
         "oldrc": false,
         "name": "GoogleNet",
         "x": 330,
-        "y": 220,
+        "y": 380,
         "wires": [
             [
                 "379a850cbb055097"
@@ -76,7 +76,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 700,
-        "y": 460,
+        "y": 540,
         "wires": []
     },
     {
@@ -93,7 +93,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 720,
-        "y": 520,
+        "y": 600,
         "wires": []
     },
     {
@@ -110,7 +110,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 690,
-        "y": 580,
+        "y": 660,
         "wires": []
     },
     {
@@ -126,7 +126,7 @@
         "oldrc": false,
         "name": "VargconvNet",
         "x": 330,
-        "y": 340,
+        "y": 480,
         "wires": [
             [
                 "379a850cbb055097"
@@ -161,7 +161,7 @@
         "payload": "",
         "payloadType": "str",
         "x": 110,
-        "y": 340,
+        "y": 480,
         "wires": [
             [
                 "be0efe092130d0f6"
@@ -190,7 +190,7 @@
         "payload": "",
         "payloadType": "str",
         "x": 110,
-        "y": 460,
+        "y": 580,
         "wires": [
             [
                 "54d7c7459b5d8dca"
@@ -210,7 +210,7 @@
         "oldrc": false,
         "name": "MobileNetV1",
         "x": 330,
-        "y": 460,
+        "y": 580,
         "wires": [
             [
                 "379a850cbb055097"
@@ -245,7 +245,7 @@
         "payload": "",
         "payloadType": "str",
         "x": 110,
-        "y": 580,
+        "y": 660,
         "wires": [
             [
                 "1ceb4b9604c08a39"
@@ -265,7 +265,7 @@
         "oldrc": false,
         "name": "EfficientNasNet_M",
         "x": 350,
-        "y": 580,
+        "y": 660,
         "wires": [
             [
                 "379a850cbb055097"
@@ -300,7 +300,7 @@
         "payload": "",
         "payloadType": "str",
         "x": 110,
-        "y": 700,
+        "y": 740,
         "wires": [
             [
                 "68da98fa011f8379"
@@ -320,7 +320,7 @@
         "oldrc": false,
         "name": "EfficientNet_Lite4",
         "x": 350,
-        "y": 700,
+        "y": 740,
         "wires": [
             [
                 "379a850cbb055097"
@@ -466,7 +466,7 @@
         "payload": "/app/pydev_demo/01_basic_sample/zebra_cls.jpg",
         "payloadType": "str",
         "x": 120,
-        "y": 100,
+        "y": 280,
         "wires": [
             [
                 "a4b2840fc9b9545a"
@@ -502,8 +502,8 @@
         "parameterCount": 0,
         "jimpFunction": "none",
         "selectedJimpFunction": {},
-        "x": 330,
-        "y": 100,
+        "x": 290,
+        "y": 280,
         "wires": [
             [
                 "63e094b464385474"
@@ -519,10 +519,165 @@
         "data": "payload",
         "dataType": "msg",
         "active": true,
-        "x": 590,
-        "y": 100,
+        "x": 610,
+        "y": 280,
         "wires": [
             []
         ]
+    },
+    {
+        "id": "8a1eb0c0a7f33671",
+        "type": "inject",
+        "z": "4b0bd5e4173a4516",
+        "name": "面板配置",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "debug",
+                "v": "/home/sunrise/.node-red/node_modules/node-red-node-rdk-tools/examples/basics/hint-debugpanel.png",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "5",
+        "topic": "",
+        "payload": "/home/sunrise/.node-red/node_modules/node-red-node-rdk-tools/examples/basics/hint-sidepanel.png",
+        "payloadType": "str",
+        "x": 120,
+        "y": 60,
+        "wires": [
+            [
+                "c9b549b64234ab07",
+                "ba03df1c1f776dea"
+            ]
+        ]
+    },
+    {
+        "id": "c9b549b64234ab07",
+        "type": "jimp-image",
+        "z": "4b0bd5e4173a4516",
+        "name": "",
+        "data": "payload",
+        "dataType": "msg",
+        "ret": "img",
+        "parameter1": "",
+        "parameter1Type": "msg",
+        "parameter2": "",
+        "parameter2Type": "msg",
+        "parameter3": "",
+        "parameter3Type": "msg",
+        "parameter4": "",
+        "parameter4Type": "msg",
+        "parameter5": "",
+        "parameter5Type": "msg",
+        "parameter6": "",
+        "parameter6Type": "msg",
+        "parameter7": "",
+        "parameter7Type": "msg",
+        "parameter8": "",
+        "parameter8Type": "msg",
+        "sendProperty": "payload",
+        "sendPropertyType": "msg",
+        "parameterCount": 0,
+        "jimpFunction": "none",
+        "selectedJimpFunction": {
+            "name": "none",
+            "fn": "none",
+            "description": "Just loads the image.",
+            "parameters": []
+        },
+        "x": 290,
+        "y": 60,
+        "wires": [
+            [
+                "85c769163651d9e5"
+            ]
+        ]
+    },
+    {
+        "id": "85c769163651d9e5",
+        "type": "image viewer",
+        "z": "4b0bd5e4173a4516",
+        "name": "打开侧边栏",
+        "width": 160,
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 450,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ba03df1c1f776dea",
+        "type": "jimp-image",
+        "z": "4b0bd5e4173a4516",
+        "name": "",
+        "data": "debug",
+        "dataType": "msg",
+        "ret": "img",
+        "parameter1": "",
+        "parameter1Type": "msg",
+        "parameter2": "",
+        "parameter2Type": "msg",
+        "parameter3": "",
+        "parameter3Type": "msg",
+        "parameter4": "",
+        "parameter4Type": "msg",
+        "parameter5": "",
+        "parameter5Type": "msg",
+        "parameter6": "",
+        "parameter6Type": "msg",
+        "parameter7": "",
+        "parameter7Type": "msg",
+        "parameter8": "",
+        "parameter8Type": "msg",
+        "sendProperty": "payload",
+        "sendPropertyType": "msg",
+        "parameterCount": 0,
+        "jimpFunction": "none",
+        "selectedJimpFunction": {
+            "name": "none",
+            "fn": "none",
+            "description": "Just loads the image.",
+            "parameters": []
+        },
+        "x": 290,
+        "y": 100,
+        "wires": [
+            [
+                "c9541537670cd0fc"
+            ]
+        ]
+    },
+    {
+        "id": "c9541537670cd0fc",
+        "type": "image viewer",
+        "z": "4b0bd5e4173a4516",
+        "name": "打开调试面板",
+        "width": 160,
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 680,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1dbe4ad6934a7718",
+        "type": "comment",
+        "z": "4b0bd5e4173a4516",
+        "name": "请先根据提示打开调试面板",
+        "info": "",
+        "x": 150,
+        "y": 160,
+        "wires": []
     }
 ]

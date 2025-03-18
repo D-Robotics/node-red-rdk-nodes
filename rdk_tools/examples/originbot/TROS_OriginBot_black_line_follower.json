@@ -22,8 +22,8 @@
             "93f1884052b733e2",
             "b3b7ee359fc9447c"
         ],
-        "x": 214,
-        "y": 119,
+        "x": 294,
+        "y": 99,
         "w": 572,
         "h": 82
     },
@@ -31,7 +31,7 @@
         "id": "4c06a32351264e77",
         "type": "group",
         "z": "63977db28cf06dc2",
-        "name": "USB摄像头节点检查并执行",
+        "name": "摄像头节点检查并执行",
         "style": {
             "fill": "#e3f3d3",
             "label": true,
@@ -42,7 +42,7 @@
             "e434897ac3a5e430"
         ],
         "x": 334,
-        "y": 219,
+        "y": 299,
         "w": 552,
         "h": 82
     },
@@ -62,7 +62,7 @@
             "c26691d4f86fa087"
         ],
         "x": 334,
-        "y": 319,
+        "y": 399,
         "w": 552,
         "h": 82
     },
@@ -82,7 +82,7 @@
             "2016043fdb22c190"
         ],
         "x": 334,
-        "y": 419,
+        "y": 499,
         "w": 552,
         "h": 82
     },
@@ -114,7 +114,7 @@
         "to": "",
         "reg": false,
         "x": 600,
-        "y": 360,
+        "y": 440,
         "wires": [
             [
                 "c26691d4f86fa087"
@@ -128,7 +128,7 @@
         "g": "72b3156e709f6349",
         "name": "",
         "x": 790,
-        "y": 360,
+        "y": 440,
         "wires": [
             [
                 "9371a066361792e1"
@@ -142,7 +142,7 @@
         "id": "2ed37ebff62d0361",
         "type": "inject",
         "z": "63977db28cf06dc2",
-        "name": "  启动",
+        "name": " 更新软件包",
         "props": [
             {
                 "p": "payload"
@@ -159,8 +159,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "str",
-        "x": 110,
-        "y": 160,
+        "x": 120,
+        "y": 140,
         "wires": [
             [
                 "09156532e825daf6"
@@ -171,7 +171,7 @@
         "id": "fcb4f088444d1428",
         "type": "inject",
         "z": "63977db28cf06dc2",
-        "name": "关闭",
+        "name": "全部关闭",
         "props": [
             {
                 "p": "kill",
@@ -188,7 +188,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 110,
+        "x": 120,
         "y": 260,
         "wires": [
             [
@@ -204,14 +204,11 @@
         "z": "63977db28cf06dc2",
         "g": "7b6f75d31fe1baad",
         "name": "",
-        "x": 300,
-        "y": 160,
+        "x": 380,
+        "y": 140,
         "wires": [
             [
-                "93f1884052b733e2",
-                "386cdb8eecf236cf",
-                "bd8658be9c1450b5",
-                "6c855588e53612b5"
+                "93f1884052b733e2"
             ],
             []
         ]
@@ -236,8 +233,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 500,
-        "y": 160,
+        "x": 580,
+        "y": 140,
         "wires": [
             [
                 "b3b7ee359fc9447c"
@@ -250,8 +247,8 @@
         "z": "63977db28cf06dc2",
         "g": "7b6f75d31fe1baad",
         "name": "",
-        "x": 690,
-        "y": 160,
+        "x": 770,
+        "y": 140,
         "wires": []
     },
     {
@@ -282,7 +279,7 @@
         "to": "",
         "reg": false,
         "x": 460,
-        "y": 260,
+        "y": 340,
         "wires": [
             [
                 "e434897ac3a5e430"
@@ -296,7 +293,7 @@
         "g": "4c06a32351264e77",
         "name": "",
         "x": 790,
-        "y": 260,
+        "y": 340,
         "wires": [
             [
                 "9371a066361792e1"
@@ -325,7 +322,7 @@
         "allowrate": false,
         "outputs": 1,
         "x": 420,
-        "y": 360,
+        "y": 440,
         "wires": [
             [
                 "564193c847a38ca0"
@@ -360,7 +357,7 @@
         "to": "",
         "reg": false,
         "x": 440,
-        "y": 460,
+        "y": 540,
         "wires": [
             [
                 "2016043fdb22c190"
@@ -374,7 +371,7 @@
         "g": "077b162503495c13",
         "name": "",
         "x": 790,
-        "y": 460,
+        "y": 540,
         "wires": [
             [
                 "9371a066361792e1"
@@ -398,7 +395,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1040,
-        "y": 320,
+        "y": 380,
         "wires": []
     },
     {
@@ -415,16 +412,16 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1040,
-        "y": 400,
+        "y": 480,
         "wires": []
     },
     {
         "id": "a5f1bc90e95e4882",
         "type": "comment",
         "z": "63977db28cf06dc2",
-        "name": "名称：OriginBot巡黑线小车    版本：0.0.1",
+        "name": "名称：OriginBot巡黑线小车    版本：v0.0.2",
         "info": "",
-        "x": 190,
+        "x": 200,
         "y": 20,
         "wires": []
     },
@@ -459,8 +456,8 @@
         "topic": "",
         "payload": "https://gitee.com/guyuehome/originbot_desktop/blob/master/originbot_deeplearning/line_follower_model/resnet18_224x224_nv12.bin",
         "payloadType": "str",
-        "x": 600,
-        "y": 80,
+        "x": 580,
+        "y": 60,
         "wires": [
             [
                 "dbbdee297e021eea"
@@ -472,8 +469,213 @@
         "type": "rdk-tools openurl",
         "z": "63977db28cf06dc2",
         "name": "",
-        "x": 880,
-        "y": 80,
+        "x": 860,
+        "y": 60,
         "wires": []
+    },
+    {
+        "id": "9315c62e15b95c76",
+        "type": "inject",
+        "z": "63977db28cf06dc2",
+        "name": "全部开启",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 220,
+        "wires": [
+            [
+                "386cdb8eecf236cf",
+                "bd8658be9c1450b5",
+                "6c855588e53612b5"
+            ]
+        ]
+    },
+    {
+        "id": "f5e39592f4110999",
+        "type": "inject",
+        "z": "63977db28cf06dc2",
+        "name": "开启摄像头",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 320,
+        "wires": [
+            [
+                "386cdb8eecf236cf"
+            ]
+        ]
+    },
+    {
+        "id": "07d834533ad6c3b7",
+        "type": "inject",
+        "z": "63977db28cf06dc2",
+        "name": "关闭摄像头",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 180,
+        "y": 360,
+        "wires": [
+            [
+                "e434897ac3a5e430"
+            ]
+        ]
+    },
+    {
+        "id": "de3ecd8862827c85",
+        "type": "inject",
+        "z": "63977db28cf06dc2",
+        "name": "开启巡线",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 420,
+        "wires": [
+            [
+                "564193c847a38ca0"
+            ]
+        ]
+    },
+    {
+        "id": "4dc0ed5c06e70ef4",
+        "type": "inject",
+        "z": "63977db28cf06dc2",
+        "name": "关闭巡线",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 180,
+        "y": 460,
+        "wires": [
+            [
+                "c26691d4f86fa087"
+            ]
+        ]
+    },
+    {
+        "id": "15e2497450721092",
+        "type": "inject",
+        "z": "63977db28cf06dc2",
+        "name": "开启巡线",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 520,
+        "wires": [
+            [
+                "6c855588e53612b5"
+            ]
+        ]
+    },
+    {
+        "id": "9b6bd0a550110377",
+        "type": "inject",
+        "z": "63977db28cf06dc2",
+        "name": "关闭巡线",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 180,
+        "y": 560,
+        "wires": [
+            [
+                "2016043fdb22c190"
+            ]
+        ]
     }
 ]
