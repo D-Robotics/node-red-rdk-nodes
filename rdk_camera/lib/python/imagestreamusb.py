@@ -6,8 +6,6 @@ import sys
 import os
 from time import perf_counter
 
-
-
 width = int(sys.argv[1])
 height = int(sys.argv[2])
 fps = int(sys.argv[3])
@@ -34,7 +32,7 @@ def find_first_usb_camera():
             return dev
     return None
 
-async def send_image_stream(websocket, path):
+async def send_image_stream(websocket, path=''):
     video_device = find_first_usb_camera()
     cap = cv2.VideoCapture(video_device)
     if(not cap.isOpened()):
@@ -60,9 +58,19 @@ async def send_image_stream(websocket, path):
     except:
         cap.release()
 
+async def main():
+    async with websockets.serve(send_image_stream, "0.0.0.0", port):
+        await asyncio.Future()
 
 if __name__ == '__main__':
-    signal.signal(signal.SIGINT, signal_handler)
-    ws_server = websockets.serve(send_image_stream, "0.0.0.0", port)
-    asyncio.get_event_loop().run_until_complete(ws_server)
-    asyncio.get_event_loop().run_forever()
+    # signal.signal(signal.SIGINT, signal_handler)
+    # ws_server = websockets.serve(send_image_stream, "0.0.0.0", port)
+    # asyncio.get_event_loop().run_until_complete(ws_server)
+    # asyncio.get_event_loop().run_forever()
+    loop = asyncio.get_event_loop()
+    try:
+        loop.run_until_complete(main())
+    except KeyboardInterrupt:
+        print("Server stopped")
+    finally:
+        loop.close()

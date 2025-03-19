@@ -17,7 +17,7 @@ enc.encode(0, 3, width, height)
 def signal_handler(signal, frame):
     sys.exit(0)
 
-async def send_image_stream(websocket, path):
+async def send_image_stream(websocket, path=''):
     host_idx = 0
      #camera start
     cam = libsrcampy.Camera()
@@ -45,9 +45,19 @@ async def send_image_stream(websocket, path):
     except:
         cam.close_cam()
 
+async def main():
+    async with websockets.serve(send_image_stream, "0.0.0.0", port):
+        await asyncio.Future()
 
 if __name__ == '__main__':
-    signal.signal(signal.SIGINT, signal_handler)
-    ws_server = websockets.serve(send_image_stream, "0.0.0.0", port)
-    asyncio.get_event_loop().run_until_complete(ws_server)
-    asyncio.get_event_loop().run_forever()
+    # signal.signal(signal.SIGINT, signal_handler)
+    # ws_server = websockets.serve(send_image_stream, "0.0.0.0", port)
+    # asyncio.get_event_loop().run_until_complete(ws_server)
+    # asyncio.get_event_loop().run_forever()
+    loop = asyncio.get_event_loop()
+    try:
+        loop.run_until_complete(main())
+    except KeyboardInterrupt:
+        print("Server stopped")
+    finally:
+        loop.close()
