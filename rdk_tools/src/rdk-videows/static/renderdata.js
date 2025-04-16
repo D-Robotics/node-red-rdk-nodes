@@ -174,7 +174,7 @@ function RenderFrame(canvas) {
     }
 
     this.smartCanvas1.drawAttributes(attributes, box.p1.x, box.p1.y);
-    console.log('class name: ', attributes)
+    // console.log('class name: ', attributes)
     // let html = this.createTemplateAttributesHtml(attributes, id, className, top + 'px', left + 'px');
     // return html
   }

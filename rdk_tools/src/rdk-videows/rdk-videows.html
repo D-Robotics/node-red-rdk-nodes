@@ -31,6 +31,7 @@
     let frameCount = 0;
     let connection = undefined;
     let AwesomeMessage = undefined;
+    let $status = undefined;
     let $videows = undefined;
     let $videoCover = undefined;
     let canvas = undefined;
@@ -123,6 +124,13 @@
             // $container.style.width = 640;
             // $container.style.height = 500;
 
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.setAttribute('style', 'fill:red; font-size: 18px;');
+            text.setAttribute('x', '1');
+            text.setAttribute('y', '70');
+            $status = text;
+            $container.insertBefore(text, $container.lastChild.nextSibling);
+
             const bubble = document.createElementNS("http://www.w3.org/2000/svg", 'polyline');
             bubble.setAttribute('id', 'bubble-' + id);
             bubble.setAttribute('style', 'fill:transparent');
@@ -167,6 +175,9 @@
 
         connection.onopen = function(){
             console.log('connection open')
+            if($status){
+                $status.textContent = '';
+            }
         }
 
         connection.onmessage = function(data){
@@ -209,7 +220,12 @@
 
         connection.onerror = function(e){
             console.log('connection error', e)
-
+            if($status){
+                $status.textContent = '连接出错，正在重连。。。';
+                setTimeout(() => {
+                    connectWs(link);
+                }, 5000)
+            }
         }
 
         connection.onclose = function(){
