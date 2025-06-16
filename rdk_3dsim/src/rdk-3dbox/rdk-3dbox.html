@@ -1,0 +1,135 @@
+<script type="text/x-red" data-template-name="rdk-3d 3dbox">
+    <div class="form-row node-input-name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="rdk-3dbox.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]rdk-3dbox.names.3dbox" style="width: 296px;">
+    </div>
+</script>
+
+<script type="importmap">
+    {
+      "imports": {
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@v0.149.0/examples/jsm/"
+      }
+    }
+</script>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@latest/build/three.module.min.js'
+(function() {
+    const width = 640;
+    const height = 480;
+    let flag = true;
+    let nodeID = '';
+    let $boxframe = undefined;
+    let offscreenCanvas = undefined;
+
+    let scene = undefined;
+    let camera = undefined;
+    let cube = undefined;
+    let renderer = undefined
+
+    const createFrameImage = (id) => {
+        $boxframe = document.getElementById('boxframe-' + id);
+        if(!$boxframe){
+            const $container = document.getElementById(id);
+            if (!$container) { return };
+
+            const bubble = document.createElementNS("http://www.w3.org/2000/svg", 'polyline');
+            bubble.setAttribute('id', 'bubble-' + id);
+            bubble.setAttribute('style', 'fill:transparent');
+            bubble.setAttribute('stroke', '#999999');
+            $container.insertBefore(bubble, $container.lastChild.nextSibling);
+
+            const img = document.createElementNS("http://www.w3.org/2000/svg", 'image');
+            img.setAttribute('id', 'boxframe-' + id);
+            img.setAttribute('x', '1');
+            img.setAttribute('y', '47');
+
+            $container.insertBefore(img, $container.lastChild.nextSibling);
+            $boxframe = img;
+        }
+    }
+
+    const createOffscreenCanvas = () => {
+        if(!offscreenCanvas){
+            offscreenCanvas = document.createElement('canvas');
+            offscreenCanvas.width = width;
+            offscreenCanvas.height = height;
+        }
+
+        renderer = new THREE.WebGLRenderer({
+            canvas: offscreenCanvas,
+            antialias: true
+        });
+
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(
+            75,
+            offscreenCanvas.width / offscreenCanvas.height,
+            0.1,
+            1000
+        );
+
+        const geometry = new THREE.BoxGeometry();
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+        camera.position.z = 5;
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        flag = !flag;
+        if(!flag){
+            return;
+        }
+
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
+
+        renderer.render(scene, camera);
+
+        if($boxframe){
+            offscreenCanvas.setAttribute('width', width);
+            offscreenCanvas.setAttribute('height', height);
+            $boxframe.setAttribute('href', offscreenCanvas.toDataURL('image/png'));
+        }
+    }
+
+    RED.comms.subscribe("openurl", function(topic, link){
+        if(link.indexOf('{host}') >= 0){
+            link = link.replace('{host}', window.location.hostname);
+        }
+
+        window.open(link, '_blank')
+    });
+        
+    RED.nodes.registerType("rdk-3d 3dbox",{
+        category: "RDK 3D Sim",
+        color: "#ff3019",
+        defaults: {
+            name: {value:""}
+        },
+        inputs:1,
+        outputs:0,
+        align: 'right',
+        icon: "box.svg",
+        paletteLabel: function() {
+            return this._("rdk-3dbox.names.3dbox");
+        },
+        oneditprepare: function() {},
+        label: function() {
+            if(nodeID === '' || !$boxframe){
+                nodeID = this.id;
+                createFrameImage(nodeID);
+                if($boxframe){
+                    createOffscreenCanvas();
+                    animate();
+                }
+                
+            }
+            return this.name || this._("rdk-3dbox.names.3dbox");
+        }
+    });
+})()
+</script>

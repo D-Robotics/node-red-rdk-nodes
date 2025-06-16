@@ -1,0 +1,49 @@
+{
+    "name": "node-red-node-rdk-3dsim",
+    "version": "0.0.1",
+    "description": "配合RDK硬件及TROS使用的Node-RED功能包(Node-RED nodes for using TROS on a RDK hardware and TROS)",
+    "license": "Apache-2.0",
+    "main": "none",
+    "keywords": [
+      "node-red",
+      "rdk",
+      "x3",
+      "x5",
+      "TROS",
+      "3d",
+      "simulation"
+    ],
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/D-Robotics/node-red-rdk-nodes/tree/master/rdk_tools"
+    },
+    "node-red": {
+      "version": ">=3.1.3",
+      "nodes": {
+        "rdk-3drobot": "src/rdk-3drobot/rdk-3drobot.js",
+        "rdk-3dlight": "src/rdk-3dlight/rdk-3dlight.js"
+      }
+    },
+    "author": "WYP",
+    "bugs": {
+      "url": ""
+    },
+  
+    "homepage": "https://developer.horizon.cc/",
+    "directories": {
+      "lib": "lib"
+    },
+    "engines": {
+      "node": ">=18.0.0"
+    },
+    "publishConfig": {
+      "access": "public",
+      "registry": "https://registry.npmjs.org/"
+    }
+  }
+  

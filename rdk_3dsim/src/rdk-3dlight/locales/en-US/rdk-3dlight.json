@@ -1,0 +1,20 @@
+{
+    "rdk-3dlight": {
+        "names": {
+            "3dlight": "3D Light"
+        },
+        "label": {
+            "name": "Name"
+        },
+        "placeholder": {
+        },
+        "errors": {
+            "invalidUrl": "Invalid web url, please check!"
+        },
+        "status": {
+        },
+        "hints": {
+            "validUrl": "Valid URL!"
+        }
+    }
+}
