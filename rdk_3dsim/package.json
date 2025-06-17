@@ -1,7 +1,7 @@
 {
     "name": "node-red-node-rdk-3dsim",
-    "version": "0.0.1",
-    "description": "配合RDK硬件及TROS使用的Node-RED功能包(Node-RED nodes for using TROS on a RDK hardware and TROS)",
+    "version": "0.0.2",
+    "description": "配合RDK硬件使用的3D可视化功能包",
     "license": "Apache-2.0",
     "main": "none",
     "keywords": [
