@@ -1,53 +1,55 @@
 {
     "name": "node-red-node-rdk-tools",
-    "version": "0.0.20",
+    "version": "0.0.21",
     "description": "配合RDK硬件及TROS使用的Node-RED功能包(Node-RED nodes for using TROS on a RDK hardware and TROS)",
     "license": "Apache-2.0",
     "main": "none",
     "keywords": [
-      "node-red",
-      "rdk",
-      "x3",
-      "TROS",
-      "NodeHub",
-      "Chinese TTS",
-      "Open Website"
+        "node-red",
+        "rdk",
+        "x3",
+        "TROS",
+        "NodeHub",
+        "Chinese TTS",
+        "Open Website"
     ],
     "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "dependencies": {
+        "body-parser": "^2.2.0",
+        "node-wav": "^0.0.2",
+        "vosk-koffi": "^1.1.1"
     },
     "repository": {
-      "type": "git",
-      "url": "https://github.com/D-Robotics/node-red-rdk-nodes/tree/master/rdk_tools"
+        "type": "git",
+        "url": "https://github.com/D-Robotics/node-red-rdk-nodes/tree/master/rdk_tools"
     },
     "node-red": {
-      "version": ">=3.1.3",
-      "nodes": {
-        "rdk-smartupdate": "src/rdk-smartupdate/rdk-smartupdate.js",
-        "rdk-checkexecute": "src/rdk-checkexecute/rdk-checkexecute.js",
-        "rdk-texttoaudio": "src/rdk-texttoaudio/rdk-texttoaudio.js",
-        "rdk-openurl": "src/rdk-openurl/rdk-openurl.js",
-        "rdk-videows": "src/rdk-videows/rdk-videows.js",
-        "rdk-output": "src/rdk-output/rdk-output.js"
-      }
+        "version": ">=3.1.3",
+        "nodes": {
+            "rdk-smartupdate": "src/rdk-smartupdate/rdk-smartupdate.js",
+            "rdk-checkexecute": "src/rdk-checkexecute/rdk-checkexecute.js",
+            "rdk-speechtotext": "src/rdk-speechtotext/rdk-speechtotext.js",
+            "rdk-texttoaudio": "src/rdk-texttoaudio/rdk-texttoaudio.js",
+            "rdk-openurl": "src/rdk-openurl/rdk-openurl.js",
+            "rdk-videows": "src/rdk-videows/rdk-videows.js",
+            "rdk-output": "src/rdk-output/rdk-output.js"
+        }
     },
     "author": "WYP",
     "bugs": {
-      "url": ""
+        "url": ""
     },
-  
     "homepage": "https://developer.horizon.cc/",
     "directories": {
-      "lib": "lib"
+        "lib": "lib"
     },
     "engines": {
-      "node": ">=18.0.0"
+        "node": ">=18.0.0"
     },
     "publishConfig": {
-      "access": "public",
-      "registry": "https://registry.npmjs.org/"
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
     }
-  }
-  
+}

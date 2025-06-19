@@ -8,11 +8,13 @@
 <script type="text/javascript">
 (function() {
     var voices;
+    let speakStatus = false;
 
     RED.comms.subscribe("text2audio", function(t, o){
         var v = o.split('#',2);
 
-        if ('speechSynthesis' in window) {
+        if ('speechSynthesis' in window && speakStatus === false) {
+            speakStatus = true;
             voices = window.speechSynthesis.getVoices();
             var words = new SpeechSynthesisUtterance(v[1]);
             words.rate = 0.8;
@@ -20,9 +22,10 @@
             window.speechSynthesis.speak(words);
             words.onend = function(event) {
                 // window.speechSynthesis.cancel();
+                speakStatus = false;
             }
         }
-        else {
+        else if(speakStatus === false){
             alert("Your Browser does not support Text-to-Speech");
         }
     });
@@ -36,11 +39,13 @@
         inputs:1,
         outputs:0,
         align: 'right',
-        icon: "audio.svg",
+        icon: "tts.svg",
         paletteLabel: function() {
             return this._("rdk-texttoaudio.names.texttoaudio");
         },
-        oneditprepare: function() {},
+        oneditprepare: function() {
+            
+        },
         label: function() {
             return this.name || this._("rdk-texttoaudio.names.texttoaudio");
         }

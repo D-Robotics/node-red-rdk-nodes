@@ -1,0 +1,23 @@
+{
+    "rdk-speechtotext": {
+        "names": {
+            "speechtotext": "语音转文字"
+        },
+        "label": {
+            "name": "Name",
+            "ttsVoice": "text to Audio"
+        },
+        "placeholder": {
+            "name": ""
+        },
+        "errors": {
+        },
+        "status": {
+            "playing": "playing...",
+            "converting": "converting...",
+            "invalidInput": "invalid input"
+        },
+        "hints": {
+        }
+    }
+}
