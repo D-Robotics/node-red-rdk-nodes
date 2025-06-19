@@ -1,0 +1,43 @@
+<script type="text/x-red" data-template-name="alibaba-llms Qwen">
+
+    <div class="form-row node-input-name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="alibaba-qwen.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]alibaba-qwen.names.qwen" style="width: 296px;">
+    </div>
+
+    <div class="form-row node-input-apikey">
+        <label for="node-input-apikey"><i class="fa fa-tag"></i> <span data-i18n="alibaba-qwen.label.apikey"></span></label>
+        <input type="text" id="node-input-apikey" data-i18n="[placeholder]alibaba-qwen.names.apikey" style="width: 296px;">
+    </div>
+
+</script>
+
+<script type="text/javascript">
+    (function(){
+    
+        RED.nodes.registerType("alibaba-llms Qwen",{
+            category: "Alibaba Cloud Model Studio",
+            color: "rgba(83,203,241,.4)",
+            defaults: {
+                name: {value:""},
+                apikey: {value:"", required: true}
+            },
+            inputs:1,
+            outputs:1,
+            align: 'left',
+            icon: "qwen.svg",
+            paletteLabel: function() {
+                return this._("alibaba-qwen.names.qwen");
+            },
+            oneditprepare: function() {
+                $('node-input-apikey').on('change', function(){
+                    
+                })
+            },
+            label: function() {
+                return this.name || this._("alibaba-qwen.names.qwen");
+            }
+        });
+    
+    })()
+    </script>

@@ -1,0 +1,331 @@
+[
+    {
+        "id": "46ff71b2231412b9",
+        "type": "tab",
+        "label": "LLMQwenDialog",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "106a16ac6ea08bed",
+        "type": "ui-template",
+        "z": "46ff71b2231412b9",
+        "group": "3aa087d165282d0d",
+        "page": "",
+        "ui": "",
+        "name": "录音机",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "head": "",
+        "format": "<template>\n    <div>\n        <v-btn @mousedown=\"startRecord()\"\n               @mouseup=\"stopRecord()\">{{ recordText }}</v-btn>\n\n        <audio></audio>\n        <br>\n    </div>\n</template>\n\n<script>\n    export default {\n        data() {\n            // define variables available component-wide\n            // (in <template> and component functions)\n            return {\n                count: 0,\n                recordText: '按下录音',\n                recorder: undefined,\n            }\n        },\n        watch: {\n            \n        },\n        computed: {\n            \n        },\n        methods: {\n            // expose a method to our <template> and Vue Application\n            startRecord: function() {\n                this.send({\n                    cmd: 'start'\n                })\n\n                if(this.audioStream){\n                    this.recordText = \"录音中...\"\n\n                    const mediaRecorder = new MediaRecorder(this.audioStream);\n                    this.recorder = mediaRecorder;\n                    let audioChunks = [];\n                    mediaRecorder.ondataavailable = (event) => {\n                        audioChunks.push(event.data);\n                    };\n                    mediaRecorder.onstop = () => {\n                        const audioBlob = new Blob(audioChunks, { type: \"audio/wav\" });\n                        let reader = new FileReader();\n                        reader.readAsDataURL(audioBlob);\n                        reader.onloadend = () => {\n                        let base64Audio = reader.result.split(',')[1]; // 获取Base64数据\n                            // this.send({ payload: base64Audio, format: \"audio/wav\" });\n                        };\n                        const dataUrl = window.URL.createObjectURL(audioBlob);\n                        this.send({\n                            payload: dataUrl\n                        })\n                        // this.send({\n                        //     payload: audioBlob\n                        // })\n                        audioChunks = [];\n                    };\n                    mediaRecorder.start();\n                }\n                else{\n                    this.recordText = \"录音失败\"\n                }\n            },\n            stopRecord: function() {\n                this.send({\n                    cmd: 'stop'\n                })\n\n                if(this.recorder){\n                    this.recorder.stop();\n                    this.recorder = undefined;\n                }\n                this.recordText = \"按下录音\"\n            }\n        },\n        mounted() {\n            // code here when the component is first loaded\n            this.audioStream = unmounted;\n            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {\n                this.audioStream = stream;\n            })\n            .catch((e) => {\n                alert('该示例需要使用麦克风权限')\n            })\n            \n\n        },\n        unmounted() {\n            // code here when the component is removed from the Dashboard\n            // i.e. when the user navigates away from the page\n        }\n    }\n</script>\n<style>\n    /* define any styles here - supports raw CSS */\n    .my-class {\n        color: red;\n    }\n</style>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 170,
+        "y": 240,
+        "wires": [
+            [
+                "faeb4cfe14bbedbd",
+                "be9a0f966429e5fc"
+            ]
+        ]
+    },
+    {
+        "id": "9f4f69fef035a80c",
+        "type": "rdk-tools openurl",
+        "z": "46ff71b2231412b9",
+        "name": "",
+        "x": 340,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "12199917a344c202",
+        "type": "inject",
+        "z": "46ff71b2231412b9",
+        "name": "打开录音面板",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://{host}:1880/dashboard",
+        "payloadType": "str",
+        "x": 150,
+        "y": 180,
+        "wires": [
+            [
+                "9f4f69fef035a80c"
+            ]
+        ]
+    },
+    {
+        "id": "faeb4cfe14bbedbd",
+        "type": "ui-audio",
+        "z": "46ff71b2231412b9",
+        "group": "3aa087d165282d0d",
+        "name": "录音回放",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "src": "",
+        "autoplay": "off",
+        "loop": "off",
+        "muted": "off",
+        "x": 320,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4431a5ae0d925a09",
+        "type": "rdk-tools texttoaudio",
+        "z": "46ff71b2231412b9",
+        "name": "",
+        "x": 610,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "cb2b9d24a0eecf89",
+        "type": "alibaba-llms Qwen",
+        "z": "46ff71b2231412b9",
+        "name": "",
+        "apikey": "",
+        "x": 530,
+        "y": 240,
+        "wires": [
+            [
+                "4431a5ae0d925a09",
+                "6bd517de724f2a10"
+            ]
+        ]
+    },
+    {
+        "id": "ecea102add7a838a",
+        "type": "inject",
+        "z": "46ff71b2231412b9",
+        "name": "如何申请API Key",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://help.aliyun.com/zh/model-studio/get-api-key",
+        "payloadType": "str",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "9f4f69fef035a80c"
+            ]
+        ]
+    },
+    {
+        "id": "6bd517de724f2a10",
+        "type": "ui-template",
+        "z": "46ff71b2231412b9",
+        "group": "42d8bc09c6dc144f",
+        "page": "",
+        "ui": "",
+        "name": "结果展示",
+        "order": 0,
+        "width": "0",
+        "height": "0",
+        "head": "",
+        "format": "<template>\n    <div v-html=\"msg.payload\" style=\"padding: 1rem;\">\n    </div>\n</template>\n\n<script>\n    export default {\n        data() {\n            // define variables available component-wide\n            // (in <template> and component functions)\n        },\n        watch: {\n            // watch for any changes of \"count\"\n        },\n        computed: {\n            // automatically compute this variable\n            // whenever VueJS deems appropriate\n        },\n        methods: {\n            // expose a method to our <template> and Vue Application\n        },\n        mounted() {\n            // code here when the component is first loaded\n        },\n        unmounted() {\n            // code here when the component is removed from the Dashboard\n            // i.e. when the user navigates away from the page\n        }\n    }\n</script>\n<style>\n    /* define any styles here - supports raw CSS */\n    .my-class {\n        color: red;\n    }\n</style>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 600,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "be9a0f966429e5fc",
+        "type": "rdk-tools speechtotext",
+        "z": "46ff71b2231412b9",
+        "name": "",
+        "x": 340,
+        "y": 300,
+        "wires": [
+            [
+                "acf08b1671029ddd",
+                "cb2b9d24a0eecf89"
+            ]
+        ]
+    },
+    {
+        "id": "acf08b1671029ddd",
+        "type": "ui-template",
+        "z": "46ff71b2231412b9",
+        "group": "3aa087d165282d0d",
+        "page": "",
+        "ui": "",
+        "name": "结果展示",
+        "order": 0,
+        "width": 0,
+        "height": "0",
+        "head": "",
+        "format": "<template>\n    <div>\n        <p>{{ msg.payload }}</p>\n        <p>{{ audioText }}</p>\n        <p>{{ recognizeError }}</p>\n    </div>\n</template>\n\n<script>\n    export default {\n        data() {\n            // define variables available component-wide\n            // (in <template> and component functions)\n            return {\n                count: 0,\n                audioText: '',\n                audioRecgonition: undefined,\n                recognizeStatus: false,\n                stopStatus: false,\n                exist: false,\n                recognizeError: \"\",\n            }\n        },\n        watch: {\n            // watch for any changes of \"count\"\n            msg: function(){\n                \n                if(this.msg?.cmd){\n                    if(this.msg.cmd === 'start' && this.recognizeStatus === false){\n                        //start\n                        this.startRecognize();\n                    }\n                    else if(this.msg.cmd === 'stop' && this.recognizeStatus === true && this.stopStatus === false){\n                        //stop\n                        this.stopRecognize();\n                    }\n                }\n            }\n        },\n        computed: {\n            // automatically compute this variable\n            // whenever VueJS deems appropriate\n            \n        },\n        methods: {\n            // expose a method to our <template> and Vue Application\n            startRecognize: function () {\n                this.audioRecognition.start(); // 重新开启识别\n                this.recognizeStatus = true;\n            },\n\n            stopRecognize: function () {\n                this.stopStatus = true;\n                setTimeout(() => {\n                    this.audioRecognition.stop();\n                    this.recognizeStatus = false;\n                    this.stopStatus = false;\n                    this.send({\n                        payload: this.audioText\n                    })\n                }, 1000)\n                \n            }\n        },\n        mounted() {\n            // // code here when the component is first loaded\n            // const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();\n            // recognition.lang = 'zh-CN'; // 设置语言为中文\n            // recognition.interimResults = true; // 返回临时结果\n            // recognition.continuous = false; // 单次识别\n            // // 处理识别结果\n            // recognition.onresult = (event) => {\n            //     const transcript = event.results[0][0].transcript;\n            //     this.audioText = transcript;\n            // };\n            // recognition.onerror = (event) => {\n            //     this.recognizeError = \"Error: \" + event.error;\n            // }\n            // // 处理识别结束\n            // recognition.onend = () => {\n            //     console.log('recgonize finished')\n            // };\n\n            // this.audioRecognition = recognition;\n        },\n        unmounted() {\n            // code here when the component is removed from the Dashboard\n            // i.e. when the user navigates away from the page\n        }\n    }\n</script>\n<style>\n    /* define any styles here - supports raw CSS */\n    .my-class {\n        color: red;\n    }\n</style>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 320,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "df8748f16f22c4d9",
+        "type": "comment",
+        "z": "46ff71b2231412b9",
+        "name": "使用前请先获取API Key！",
+        "info": "",
+        "x": 150,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "788e2e5082fabdec",
+        "type": "comment",
+        "z": "46ff71b2231412b9",
+        "name": "打开交互面板",
+        "info": "",
+        "x": 110,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "3aa087d165282d0d",
+        "type": "ui-group",
+        "name": "录音区域",
+        "page": "5459ff18b063d634",
+        "width": 6,
+        "height": "6",
+        "order": -1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "42d8bc09c6dc144f",
+        "type": "ui-group",
+        "name": "结果区域",
+        "page": "5459ff18b063d634",
+        "width": 6,
+        "height": "6",
+        "order": -1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "5459ff18b063d634",
+        "type": "ui-page",
+        "name": "语音识别+Qwen",
+        "ui": "942009bed591a42b",
+        "path": "/page1",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "cccf934df78f2f5b",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 1,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "942009bed591a42b",
+        "type": "ui-base",
+        "name": "QwenDashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true
+    },
+    {
+        "id": "cccf934df78f2f5b",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094CE",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "12px"
+        }
+    }
+]
