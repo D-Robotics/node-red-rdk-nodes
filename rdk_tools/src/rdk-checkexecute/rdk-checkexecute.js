@@ -132,9 +132,11 @@ module.exports = function(RED) {
             else{
                 assembledCommand += launchName;
             }
+            assembledCommand += ' > /dev/null 2>&1';
             // console.log(assembledCommand);
             var childProcess = exec(assembledCommand, {
-                shell: '/bin/bash'
+                shell: '/bin/bash',
+                stdio: 'ignore'
             }, function(e, out, err){
                 if(err){
                     msg.payload = err;

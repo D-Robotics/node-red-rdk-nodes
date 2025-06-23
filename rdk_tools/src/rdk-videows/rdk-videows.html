@@ -40,6 +40,8 @@
     let nodeID = undefined;
     let nodeObj = undefined;
 
+    let lastImageUrl = "";
+
     function _loadNecessaries(){
         console.log('loading necessaries...');
         $.getScript('videows/js/protobuf.min.js')
@@ -210,7 +212,13 @@
                         // console.log($videows);
                         
                         coverRender.renderFrameStart(processedData);
-                        $videoCover.setAttribute('href', canvas.toDataURL('image/png'))
+                        $videoCover.setAttribute('href', canvas.toDataURL('image/png'));
+                        if(lastImageUrl != ""){
+                            urlCreator.revokeObjectURL(lastImageUrl);
+                            console.log('after revoke', lastImageUrl);
+                            lastImageUrl = "";
+                        }
+                        lastImageUrl = imageUrl;
                     }
                 }
                 frameCount++;
