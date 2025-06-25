@@ -4,11 +4,15 @@ const path = require('path');
 const vosk = require('vosk-koffi');
 
 const libName = 'libvosk.so';
-// const libPath = path.join(__dirname, '../../node_modules', 'vosk-koffi', 'bin-linux-arm64', libName);
-// const backupPath = path.join(__dirname, 'bin-linux-arm64', libName);
-// if(!fs.existsSync(libPath)){
-//     fs.copyFileSync(backupPath, libPath);
-// }
+
+const libPath = path.join(path.dirname(require.resolve('vosk-koffi')), '../', 'bin-linux-arm64', libName);
+const backupPath = path.join(__dirname, 'bin-linux-arm64', libName);
+if(!fs.existsSync(libPath)){
+    fs.copyFileSync(backupPath, libPath);
+}
+else{
+    console.log('libvosk.so exists')
+}
 
 module.exports = function(RED) {
     var playaudionodeid;
