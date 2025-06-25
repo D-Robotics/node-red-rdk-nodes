@@ -132,7 +132,7 @@ module.exports = function(RED) {
             else{
                 assembledCommand += launchName;
             }
-            assembledCommand += ' --log-level NONE';
+            assembledCommand += ' --ros-args --log-level NONE';
             // console.log(assembledCommand);
             var childProcess = exec(assembledCommand, {
                 shell: '/bin/bash',
