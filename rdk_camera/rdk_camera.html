@@ -124,6 +124,9 @@
                 }
             });
         },
+        paletteLabel: function() {
+            return this._('rdk-camera.names.takephoto');
+        },
         label: function() {
             return (this.name || this._('rdk-camera.names.takephoto')) + (this.cameratype === "0" ? '(MIPI)' : '(USB)');
         }
@@ -222,6 +225,9 @@
                 	$("#port").hide();
                 }
             });
+        },
+        paletteLabel: function() {
+            return this._('rdk-camera.names.imagestream');
         },
         label: function() {
             return (this.name || this._('rdk-camera.names.imagestream')) + (this.cameratype === "0" ? '(MIPI)' : '(USB)');

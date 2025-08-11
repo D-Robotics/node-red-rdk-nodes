@@ -1,0 +1,111 @@
+[
+    {
+        "id": "f03c165157ea76ea",
+        "type": "tab",
+        "label": "VideoStreamWithUSBCam",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "127999e2799a7d06",
+        "type": "comment",
+        "z": "f03c165157ea76ea",
+        "name": "Name: Video Stream with USB Camera   Version: v0.0.1",
+        "info": "",
+        "x": 240,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "3a8e6cac8c1a800c",
+        "type": "inject",
+        "z": "f03c165157ea76ea",
+        "name": "Start",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "start",
+        "payloadType": "str",
+        "x": 130,
+        "y": 100,
+        "wires": [
+            [
+                "27e94f152983fdf7"
+            ]
+        ]
+    },
+    {
+        "id": "0239b6f8e467e9fb",
+        "type": "inject",
+        "z": "f03c165157ea76ea",
+        "name": "Stop",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "stop",
+        "payloadType": "str",
+        "x": 130,
+        "y": 220,
+        "wires": [
+            [
+                "27e94f152983fdf7"
+            ]
+        ]
+    },
+    {
+        "id": "27e94f152983fdf7",
+        "type": "rdk-camera imagestream",
+        "z": "f03c165157ea76ea",
+        "cameratype": "1",
+        "fps": "4",
+        "resolution": "2",
+        "defport": "1",
+        "port": "10888",
+        "name": "",
+        "x": 250,
+        "y": 160,
+        "wires": [
+            [
+                "e7ced18e713e60d8"
+            ]
+        ]
+    },
+    {
+        "id": "e7ced18e713e60d8",
+        "type": "image viewer",
+        "z": "f03c165157ea76ea",
+        "name": "",
+        "width": "480",
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 430,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    }
+]

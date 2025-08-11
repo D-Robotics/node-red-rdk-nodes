@@ -1,0 +1,370 @@
+[
+    {
+        "id": "9bc820cc16f1140a",
+        "type": "tab",
+        "label": "TakePhotoAndVideoStreamWithOneUSBCam",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "8388f9ede5c23c57",
+        "type": "comment",
+        "z": "9bc820cc16f1140a",
+        "name": "Name: Switch between Taking photo and Video stream using USB Camera  Version: v0.0.1",
+        "info": "",
+        "x": 350,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "ee24e0015862534d",
+        "type": "inject",
+        "z": "9bc820cc16f1140a",
+        "name": "Start taking photo and Stop video stream",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 200,
+        "y": 180,
+        "wires": [
+            [
+                "80bac41507186414",
+                "e95b42938fb7967e"
+            ]
+        ]
+    },
+    {
+        "id": "4de8a06aa2567d7b",
+        "type": "inject",
+        "z": "9bc820cc16f1140a",
+        "name": "Start video stream and Stop taking photo",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 300,
+        "wires": [
+            [
+                "504b7d0b52e0469a",
+                "5be9f29b55cdc309"
+            ]
+        ]
+    },
+    {
+        "id": "a74bc077413086fe",
+        "type": "rdk-camera takephoto",
+        "z": "9bc820cc16f1140a",
+        "cameratype": "1",
+        "filemode": "2",
+        "filename": "",
+        "filedefpath": "1",
+        "filepath": "",
+        "fileformat": "jpeg",
+        "resolution": "2",
+        "rotation": "0",
+        "fliph": "0",
+        "flipv": "0",
+        "brightness": "50",
+        "contrast": "0",
+        "sharpness": "0",
+        "quality": "80",
+        "imageeffect": "none",
+        "exposuremode": "auto",
+        "iso": "0",
+        "agcwait": "1.0",
+        "led": "0",
+        "awb": "auto",
+        "name": "",
+        "x": 540,
+        "y": 180,
+        "wires": [
+            [
+                "d8282dc5cc5bf2db"
+            ]
+        ]
+    },
+    {
+        "id": "de5f2aa0fe4aa0f1",
+        "type": "rdk-camera imagestream",
+        "z": "9bc820cc16f1140a",
+        "cameratype": "1",
+        "fps": "4",
+        "resolution": "2",
+        "defport": "1",
+        "port": "10888",
+        "name": "",
+        "x": 550,
+        "y": 260,
+        "wires": [
+            [
+                "632b362bb2438e83"
+            ]
+        ]
+    },
+    {
+        "id": "86d452e4d6c2d1aa",
+        "type": "change",
+        "z": "9bc820cc16f1140a",
+        "name": "start",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "start",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 120,
+        "wires": [
+            [
+                "a74bc077413086fe"
+            ]
+        ]
+    },
+    {
+        "id": "e95b42938fb7967e",
+        "type": "change",
+        "z": "9bc820cc16f1140a",
+        "name": "stop",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "stop",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 220,
+        "wires": [
+            [
+                "de5f2aa0fe4aa0f1"
+            ]
+        ]
+    },
+    {
+        "id": "80bac41507186414",
+        "type": "delay",
+        "z": "9bc820cc16f1140a",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 160,
+        "y": 120,
+        "wires": [
+            [
+                "86d452e4d6c2d1aa"
+            ]
+        ]
+    },
+    {
+        "id": "4d7219b98ae7faab",
+        "type": "change",
+        "z": "9bc820cc16f1140a",
+        "name": "start",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "start",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 370,
+        "y": 360,
+        "wires": [
+            [
+                "de5f2aa0fe4aa0f1"
+            ]
+        ]
+    },
+    {
+        "id": "504b7d0b52e0469a",
+        "type": "delay",
+        "z": "9bc820cc16f1140a",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 160,
+        "y": 360,
+        "wires": [
+            [
+                "4d7219b98ae7faab"
+            ]
+        ]
+    },
+    {
+        "id": "5be9f29b55cdc309",
+        "type": "change",
+        "z": "9bc820cc16f1140a",
+        "name": "stop",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "stop",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 370,
+        "y": 260,
+        "wires": [
+            [
+                "a74bc077413086fe"
+            ]
+        ]
+    },
+    {
+        "id": "d84a140da7ef5fa5",
+        "type": "inject",
+        "z": "9bc820cc16f1140a",
+        "name": "Shutter",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 530,
+        "y": 80,
+        "wires": [
+            [
+                "a74bc077413086fe"
+            ]
+        ]
+    },
+    {
+        "id": "d8282dc5cc5bf2db",
+        "type": "jimp-image",
+        "z": "9bc820cc16f1140a",
+        "name": "",
+        "data": "payload",
+        "dataType": "msg",
+        "ret": "img",
+        "parameter1": "",
+        "parameter1Type": "msg",
+        "parameter2": "",
+        "parameter2Type": "msg",
+        "parameter3": "",
+        "parameter3Type": "msg",
+        "parameter4": "",
+        "parameter4Type": "msg",
+        "parameter5": "",
+        "parameter5Type": "msg",
+        "parameter6": "",
+        "parameter6Type": "msg",
+        "parameter7": "",
+        "parameter7Type": "msg",
+        "parameter8": "",
+        "parameter8Type": "msg",
+        "sendProperty": "payload",
+        "sendPropertyType": "msg",
+        "parameterCount": 0,
+        "jimpFunction": "none",
+        "selectedJimpFunction": {},
+        "x": 670,
+        "y": 220,
+        "wires": [
+            [
+                "632b362bb2438e83"
+            ]
+        ]
+    },
+    {
+        "id": "632b362bb2438e83",
+        "type": "image viewer",
+        "z": "9bc820cc16f1140a",
+        "name": "",
+        "width": "480",
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 510,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    }
+]

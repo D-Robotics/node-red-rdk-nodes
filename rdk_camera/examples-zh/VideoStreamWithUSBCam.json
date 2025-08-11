@@ -1,0 +1,111 @@
+[
+    {
+        "id": "cbf240481e5b02d9",
+        "type": "tab",
+        "label": "VideoStreamWithUSBCam",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "11fcc2438c22a778",
+        "type": "comment",
+        "z": "cbf240481e5b02d9",
+        "name": "名称：USB摄像头视频流  版本：v0.0.1",
+        "info": "",
+        "x": 190,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "2cd6e8a9ae7579a1",
+        "type": "inject",
+        "z": "cbf240481e5b02d9",
+        "name": "重新打开",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "start",
+        "payloadType": "str",
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "8fb760577aade777"
+            ]
+        ]
+    },
+    {
+        "id": "db54c654f0a22b84",
+        "type": "inject",
+        "z": "cbf240481e5b02d9",
+        "name": "关闭视频",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "stop",
+        "payloadType": "str",
+        "x": 140,
+        "y": 220,
+        "wires": [
+            [
+                "8fb760577aade777"
+            ]
+        ]
+    },
+    {
+        "id": "8fb760577aade777",
+        "type": "rdk-camera imagestream",
+        "z": "cbf240481e5b02d9",
+        "cameratype": "1",
+        "fps": "4",
+        "resolution": "2",
+        "defport": "1",
+        "port": "10888",
+        "name": "",
+        "x": 250,
+        "y": 160,
+        "wires": [
+            [
+                "19e6ba53399b342d"
+            ]
+        ]
+    },
+    {
+        "id": "19e6ba53399b342d",
+        "type": "image viewer",
+        "z": "cbf240481e5b02d9",
+        "name": "",
+        "width": "480",
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 430,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    }
+]
