@@ -1,0 +1,912 @@
+[
+    {
+        "id": "00fb983ba98e24a1",
+        "type": "tab",
+        "label": "TROS Gesture Detection (Application)",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "2250ac8f8a57fd5c",
+        "type": "group",
+        "z": "00fb983ba98e24a1",
+        "name": "Smart update",
+        "style": {
+            "fill": "#ffffbf",
+            "fill-opacity": "0.46",
+            "label": true
+        },
+        "nodes": [
+            "5a0f0f971f5503df",
+            "e9214b6a94b0c91a",
+            "a8c1a70cf030d1e4"
+        ],
+        "x": 314,
+        "y": 79,
+        "w": 592,
+        "h": 82
+    },
+    {
+        "id": "4d9746ef7ab2a6c5",
+        "type": "group",
+        "z": "00fb983ba98e24a1",
+        "name": "Check and excute Gesture node",
+        "style": {
+            "fill": "#e3f3d3",
+            "fill-opacity": "0.5",
+            "label": true
+        },
+        "nodes": [
+            "bd2d12428d2fc5c6",
+            "a3a49d8a3a748f1f"
+        ],
+        "x": 354,
+        "y": 199,
+        "w": 432,
+        "h": 82
+    },
+    {
+        "id": "a4f074eef4c89cae",
+        "type": "group",
+        "z": "00fb983ba98e24a1",
+        "name": "Gesture Visualization",
+        "style": {
+            "fill": "#bfdbef",
+            "fill-opacity": "0.47",
+            "label": true
+        },
+        "nodes": [
+            "1ec6aebd778187da",
+            "742abe59101505b4",
+            "8c4715b713c40e5f"
+        ],
+        "x": 134,
+        "y": 319,
+        "w": 372,
+        "h": 122
+    },
+    {
+        "id": "4f0cec239505d190",
+        "type": "comment",
+        "z": "00fb983ba98e24a1",
+        "name": "Name: TROS Application Gesture Detection",
+        "info": "",
+        "x": 210,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "468ed4430304594a",
+        "type": "inject",
+        "z": "00fb983ba98e24a1",
+        "name": "Learn More",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/function/hand_gesture_detection",
+        "payloadType": "str",
+        "x": 490,
+        "y": 40,
+        "wires": [
+            [
+                "635b9a211b549b3a"
+            ]
+        ]
+    },
+    {
+        "id": "635b9a211b549b3a",
+        "type": "rdk-tools openurl",
+        "z": "00fb983ba98e24a1",
+        "name": "",
+        "x": 680,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "f4d297ae7b2f2336",
+        "type": "comment",
+        "z": "00fb983ba98e24a1",
+        "name": "Notice: Please choose compatible cam type!",
+        "info": "",
+        "x": 170,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "c25900b2b17de077",
+        "type": "inject",
+        "z": "00fb983ba98e24a1",
+        "name": "Start(USB Cam)",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "camera",
+                "v": "usb",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "iso",
+        "payloadType": "date",
+        "x": 180,
+        "y": 120,
+        "wires": [
+            [
+                "bd2d12428d2fc5c6",
+                "1ec6aebd778187da"
+            ]
+        ]
+    },
+    {
+        "id": "0fa9ba4dd2d6cb22",
+        "type": "inject",
+        "z": "00fb983ba98e24a1",
+        "name": "Start(MIPI Cam)",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "mipi",
+        "payload": "iso",
+        "payloadType": "date",
+        "x": 180,
+        "y": 160,
+        "wires": [
+            [
+                "bd2d12428d2fc5c6",
+                "1ec6aebd778187da"
+            ]
+        ]
+    },
+    {
+        "id": "2e05da752d9d1fa6",
+        "type": "inject",
+        "z": "00fb983ba98e24a1",
+        "name": "Stop",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 240,
+        "wires": [
+            [
+                "a3a49d8a3a748f1f"
+            ]
+        ]
+    },
+    {
+        "id": "adf755b5d80f3080",
+        "type": "comment",
+        "z": "00fb983ba98e24a1",
+        "name": "Notice: Please stop flow before closing the flow.",
+        "info": "",
+        "x": 180,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "5a0f0f971f5503df",
+        "type": "rdk-tools smartupdate",
+        "z": "00fb983ba98e24a1",
+        "g": "2250ac8f8a57fd5c",
+        "name": "",
+        "x": 420,
+        "y": 120,
+        "wires": [
+            [
+                "e9214b6a94b0c91a"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "e9214b6a94b0c91a",
+        "type": "change",
+        "z": "00fb983ba98e24a1",
+        "g": "2250ac8f8a57fd5c",
+        "name": "Update Hint",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Update complete",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 610,
+        "y": 120,
+        "wires": [
+            [
+                "a8c1a70cf030d1e4"
+            ]
+        ]
+    },
+    {
+        "id": "a8c1a70cf030d1e4",
+        "type": "rdk-tools texttoaudio",
+        "z": "00fb983ba98e24a1",
+        "g": "2250ac8f8a57fd5c",
+        "name": "",
+        "x": 810,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "bd2d12428d2fc5c6",
+        "type": "change",
+        "z": "00fb983ba98e24a1",
+        "g": "4d9746ef7ab2a6c5",
+        "name": "Set Gesture Node",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "launch",
+                "pt": "msg",
+                "to": "hand_gesture_detection hand_gesture_detection.launch.py",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "insert",
+                "pt": "msg",
+                "to": "$join(['export CAM_TYPE=', msg.camera, ' && cp -r /opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/ .', ' && cp -r /opt/tros/${TROS_DISTRO}/lib/hand_lmk_detection/config/ .', ' && cp -r /opt/tros/${TROS_DISTRO}/lib/hand_gesture_detection/config/ .'])",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 470,
+        "y": 240,
+        "wires": [
+            [
+                "a3a49d8a3a748f1f"
+            ]
+        ]
+    },
+    {
+        "id": "a3a49d8a3a748f1f",
+        "type": "rdk-tools checkexecute",
+        "z": "00fb983ba98e24a1",
+        "g": "4d9746ef7ab2a6c5",
+        "name": "",
+        "x": 670,
+        "y": 240,
+        "wires": [
+            [
+                "4601e32299c9eb1f"
+            ],
+            [
+                "d7e2210b96f3dd2c"
+            ]
+        ]
+    },
+    {
+        "id": "4601e32299c9eb1f",
+        "type": "debug",
+        "z": "00fb983ba98e24a1",
+        "name": "Hint",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "d7e2210b96f3dd2c",
+        "type": "debug",
+        "z": "00fb983ba98e24a1",
+        "name": "Error Hint",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "2f6947516921f8e9",
+        "type": "debug",
+        "z": "00fb983ba98e24a1",
+        "name": "Result output",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "5237a10677522026",
+        "type": "debug",
+        "z": "00fb983ba98e24a1",
+        "name": "Performance Result",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "1ec6aebd778187da",
+        "type": "delay",
+        "z": "00fb983ba98e24a1",
+        "g": "a4f074eef4c89cae",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "12",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 220,
+        "y": 360,
+        "wires": [
+            [
+                "742abe59101505b4"
+            ]
+        ]
+    },
+    {
+        "id": "742abe59101505b4",
+        "type": "change",
+        "z": "00fb983ba98e24a1",
+        "g": "a4f074eef4c89cae",
+        "name": "Set link",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "ws://{host}:8080",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 220,
+        "y": 400,
+        "wires": [
+            [
+                "8c4715b713c40e5f"
+            ]
+        ]
+    },
+    {
+        "id": "8c4715b713c40e5f",
+        "type": "rdk-tools videows",
+        "z": "00fb983ba98e24a1",
+        "g": "a4f074eef4c89cae",
+        "name": "",
+        "fps": "3",
+        "width": 640,
+        "active": true,
+        "x": 400,
+        "y": 380,
+        "wires": [
+            [
+                "2f6947516921f8e9",
+                "ea0f7bda6774965e"
+            ],
+            [
+                "5237a10677522026"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "68560da47b633e15",
+        "type": "inject",
+        "z": "00fb983ba98e24a1",
+        "name": "Update",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 80,
+        "wires": [
+            [
+                "5a0f0f971f5503df"
+            ]
+        ]
+    },
+    {
+        "id": "383092f850459fae",
+        "type": "inject",
+        "z": "00fb983ba98e24a1",
+        "name": "Open visualization page",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 640,
+        "y": 320,
+        "wires": [
+            [
+                "552930fc080887f1"
+            ]
+        ]
+    },
+    {
+        "id": "552930fc080887f1",
+        "type": "rdk-tools openurl",
+        "z": "00fb983ba98e24a1",
+        "name": "",
+        "x": 860,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "ea0f7bda6774965e",
+        "type": "switch",
+        "z": "00fb983ba98e24a1",
+        "name": "filter hand",
+        "property": "attributes.type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "hand",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 200,
+        "y": 500,
+        "wires": [
+            [
+                "49009701db0839b6"
+            ]
+        ]
+    },
+    {
+        "id": "49009701db0839b6",
+        "type": "switch",
+        "z": "00fb983ba98e24a1",
+        "name": "filter gesture",
+        "property": "attributes.attributes.length",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 210,
+        "y": 540,
+        "wires": [
+            [
+                "7a47c2080cfdecf8"
+            ]
+        ]
+    },
+    {
+        "id": "7a47c2080cfdecf8",
+        "type": "switch",
+        "z": "00fb983ba98e24a1",
+        "name": "filter value of gesture",
+        "property": "attributes.attributes[0].type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "gesture",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 240,
+        "y": 580,
+        "wires": [
+            [
+                "e7c331f43ea1dd62"
+            ]
+        ]
+    },
+    {
+        "id": "e7c331f43ea1dd62",
+        "type": "change",
+        "z": "00fb983ba98e24a1",
+        "name": "extract type of gesture",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "attributes.attributes[0].value",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 240,
+        "y": 620,
+        "wires": [
+            [
+                "1df79b2a9fab7370",
+                "d78284d330e2a1c5"
+            ]
+        ]
+    },
+    {
+        "id": "1df79b2a9fab7370",
+        "type": "switch",
+        "z": "00fb983ba98e24a1",
+        "name": "extract gestures",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Victory",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Plam",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Awesome",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Thumb Up",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "ThumbLeft",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "ThumbRight",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Okay",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 7,
+        "x": 400,
+        "y": 940,
+        "wires": [
+            [
+                "7279ec831a8d74be"
+            ],
+            [],
+            [
+                "7279ec831a8d74be"
+            ],
+            [],
+            [],
+            [],
+            [
+                "7279ec831a8d74be"
+            ]
+        ]
+    },
+    {
+        "id": "2cf562ce84c70b4c",
+        "type": "comment",
+        "z": "00fb983ba98e24a1",
+        "name": "gesture1: Victory",
+        "info": "",
+        "x": 180,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "6cdff3f1df8d276e",
+        "type": "comment",
+        "z": "00fb983ba98e24a1",
+        "name": "gesture2: Palm",
+        "info": "",
+        "x": 180,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "679e466fc17f74d9",
+        "type": "comment",
+        "z": "00fb983ba98e24a1",
+        "name": "gesture3: Awesome",
+        "info": "",
+        "x": 190,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "7bc439eeb0752c8b",
+        "type": "comment",
+        "z": "00fb983ba98e24a1",
+        "name": "gesture4: ThumbUp",
+        "info": "",
+        "x": 190,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "a214d230e48dc374",
+        "type": "comment",
+        "z": "00fb983ba98e24a1",
+        "name": "gesture5: ThumbLeft",
+        "info": "",
+        "x": 190,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "25834f863842f3dd",
+        "type": "comment",
+        "z": "00fb983ba98e24a1",
+        "name": "gesture6: ThumbRight",
+        "info": "",
+        "x": 200,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "bf5274143fbe62cc",
+        "type": "comment",
+        "z": "00fb983ba98e24a1",
+        "name": "gesture7: OK",
+        "info": "",
+        "x": 170,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "7279ec831a8d74be",
+        "type": "rbe",
+        "z": "00fb983ba98e24a1",
+        "name": "filter same gestures",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 590,
+        "y": 1040,
+        "wires": [
+            [
+                "636d2dc7faa72f05"
+            ]
+        ]
+    },
+    {
+        "id": "636d2dc7faa72f05",
+        "type": "rdk-tools texttoaudio",
+        "z": "00fb983ba98e24a1",
+        "name": "",
+        "x": 590,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "d78284d330e2a1c5",
+        "type": "rdk-tools output",
+        "z": "00fb983ba98e24a1",
+        "name": "",
+        "active": true,
+        "x": 210,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "d7e9f904dc56b8a0",
+        "type": "change",
+        "z": "00fb983ba98e24a1",
+        "name": "set1",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "1",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 570,
+        "y": 920,
+        "wires": [
+            [
+                "af0f7507284dee25"
+            ]
+        ]
+    },
+    {
+        "id": "393c2ba9b8b6ebe3",
+        "type": "change",
+        "z": "00fb983ba98e24a1",
+        "name": "set0",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "0",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 570,
+        "y": 960,
+        "wires": [
+            [
+                "af0f7507284dee25"
+            ]
+        ]
+    },
+    {
+        "id": "af0f7507284dee25",
+        "type": "rbe",
+        "z": "00fb983ba98e24a1",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 730,
+        "y": 940,
+        "wires": [
+            [
+                "c7ba795de303509d"
+            ]
+        ]
+    },
+    {
+        "id": "c7ba795de303509d",
+        "type": "rdk-gpio out",
+        "z": "00fb983ba98e24a1",
+        "name": "",
+        "pin": "23",
+        "set": "",
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "bcm": true,
+        "x": 900,
+        "y": 940,
+        "wires": []
+    }
+]

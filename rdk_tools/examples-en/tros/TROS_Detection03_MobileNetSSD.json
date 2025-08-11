@@ -1,0 +1,583 @@
+[
+    {
+        "id": "5143258bfe846b74",
+        "type": "tab",
+        "label": "TROS MobileNet SSD (Object Detection)",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "c7a1aee6a76cadd9",
+        "type": "group",
+        "z": "5143258bfe846b74",
+        "name": "Smart Update",
+        "style": {
+            "fill": "#ffffbf",
+            "fill-opacity": "0.46",
+            "label": true
+        },
+        "nodes": [
+            "82f33478063682f1",
+            "52f0550f586ca9ec",
+            "357da92b25b02598"
+        ],
+        "x": 314,
+        "y": 79,
+        "w": 592,
+        "h": 82
+    },
+    {
+        "id": "d96336254aef9b25",
+        "type": "group",
+        "z": "5143258bfe846b74",
+        "name": "Check and execute MobileNet",
+        "style": {
+            "fill": "#e3f3d3",
+            "fill-opacity": "0.5",
+            "label": true
+        },
+        "nodes": [
+            "465e36742a771514",
+            "c2f219b232bd471e"
+        ],
+        "x": 354,
+        "y": 199,
+        "w": 452,
+        "h": 82
+    },
+    {
+        "id": "dbd729cc140b046b",
+        "type": "group",
+        "z": "5143258bfe846b74",
+        "name": "MobileNet Visualization",
+        "style": {
+            "fill": "#bfdbef",
+            "fill-opacity": "0.47",
+            "label": true
+        },
+        "nodes": [
+            "7dcabb5cd3f8f445",
+            "39d2df28ca781482",
+            "1769fc2cb54323ae"
+        ],
+        "x": 154,
+        "y": 319,
+        "w": 372,
+        "h": 122
+    },
+    {
+        "id": "503d2e4255388c64",
+        "type": "comment",
+        "z": "5143258bfe846b74",
+        "name": "Name: TROS Object Detection MobileNet SSD",
+        "info": "",
+        "x": 240,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "7a81faa31c119160",
+        "type": "inject",
+        "z": "5143258bfe846b74",
+        "name": "Learn More",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/detection/mobilenet",
+        "payloadType": "str",
+        "x": 530,
+        "y": 40,
+        "wires": [
+            [
+                "f4a25aaa4bff6738"
+            ]
+        ]
+    },
+    {
+        "id": "f4a25aaa4bff6738",
+        "type": "rdk-tools openurl",
+        "z": "5143258bfe846b74",
+        "name": "",
+        "x": 720,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "32803ce27e16ef51",
+        "type": "comment",
+        "z": "5143258bfe846b74",
+        "name": "Notice: Please choose compatible cam type!",
+        "info": "",
+        "x": 170,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "9b210a9ed5556444",
+        "type": "inject",
+        "z": "5143258bfe846b74",
+        "name": "Start(USB Cam)",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "camera",
+                "v": "usb",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "iso",
+        "payloadType": "date",
+        "x": 180,
+        "y": 120,
+        "wires": [
+            [
+                "465e36742a771514",
+                "7dcabb5cd3f8f445"
+            ]
+        ]
+    },
+    {
+        "id": "2fbbe91a777b092c",
+        "type": "inject",
+        "z": "5143258bfe846b74",
+        "name": "Start(MIPI Cam)",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "mipi",
+        "payload": "iso",
+        "payloadType": "date",
+        "x": 180,
+        "y": 160,
+        "wires": [
+            [
+                "465e36742a771514",
+                "7dcabb5cd3f8f445"
+            ]
+        ]
+    },
+    {
+        "id": "3c631ef3a095cc49",
+        "type": "inject",
+        "z": "5143258bfe846b74",
+        "name": "Stop",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 240,
+        "wires": [
+            [
+                "c2f219b232bd471e"
+            ]
+        ]
+    },
+    {
+        "id": "1179306f9c321dfa",
+        "type": "comment",
+        "z": "5143258bfe846b74",
+        "name": "Notice: Please stop flow before closing the flow.",
+        "info": "",
+        "x": 180,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "82f33478063682f1",
+        "type": "rdk-tools smartupdate",
+        "z": "5143258bfe846b74",
+        "g": "c7a1aee6a76cadd9",
+        "name": "",
+        "x": 420,
+        "y": 120,
+        "wires": [
+            [
+                "52f0550f586ca9ec"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "52f0550f586ca9ec",
+        "type": "change",
+        "z": "5143258bfe846b74",
+        "g": "c7a1aee6a76cadd9",
+        "name": "Update hint",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "智能更新已完成",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 610,
+        "y": 120,
+        "wires": [
+            [
+                "357da92b25b02598"
+            ]
+        ]
+    },
+    {
+        "id": "357da92b25b02598",
+        "type": "rdk-tools texttoaudio",
+        "z": "5143258bfe846b74",
+        "g": "c7a1aee6a76cadd9",
+        "name": "",
+        "x": 810,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "465e36742a771514",
+        "type": "change",
+        "z": "5143258bfe846b74",
+        "g": "d96336254aef9b25",
+        "name": "Set MobileNet Node",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "launch",
+                "pt": "msg",
+                "to": "dnn_node_example dnn_node_example.launch.py dnn_example_config_file:=config/mobilenet_ssd_workconfig.json dnn_example_image_width:=480 dnn_example_image_height:=272",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "insert",
+                "pt": "msg",
+                "to": "$join(['export CAM_TYPE=', msg.camera])",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 240,
+        "wires": [
+            [
+                "c2f219b232bd471e"
+            ]
+        ]
+    },
+    {
+        "id": "c2f219b232bd471e",
+        "type": "rdk-tools checkexecute",
+        "z": "5143258bfe846b74",
+        "g": "d96336254aef9b25",
+        "name": "",
+        "x": 690,
+        "y": 240,
+        "wires": [
+            [
+                "7cb7c05d16d59210"
+            ],
+            [
+                "db74434a96802860"
+            ]
+        ]
+    },
+    {
+        "id": "7cb7c05d16d59210",
+        "type": "debug",
+        "z": "5143258bfe846b74",
+        "name": "Hint",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 870,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "db74434a96802860",
+        "type": "debug",
+        "z": "5143258bfe846b74",
+        "name": "Error Hint",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "1e09057f11bf04f1",
+        "type": "debug",
+        "z": "5143258bfe846b74",
+        "name": "Result output",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "285aabdca4dade8e",
+        "type": "debug",
+        "z": "5143258bfe846b74",
+        "name": "Performance output",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "7dcabb5cd3f8f445",
+        "type": "delay",
+        "z": "5143258bfe846b74",
+        "g": "dbd729cc140b046b",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 240,
+        "y": 360,
+        "wires": [
+            [
+                "39d2df28ca781482"
+            ]
+        ]
+    },
+    {
+        "id": "39d2df28ca781482",
+        "type": "change",
+        "z": "5143258bfe846b74",
+        "g": "dbd729cc140b046b",
+        "name": "set link",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "ws://{host}:8080",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 240,
+        "y": 400,
+        "wires": [
+            [
+                "1769fc2cb54323ae"
+            ]
+        ]
+    },
+    {
+        "id": "1769fc2cb54323ae",
+        "type": "rdk-tools videows",
+        "z": "5143258bfe846b74",
+        "g": "dbd729cc140b046b",
+        "name": "",
+        "fps": "4",
+        "width": 640,
+        "active": true,
+        "x": 420,
+        "y": 380,
+        "wires": [
+            [
+                "1e09057f11bf04f1",
+                "02cbbbaa69837ff8"
+            ],
+            [
+                "285aabdca4dade8e"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "a4bf39e5c94a96d7",
+        "type": "inject",
+        "z": "5143258bfe846b74",
+        "name": "Update",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 80,
+        "wires": [
+            [
+                "82f33478063682f1"
+            ]
+        ]
+    },
+    {
+        "id": "68cb4d922209bdd7",
+        "type": "inject",
+        "z": "5143258bfe846b74",
+        "name": "Open visualization Page",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 700,
+        "y": 320,
+        "wires": [
+            [
+                "51a89e5debb6f4fe"
+            ]
+        ]
+    },
+    {
+        "id": "51a89e5debb6f4fe",
+        "type": "rdk-tools openurl",
+        "z": "5143258bfe846b74",
+        "name": "",
+        "x": 920,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "02cbbbaa69837ff8",
+        "type": "change",
+        "z": "5143258bfe846b74",
+        "name": "Extract type",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "attributes.type",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 150,
+        "y": 480,
+        "wires": [
+            [
+                "edbc4d294475a5ed"
+            ]
+        ]
+    },
+    {
+        "id": "edbc4d294475a5ed",
+        "type": "rdk-tools output",
+        "z": "5143258bfe846b74",
+        "name": "",
+        "active": true,
+        "x": 140,
+        "y": 520,
+        "wires": []
+    }
+]

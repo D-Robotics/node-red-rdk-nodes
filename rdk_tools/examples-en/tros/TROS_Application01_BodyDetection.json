@@ -1,0 +1,819 @@
+[
+    {
+        "id": "7a376c7adc88f29c",
+        "type": "tab",
+        "label": "TROS Body Detection (Application)",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "45a96c1e8611214b",
+        "type": "group",
+        "z": "7a376c7adc88f29c",
+        "name": "Smart Update",
+        "style": {
+            "fill": "#ffffbf",
+            "fill-opacity": "0.46",
+            "label": true
+        },
+        "nodes": [
+            "d53d0999c858db71",
+            "6e892f91de66054f",
+            "daec059605dbc58b"
+        ],
+        "x": 314,
+        "y": 79,
+        "w": 592,
+        "h": 82
+    },
+    {
+        "id": "d676a6b079da65fd",
+        "type": "group",
+        "z": "7a376c7adc88f29c",
+        "name": "Check and execute BodyDetection node",
+        "style": {
+            "fill": "#e3f3d3",
+            "fill-opacity": "0.5",
+            "label": true
+        },
+        "nodes": [
+            "7940958c208870de",
+            "9e9e81da56a21f99"
+        ],
+        "x": 354,
+        "y": 199,
+        "w": 472,
+        "h": 82
+    },
+    {
+        "id": "451d258ab3d2f27f",
+        "type": "group",
+        "z": "7a376c7adc88f29c",
+        "name": "BodyDetection Visualization",
+        "style": {
+            "fill": "#bfdbef",
+            "fill-opacity": "0.47",
+            "label": true
+        },
+        "nodes": [
+            "4088aeeb942abc4c",
+            "897ff47a89b59b05",
+            "61dcd3167b60fd78"
+        ],
+        "x": 174,
+        "y": 319,
+        "w": 372,
+        "h": 122
+    },
+    {
+        "id": "0def0e9141faf283",
+        "type": "comment",
+        "z": "7a376c7adc88f29c",
+        "name": "Name: TROS Application BodyDetection",
+        "info": "",
+        "x": 220,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "518dc423b4e20cb7",
+        "type": "inject",
+        "z": "7a376c7adc88f29c",
+        "name": "Learn More",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/function/mono2d_body_detection",
+        "payloadType": "str",
+        "x": 490,
+        "y": 40,
+        "wires": [
+            [
+                "b64fa1b452b463af"
+            ]
+        ]
+    },
+    {
+        "id": "b64fa1b452b463af",
+        "type": "rdk-tools openurl",
+        "z": "7a376c7adc88f29c",
+        "name": "",
+        "x": 660,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "ff87d0977399dd6c",
+        "type": "comment",
+        "z": "7a376c7adc88f29c",
+        "name": "Notice: Please choose compatible cam type!",
+        "info": "",
+        "x": 170,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "b08db88923037a6b",
+        "type": "inject",
+        "z": "7a376c7adc88f29c",
+        "name": "Start(USB Cam)",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "camera",
+                "v": "usb",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "iso",
+        "payloadType": "date",
+        "x": 180,
+        "y": 120,
+        "wires": [
+            [
+                "7940958c208870de",
+                "4088aeeb942abc4c"
+            ]
+        ]
+    },
+    {
+        "id": "51525a7836f64ea8",
+        "type": "inject",
+        "z": "7a376c7adc88f29c",
+        "name": "Start(MIPI Cam)",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "mipi",
+        "payload": "iso",
+        "payloadType": "date",
+        "x": 180,
+        "y": 160,
+        "wires": [
+            [
+                "7940958c208870de",
+                "4088aeeb942abc4c"
+            ]
+        ]
+    },
+    {
+        "id": "d145d876117a02c2",
+        "type": "inject",
+        "z": "7a376c7adc88f29c",
+        "name": "Stop",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 240,
+        "wires": [
+            [
+                "9e9e81da56a21f99"
+            ]
+        ]
+    },
+    {
+        "id": "9cd0ff0cf6aba7ba",
+        "type": "comment",
+        "z": "7a376c7adc88f29c",
+        "name": "Notice: Please stop flow before closing the flow.",
+        "info": "",
+        "x": 180,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "d53d0999c858db71",
+        "type": "rdk-tools smartupdate",
+        "z": "7a376c7adc88f29c",
+        "g": "45a96c1e8611214b",
+        "name": "",
+        "x": 420,
+        "y": 120,
+        "wires": [
+            [
+                "6e892f91de66054f"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "6e892f91de66054f",
+        "type": "change",
+        "z": "7a376c7adc88f29c",
+        "g": "45a96c1e8611214b",
+        "name": "Hint",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "智能更新已完成",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 590,
+        "y": 120,
+        "wires": [
+            [
+                "daec059605dbc58b"
+            ]
+        ]
+    },
+    {
+        "id": "daec059605dbc58b",
+        "type": "rdk-tools texttoaudio",
+        "z": "7a376c7adc88f29c",
+        "g": "45a96c1e8611214b",
+        "name": "",
+        "x": 810,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "7940958c208870de",
+        "type": "change",
+        "z": "7a376c7adc88f29c",
+        "g": "d676a6b079da65fd",
+        "name": "Set BodyDetection node",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "launch",
+                "pt": "msg",
+                "to": "mono2d_body_detection mono2d_body_detection.launch.py",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "insert",
+                "pt": "msg",
+                "to": "$join(['export CAM_TYPE=', msg.camera, ' && cp -r /opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/ .'])",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 490,
+        "y": 240,
+        "wires": [
+            [
+                "9e9e81da56a21f99"
+            ]
+        ]
+    },
+    {
+        "id": "9e9e81da56a21f99",
+        "type": "rdk-tools checkexecute",
+        "z": "7a376c7adc88f29c",
+        "g": "d676a6b079da65fd",
+        "name": "",
+        "x": 710,
+        "y": 240,
+        "wires": [
+            [
+                "9d5c65ffdf136351"
+            ],
+            [
+                "89eed413b88cc0ac"
+            ]
+        ]
+    },
+    {
+        "id": "9d5c65ffdf136351",
+        "type": "debug",
+        "z": "7a376c7adc88f29c",
+        "name": "Hint",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 890,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "89eed413b88cc0ac",
+        "type": "debug",
+        "z": "7a376c7adc88f29c",
+        "name": "Error log",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "3064116f03834e3a",
+        "type": "debug",
+        "z": "7a376c7adc88f29c",
+        "name": "Result output",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "9c19277baf8d06e2",
+        "type": "debug",
+        "z": "7a376c7adc88f29c",
+        "name": "Performance output",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "4088aeeb942abc4c",
+        "type": "delay",
+        "z": "7a376c7adc88f29c",
+        "g": "451d258ab3d2f27f",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 260,
+        "y": 360,
+        "wires": [
+            [
+                "897ff47a89b59b05"
+            ]
+        ]
+    },
+    {
+        "id": "897ff47a89b59b05",
+        "type": "change",
+        "z": "7a376c7adc88f29c",
+        "g": "451d258ab3d2f27f",
+        "name": "set link",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "ws://{host}:8080",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 260,
+        "y": 400,
+        "wires": [
+            [
+                "61dcd3167b60fd78"
+            ]
+        ]
+    },
+    {
+        "id": "61dcd3167b60fd78",
+        "type": "rdk-tools videows",
+        "z": "7a376c7adc88f29c",
+        "g": "451d258ab3d2f27f",
+        "name": "",
+        "fps": "15",
+        "width": 640,
+        "active": true,
+        "x": 440,
+        "y": 380,
+        "wires": [
+            [
+                "3064116f03834e3a",
+                "b1c10af6df36c487",
+                "4b5ba6fa32975499"
+            ],
+            [
+                "9c19277baf8d06e2"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "9be1173e96748c34",
+        "type": "inject",
+        "z": "7a376c7adc88f29c",
+        "name": "Update",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 80,
+        "wires": [
+            [
+                "d53d0999c858db71"
+            ]
+        ]
+    },
+    {
+        "id": "d6ec5522d76f3c49",
+        "type": "inject",
+        "z": "7a376c7adc88f29c",
+        "name": "Open visualization page",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 680,
+        "y": 300,
+        "wires": [
+            [
+                "00736042cfa229dd"
+            ]
+        ]
+    },
+    {
+        "id": "00736042cfa229dd",
+        "type": "rdk-tools openurl",
+        "z": "7a376c7adc88f29c",
+        "name": "",
+        "x": 900,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "b1c10af6df36c487",
+        "type": "change",
+        "z": "7a376c7adc88f29c",
+        "name": "Extract Types",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "attributes.type",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 140,
+        "y": 480,
+        "wires": [
+            [
+                "25f96a1d3f79e0bf"
+            ]
+        ]
+    },
+    {
+        "id": "25f96a1d3f79e0bf",
+        "type": "rdk-tools output",
+        "z": "7a376c7adc88f29c",
+        "name": "",
+        "active": true,
+        "x": 120,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "4b5ba6fa32975499",
+        "type": "switch",
+        "z": "7a376c7adc88f29c",
+        "name": "Filter by type",
+        "property": "attributes.type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "body",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 130,
+        "y": 680,
+        "wires": [
+            [
+                "ae9d77906fc7ac64"
+            ]
+        ]
+    },
+    {
+        "id": "ae9d77906fc7ac64",
+        "type": "change",
+        "z": "7a376c7adc88f29c",
+        "name": "Calculate area of box",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "(msg.attributes.box.p2.x - msg.attributes.box.p1.x)*(msg.attributes.box.p2.y - msg.attributes.box.p1.y)",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 160,
+        "y": 720,
+        "wires": [
+            [
+                "113d2d2cb09f2bb7"
+            ]
+        ]
+    },
+    {
+        "id": "113d2d2cb09f2bb7",
+        "type": "debug",
+        "z": "7a376c7adc88f29c",
+        "name": "Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 110,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "c4ed831bd1b8d524",
+        "type": "switch",
+        "z": "7a376c7adc88f29c",
+        "name": "Judge the size",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "lt",
+                "v": "100000",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 160,
+        "y": 840,
+        "wires": [
+            [
+                "b86722e8cf4c71d2",
+                "5312faa177888025"
+            ],
+            [
+                "65beb71468c75219",
+                "d85d5660e8fee7c8"
+            ]
+        ]
+    },
+    {
+        "id": "b86722e8cf4c71d2",
+        "type": "change",
+        "z": "7a376c7adc88f29c",
+        "name": "set 0",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "0",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 310,
+        "y": 780,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "65beb71468c75219",
+        "type": "change",
+        "z": "7a376c7adc88f29c",
+        "name": "set 1",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "1",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 310,
+        "y": 820,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1904aff0ac6f4750",
+        "type": "rbe",
+        "z": "7a376c7adc88f29c",
+        "name": "filter same output",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 510,
+        "y": 940,
+        "wires": [
+            [
+                "e50b30c0f1ae9748"
+            ]
+        ]
+    },
+    {
+        "id": "5312faa177888025",
+        "type": "change",
+        "z": "7a376c7adc88f29c",
+        "name": "output close",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "close",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 330,
+        "y": 920,
+        "wires": [
+            [
+                "1904aff0ac6f4750"
+            ]
+        ]
+    },
+    {
+        "id": "d85d5660e8fee7c8",
+        "type": "change",
+        "z": "7a376c7adc88f29c",
+        "name": "output open",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "open",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 330,
+        "y": 960,
+        "wires": [
+            [
+                "1904aff0ac6f4750"
+            ]
+        ]
+    },
+    {
+        "id": "e50b30c0f1ae9748",
+        "type": "rdk-tools texttoaudio",
+        "z": "7a376c7adc88f29c",
+        "name": "",
+        "x": 690,
+        "y": 940,
+        "wires": []
+    }
+]
