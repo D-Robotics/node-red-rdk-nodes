@@ -1,0 +1,157 @@
+[
+    {
+        "id": "51c186dc1a05a2c7",
+        "type": "tab",
+        "label": "LLMQwenBasic",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "ba0a3ebb8d9e16ef",
+        "type": "alibaba-llms Qwen",
+        "z": "51c186dc1a05a2c7",
+        "name": "",
+        "apikey": "",
+        "x": 300,
+        "y": 220,
+        "wires": [
+            [
+                "381513303c2f42dc",
+                "0a778ee6c26fbf23"
+            ]
+        ]
+    },
+    {
+        "id": "b97e2f87cde3819d",
+        "type": "inject",
+        "z": "51c186dc1a05a2c7",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "你是通义千问的哪个版本",
+        "payloadType": "str",
+        "x": 150,
+        "y": 160,
+        "wires": [
+            [
+                "ba0a3ebb8d9e16ef"
+            ]
+        ]
+    },
+    {
+        "id": "381513303c2f42dc",
+        "type": "debug",
+        "z": "51c186dc1a05a2c7",
+        "name": "调试输出",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "b5851a1003265d32",
+        "type": "inject",
+        "z": "51c186dc1a05a2c7",
+        "name": "如何申请API Key",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://help.aliyun.com/zh/model-studio/get-api-key",
+        "payloadType": "str",
+        "x": 120,
+        "y": 100,
+        "wires": [
+            [
+                "e549f779aa7176e0"
+            ]
+        ]
+    },
+    {
+        "id": "e549f779aa7176e0",
+        "type": "rdk-tools openurl",
+        "z": "51c186dc1a05a2c7",
+        "name": "",
+        "x": 360,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "0a778ee6c26fbf23",
+        "type": "rdk-tools texttoaudio",
+        "z": "51c186dc1a05a2c7",
+        "name": "",
+        "x": 470,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "001920bbeb3ec099",
+        "type": "inject",
+        "z": "51c186dc1a05a2c7",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "你如何帮我提升学习表现",
+        "payloadType": "str",
+        "x": 150,
+        "y": 280,
+        "wires": [
+            [
+                "ba0a3ebb8d9e16ef"
+            ]
+        ]
+    },
+    {
+        "id": "56f33977eb8c9fd2",
+        "type": "comment",
+        "z": "51c186dc1a05a2c7",
+        "name": "使用前请先申请API Key",
+        "info": "",
+        "x": 120,
+        "y": 40,
+        "wires": []
+    }
+]

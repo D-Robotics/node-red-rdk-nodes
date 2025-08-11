@@ -1,0 +1,157 @@
+[
+    {
+        "id": "c710f1b3c72e9a4d",
+        "type": "tab",
+        "label": "LLMQwenBasic",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "828777328a63d7a9",
+        "type": "alibaba-llms Qwen",
+        "z": "c710f1b3c72e9a4d",
+        "name": "",
+        "apikey": "",
+        "x": 300,
+        "y": 220,
+        "wires": [
+            [
+                "aaa7b8f837736775",
+                "2c6bb3a5193dadf2"
+            ]
+        ]
+    },
+    {
+        "id": "b083c8f92fbe0540",
+        "type": "inject",
+        "z": "c710f1b3c72e9a4d",
+        "name": "Which version of Qwen is this?",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "Which version of Qwen is this?",
+        "payloadType": "str",
+        "x": 170,
+        "y": 160,
+        "wires": [
+            [
+                "828777328a63d7a9"
+            ]
+        ]
+    },
+    {
+        "id": "aaa7b8f837736775",
+        "type": "debug",
+        "z": "c710f1b3c72e9a4d",
+        "name": "LLM Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 490,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "0f3e191a03e9ce0e",
+        "type": "inject",
+        "z": "c710f1b3c72e9a4d",
+        "name": "How to apply API Key?",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://help.aliyun.com/zh/model-studio/get-api-key",
+        "payloadType": "str",
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "0569ce9dd3766c7b"
+            ]
+        ]
+    },
+    {
+        "id": "0569ce9dd3766c7b",
+        "type": "rdk-tools openurl",
+        "z": "c710f1b3c72e9a4d",
+        "name": "",
+        "x": 360,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "2c6bb3a5193dadf2",
+        "type": "rdk-tools texttoaudio",
+        "z": "c710f1b3c72e9a4d",
+        "name": "",
+        "x": 490,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "7d5bf68e0a91d509",
+        "type": "inject",
+        "z": "c710f1b3c72e9a4d",
+        "name": "How to improve my study performance?",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "How to improve my study performance?",
+        "payloadType": "str",
+        "x": 200,
+        "y": 280,
+        "wires": [
+            [
+                "828777328a63d7a9"
+            ]
+        ]
+    },
+    {
+        "id": "5c252a4158ce1131",
+        "type": "comment",
+        "z": "c710f1b3c72e9a4d",
+        "name": "Please apply API Key first.",
+        "info": "",
+        "x": 130,
+        "y": 40,
+        "wires": []
+    }
+]
