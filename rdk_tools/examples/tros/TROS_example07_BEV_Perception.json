@@ -1,0 +1,252 @@
+[
+    {
+        "id": "bev_tab",
+        "type": "tab",
+        "label": "BEV感知算法",
+        "disabled": false,
+        "info": "# BEV感知算法\n\n## 功能介绍\n\nBEV感知算法是使用OpenExplorer在nuscenes数据集上训练出来的BEV多任务模型。\n\n算法输入为6组图像数据，分别是前视，左前，右前，后视，左后，右后图。模型输出为10个类别的目标以及对应的3D检测框，包括障碍物、多种类型车辆、交通标志等，以及车道线、人行道、马路边缘的语义分割。\n\n此示例使用本地图像数据作为输入，利用BPU进行算法推理，发布算法感知结果渲染的图片消息，在PC端浏览器上渲染显示算法结果。\n\n## 使用流程\n\n1. **启动BEV算法**：点击\"🚀 启动BEV算法\"按钮\n2. **查看结果**：点击\"👁️ 打开可视化页面\"在浏览器中查看结果\n\n## 支持平台\n\n- RDK Ultra (Ubuntu 20.04 Foxy)\n- RDK S100, RDK S100P (Ubuntu 22.04 Humble)\n\n## 代码仓库\n\nhttps://github.com/D-Robotics/hobot_bev.git\n\n## 注意事项\n\n- 算法结果会发布到 `/image_jpeg` 话题\n- 可以通过WebSocket在浏览器中查看（http://IP:8000）",
+        "env": []
+    },
+    {
+        "id": "comment_start",
+        "type": "comment",
+        "z": "bev_tab",
+        "name": "🚀 启动BEV算法",
+        "info": "启动BEV感知算法",
+        "x": 150,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "inject_start_bev",
+        "type": "inject",
+        "z": "bev_tab",
+        "name": "🚀 启动BEV算法",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 80,
+        "wires": [
+            [
+                "function_build_cmd"
+            ]
+        ]
+    },
+    {
+        "id": "function_build_cmd",
+        "type": "function",
+        "z": "bev_tab",
+        "name": "构建启动命令",
+        "func": "// 构建BEV算法启动命令\n// 根据用户提供的启动命令：\n// source /opt/tros/humble/setup.bash\n// if [ -L qat ]; then rm qat; fi\n// ln -s `ros2 pkg prefix hobot_bev`/lib/hobot_bev/qat/ qat\n// ln -s ~/hobot_bev_data/nuscenes_bev_val nuscenes_bev_val\n// ros2 launch hobot_bev hobot_bev.launch.py\n\n// 构建启动命令（所有命令用 && 连接，在工作目录中执行）\n// 注意：ln 命令的错误不影响运行，使用 || true 忽略错误\nvar cmd = 'cd ~/hobot_bev_data && ';\ncmd += 'source /opt/tros/humble/setup.bash && ';\ncmd += 'if [ -L qat ]; then rm qat; fi && ';\ncmd += 'ln -s `ros2 pkg prefix hobot_bev`/lib/hobot_bev/qat/ qat && ';\ncmd += '(ln -s ~/hobot_bev_data/nuscenes_bev_val nuscenes_bev_val 2>/dev/null || true) && ';\ncmd += 'ros2 launch hobot_bev hobot_bev.launch.py';\n\nmsg.payload = cmd;\n\nnode.status({\n    fill: \"blue\",\n    shape: \"dot\",\n    text: \"命令已构建\"\n});\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 80,
+        "wires": [
+            [
+                "exec_start_bev"
+            ]
+        ]
+    },
+    {
+        "id": "exec_start_bev",
+        "type": "exec",
+        "z": "bev_tab",
+        "name": "启动BEV算法",
+        "command": "",
+        "addpay": true,
+        "append": "",
+        "useSpawn": true,
+        "timer": "0",
+        "oldrc": false,
+        "x": 550,
+        "y": 80,
+        "wires": [
+            [
+                "debug_output"
+            ],
+            [
+                "debug_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "debug_output",
+        "type": "debug",
+        "z": "bev_tab",
+        "name": "启动输出",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 750,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "debug_error",
+        "type": "debug",
+        "z": "bev_tab",
+        "name": "启动错误",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 750,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "comment_view",
+        "type": "comment",
+        "z": "bev_tab",
+        "name": "👁️ 查看结果",
+        "info": "在浏览器中查看实时检测结果（视频流）",
+        "x": 150,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "inject_browser",
+        "type": "inject",
+        "z": "bev_tab",
+        "name": "打开可视化页面",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 200,
+        "wires": [
+            [
+                "function_get_url"
+            ]
+        ]
+    },
+    {
+        "id": "function_get_url",
+        "type": "function",
+        "z": "bev_tab",
+        "name": "获取URL",
+        "func": "msg.payload = 'http://{host}:8000';\n\nnode.status({\n    fill: \"blue\",\n    shape: \"dot\",\n    text: \"Opening: \" + msg.payload\n});\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 200,
+        "wires": [
+            [
+                "openurl"
+            ]
+        ]
+    },
+    {
+        "id": "openurl",
+        "type": "rdk-tools openurl",
+        "z": "bev_tab",
+        "name": "打开浏览器",
+        "x": 550,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "comment_stop",
+        "type": "comment",
+        "z": "bev_tab",
+        "name": "⏹️ 停止服务",
+        "info": "",
+        "x": 150,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "inject_stop",
+        "type": "inject",
+        "z": "bev_tab",
+        "name": "停止所有服务",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 300,
+        "wires": [
+            [
+                "exec_stop"
+            ]
+        ]
+    },
+    {
+        "id": "exec_stop",
+        "type": "exec",
+        "z": "bev_tab",
+        "name": "停止服务",
+        "command": "sudo pkill -9 -f hobot_usb_cam; sudo pkill -9 -f hobot_bev; sudo pkill -9 -f hobot_codec_republish; sudo pkill -9 -f websocket; sudo pkill -9 -f python3; sudo pkill -9 -f 'ros2 launch'; sudo pkill -9 -f 'ros2 run'; sleep 2; sudo rm -rf /dev/shm/*; ros2 daemon stop 2>/dev/null; sleep 1; echo '✓ 服务已彻底停止，资源已释放'",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "10",
+        "oldrc": false,
+        "x": 350,
+        "y": 300,
+        "wires": [
+            [
+                "debug_stop"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "debug_stop",
+        "type": "debug",
+        "z": "bev_tab",
+        "name": "停止状态",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 550,
+        "y": 300,
+        "wires": []
+    }
+]
