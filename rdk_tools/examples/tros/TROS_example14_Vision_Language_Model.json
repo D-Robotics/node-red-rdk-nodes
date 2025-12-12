@@ -1,0 +1,647 @@
+[
+    {
+        "id": "vlm_tab",
+        "type": "tab",
+        "label": "视觉语言模型 (VLM)",
+        "disabled": false,
+        "info": "# 视觉语言模型 (Vision Language Model)\n\n## 功能介绍\n\n本章节介绍如何在RDK平台体验端侧 Vision Language Model (VLM)。得益于书生大模型、SmolVLM的优秀成果，我们在RDK平台上实现了量化与部署。同时，本示例基于 llama.cpp 中 KV Cache 的强大管理能力，结合 RDK 平台 BPU 模块的计算优势，实现了本地 VLM 模型部署。\n\n## ⚠️ 重要：ION内存配置（必须！）\n\n**这是最关键的一步！** 如果不配置ION内存，模型100%会因为内存不足崩溃（OOM Killed）。\n\n### 配置步骤：\n\n1. **运行配置工具：**\n   ```bash\n   sudo srpi-config\n   ```\n\n2. **设置ION内存：**\n   - 选择：`Performance Options` → `ION Memory`\n   - 选择：**`320MB+640MB+640MB`** (即 1.6GB)\n   - 确认保存\n\n3. **重启生效：**\n   ```bash\n   sudo reboot\n   ```\n   **必须重启！** 配置才会生效。\n\n4. **（可选）优化CPU性能：**\n   重启后可以设置CPU高性能模式，避免推理卡顿：\n   ```bash\n   sudo bash -c 'echo performance >/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor'\n   ```\n\n### 验证配置：\n重启后可以通过以下命令验证ION内存配置：\n```bash\ncat /proc/device-tree/reserved-memory/*/compatible\n```\n\n## 使用模式\n\n### 📷 拍照模式\n1. 选择模型类型（InternVL 或 SmolVLM）\n2. 点击\"📷 USB摄像头拍照\"按钮\n3. 系统会自动对照片进行VLM推理\n4. 推理结果（文本描述）会显示在Node-RED编辑器中\n\n### 🖼️ 回灌模式\n1. 选择模型类型（InternVL 或 SmolVLM）\n2. 点击\"启动本地图片VLM推理\"按钮\n3. 系统会对指定图片进行推理\n4. 推理结果（文本描述）会显示在Node-RED编辑器中\n\n## 支持平台\n\n- RDK X5, RDK X5 Module\n- RDK S100, RDK S100P\n\n## 支持模型\n\n### InternVL2_5 / InternVL3\n- 参数量：1B / 2B\n- 图像编码模型：vit_model_int16_*.bin (X5) / vit_model_int16_*.hbm (S100)\n- 文本编解码模型：Qwen2.5-0.5B-Instruct-Q4_0.gguf / qwen2_5_*.gguf\n\n### SmolVLM2\n- 参数量：256M / 500M\n- 图像编码模型：SigLip_int16_SmolVLM2_*.bin (X5) / SigLip_int16_SmolVLM2_*.hbm (S100)\n- 文本编解码模型：SmolVLM2-*-Video-Instruct-Q8_0.gguf\n\n## 算法信息\n\n| 模型 | 参数量 | 量化方式 | 平台 | 输入尺寸 | image encoder time(ms) | prefill eval time(ms/token) | eval time(ms/token) |\n|------|--------|---------|------|---------|----------------------|---------------------------|---------------------|\n| InternVL2_5 | 0.5B | Q4_0 | X5 | 1x3x448x448 | 2456.00 | 7.7 | 51.6 |\n| InternVL3 | 0.5B | Q8_0 | S100 | 1x3x448x448 | 100.00 | 9.19 | 41.65 |\n| Smolvlm2 | 256M | Q8_0 | X5 | 1x3x512x512 | 1053 | 9.3 | 27.8 |\n\n## 📋 使用前必读\n\n> ⚠️ **重要提示**：使用本功能前，请务必先配置开发板！\n> \n> 建议参考官方文档进行详细配置：\n> \n> 🔗 [hobot_llamacpp 官方文档](https://developer.d-robotics.cc/rdk_doc/rdk_s/Robot_development/boxs/generate/hobot_llamacpp)\n> \n> 配置完成后，请按照下方步骤进行ION内存配置。\n\n## 准备工作\n\n1. ✅ **配置ION内存**（见上方重要提示）\n2. RDK已烧录好Ubuntu 22.04系统镜像\n3. RDK已成功安装TogetheROS.Bot\n4. 下载安装功能包：`sudo apt install tros-humble-hobot-llamacpp`\n5. 模型文件会自动下载到 `$HOME/vlm_model` 目录（安装时自动完成）\n\n## 模型文件位置\n\n- **模型目录：** `$HOME/vlm_model/`（持久化目录，重启后不会丢失）\n- **图像编码模型：** 根据平台自动下载（X5: `vit_model_int16_v2.bin`, S100: `vit_model_int16.hbm`）\n- **文本编解码模型：** `Qwen2.5-0.5B-Instruct-Q4_0.gguf` (InternVL) 或 `SmolVLM2-256M-Video-Instruct-Q8_0.gguf` (SmolVLM)\n\n## 结果获取方式\n\n### 方式A：ROS2 Topic订阅（推荐）\n\nVLM推理完成后，结果会发布到ROS2 Topic：\n- **Topic名称：** `/tts_text`\n- **消息类型：** `std_msgs/msg/String`\n- **内容：** 推理结果文本（如\"这张图片展示了一只大熊猫...\"）\n\n当前流程已自动订阅该Topic并解析结果。\n\n### 方式B：从命令输出解析（备选）\n\n如果Topic订阅失败，流程会自动从命令的标准输出中解析结果。\n\n## 注意事项\n\n- ⚠️ **必须配置ION内存**（1.6GB），否则会因内存不足崩溃\n- 推理过程需要较长时间（可能需要10-30秒），请耐心等待完整输出\n- VLM输出是流式的，结果会逐步显示，请等待推理完成\n- 模型文件使用绝对路径，确保ROS2命令能正确找到\n- 如果只看到版本信息，说明推理还在进行中，请继续等待\n- 模型文件保存在 `$HOME/vlm_model`，重启后不会丢失",
+        "env": []
+    },
+    {
+        "id": "comment_before_start",
+        "type": "comment",
+        "z": "vlm_tab",
+        "name": "⚠️ 使用前必读",
+        "info": "**重要提示**：使用本功能前，请务必先配置开发板！\n\n建议参考官方文档进行详细配置：\n🔗 https://developer.d-robotics.cc/rdk_doc/rdk_s/Robot_development/boxs/generate/hobot_llamacpp\n\n配置完成后，请确保已完成ION内存配置（见上方Tab说明）。",
+        "x": 150,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "comment_model_selection",
+        "type": "comment",
+        "z": "vlm_tab",
+        "name": "🔧 模型选择",
+        "info": "选择要使用的VLM模型类型",
+        "x": 150,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "inject_set_internvl",
+        "type": "inject",
+        "z": "vlm_tab",
+        "name": "选择 InternVL",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "internvl",
+        "payloadType": "str",
+        "x": 140,
+        "y": 120,
+        "wires": [
+            [
+                "function_save_model_type"
+            ]
+        ]
+    },
+    {
+        "id": "inject_set_smolvlm",
+        "type": "inject",
+        "z": "vlm_tab",
+        "name": "选择 SmolVLM",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "smolvlm",
+        "payloadType": "str",
+        "x": 140,
+        "y": 160,
+        "wires": [
+            [
+                "function_save_model_type"
+            ]
+        ]
+    },
+    {
+        "id": "function_save_model_type",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "保存模型类型",
+        "func": "// 保存模型类型到全局变量\n// 改进：添加平台检测逻辑，统一在JS中处理\nconst modelType = msg.payload || 'internvl';\nif (typeof global.vlmModelType === 'undefined') {\n    global.vlmModelType = {};\n}\nglobal.vlmModelType.current = modelType;\n\n// 检测平台（统一在JS中处理，避免Shell脚本重复逻辑）\n// 注意：Node-RED function节点中process对象不可用，使用默认值\n// Shell脚本会在运行时检测实际平台并覆盖\nlet platform = 'X5'; // 默认平台\nif (typeof global.vlmPlatform === 'undefined') {\n    // 默认X5，Shell脚本会在运行时检测实际平台\n    platform = 'X5';\n    global.vlmPlatform = platform;\n} else {\n    platform = global.vlmPlatform;\n}\n\nnode.status({ fill: 'green', shape: 'dot', text: '模型: ' + (modelType === 'internvl' ? 'InternVL' : 'SmolVLM') + ' (' + platform + ')' });\n\n// 根据模型类型和平台设置默认参数\nif (modelType === 'internvl') {\n    // InternVL 配置\n    if (platform === 'S100') {\n        global.vlmModelType.modelFile = 'vit_model_int16.hbm';\n    } else {\n        global.vlmModelType.modelFile = 'vit_model_int16_v2.bin'; // X5平台默认\n    }\n    global.vlmModelType.llmModel = 'Qwen2.5-0.5B-Instruct-Q4_0.gguf';\n    global.vlmModelType.modelTypeParam = ''; // InternVL不需要model_type参数\n} else if (modelType === 'smolvlm') {\n    // SmolVLM 配置\n    if (platform === 'S100') {\n        global.vlmModelType.modelFile = 'SigLip_int16_SmolVLM2_256M_Instruct_S100.hbm';\n    } else {\n        global.vlmModelType.modelFile = 'SigLip_int16_SmolVLM2_256M_Instruct_MLP_C1_UP_X5.bin'; // X5平台默认\n    }\n    global.vlmModelType.llmModel = 'SmolVLM2-256M-Video-Instruct-Q8_0.gguf';\n    global.vlmModelType.modelTypeParam = '-p model_type:=1'; // SmolVLM需要model_type参数\n}\n\n// 确保提示词已初始化\nif (typeof global.vlmPrompt === 'undefined' || !global.vlmPrompt.current) {\n    global.vlmPrompt = {};\n    global.vlmPrompt.current = '描述一下这张图片.';\n}\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "comment_photo_section",
+        "type": "comment",
+        "z": "vlm_tab",
+        "name": "📷 拍照推理流程",
+        "info": "点击拍照按钮，系统会自动进行VLM推理并显示文本结果",
+        "x": 150,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "inject_take_photo",
+        "type": "inject",
+        "z": "vlm_tab",
+        "name": "📷 USB摄像头拍照",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 280,
+        "wires": [
+            [
+                "rdk_camera_take_photo"
+            ]
+        ]
+    },
+    {
+        "id": "rdk_camera_take_photo",
+        "type": "rdk-camera takephoto",
+        "z": "vlm_tab",
+        "cameratype": "1",
+        "filemode": "2",
+        "filename": "photo.jpg",
+        "filedefpath": "0",
+        "filepath": "/home/sunrise/vlm_model",
+        "fileformat": "jpeg",
+        "resolution": "2",
+        "rotation": "0",
+        "fliph": "0",
+        "flipv": "0",
+        "brightness": "50",
+        "contrast": "0",
+        "sharpness": "0",
+        "quality": "80",
+        "imageeffect": "none",
+        "exposuremode": "auto",
+        "iso": "0",
+        "agcwait": "1.0",
+        "led": "0",
+        "awb": "auto",
+        "name": "拍照",
+        "x": 350,
+        "y": 280,
+        "wires": [
+            [
+                "function_prepare_vlm",
+                "function_prepare_image_display"
+            ]
+        ]
+    },
+    {
+        "id": "function_prepare_vlm",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "准备VLM推理",
+        "func": "// 准备VLM推理：处理图片路径并构建命令\n// 使用前推荐进行设置，参考：https://developer.d-robotics.cc/rdk_doc/rdk_s/Robot_development/boxs/generate/hobot_llamacpp\nconst self = node;\n\n// 读取提示词并保存到消息对象\nmsg.vlmPrompt = global.get('vlmPrompt') || \"描述一下这张图片.\";\n\n// 获取并处理图片路径\nvar imagePath = msg.payload;\nif (typeof imagePath === 'string') {\n    imagePath = imagePath.trim();\n    if (imagePath.startsWith('~')) {\n        imagePath = imagePath.replace(/^~/, '/home/sunrise');\n    }\n    if (!imagePath.startsWith('/')) {\n        imagePath = '/home/sunrise/vlm_model/' + imagePath;\n    }\n} else {\n    imagePath = '/home/sunrise/vlm_model/photo.jpg';\n}\n\n// 确保目录存在\nconst imageDir = path.dirname(imagePath);\nif (!fs.existsSync(imageDir)) {\n    try {\n        fs.mkdirSync(imageDir, { recursive: true });\n    } catch (e) {\n        // 忽略错误\n    }\n}\n\n// 等待文件保存完成（异步处理）\nconst finalImagePath = imagePath;\nif (fs.existsSync(finalImagePath)) {\n    self.status({ fill: 'green', shape: 'dot', text: '✓ 图片已就绪，准备启动推理...' });\n    buildVlmCommand(finalImagePath);\n} else {\n    self.status({ fill: 'yellow', shape: 'dot', text: '📷 等待图片保存完成...' });\n    let retryCount = 0;\n    const maxRetries = 6;\n    const checkFile = function() {\n        if (fs.existsSync(finalImagePath)) {\n            self.status({ fill: 'green', shape: 'dot', text: '✓ 图片已就绪，准备启动推理...' });\n            buildVlmCommand(finalImagePath);\n        } else if (retryCount < maxRetries) {\n            retryCount++;\n            self.status({ fill: 'yellow', shape: 'dot', text: '📷 等待图片保存完成... (' + retryCount + '/' + maxRetries + ')' });\n            setTimeout(checkFile, 500);\n        } else {\n            // 超时后尝试查找最新图片\n            const dir = path.dirname(finalImagePath);\n            if (fs.existsSync(dir)) {\n                try {\n                    const files = fs.readdirSync(dir)\n                        .filter(file => file.toLowerCase().endsWith('.jpg') || file.toLowerCase().endsWith('.jpeg'))\n                        .map(file => {\n                            try {\n                                return { path: path.join(dir, file), mtime: fs.statSync(path.join(dir, file)).mtime };\n                            } catch (e) {\n                                return null;\n                            }\n                        })\n                        .filter(f => f !== null)\n                        .sort((a, b) => b.mtime - a.mtime);\n                    if (files.length > 0) {\n                        buildVlmCommand(files[0].path);\n                    } else {\n                        self.status({ fill: 'red', shape: 'dot', text: '找不到图片文件' });\n                    }\n                } catch (e) {\n                    self.status({ fill: 'red', shape: 'dot', text: '查找文件失败' });\n                }\n            } else {\n                self.status({ fill: 'red', shape: 'dot', text: '目录不存在' });\n            }\n        }\n    };\n    setTimeout(checkFile, 500);\n    return null;\n}\n\n// 构建VLM命令\nfunction buildVlmCommand(imagePath) {\n    // 读取提示词\n    var prompt = msg.vlmPrompt || global.get('vlmPrompt') || \"描述一下这张图片.\";\n    \n    // 读取模型配置\n    const modelType = (global.vlmModelType && global.vlmModelType.current) || 'internvl';\n    const llmModel = (global.vlmModelType && global.vlmModelType.llmModel) || 'Qwen2.5-0.5B-Instruct-Q4_0.gguf';\n    const modelTypeParam = (global.vlmModelType && global.vlmModelType.modelTypeParam) || '';\n    \n    // 转义提示词\n    var escapedPrompt = prompt.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"');\n    var llmPath = \"/home/sunrise/vlm_model/\" + llmModel;\n    \n    // 构建命令（包含运行时平台检测）\n    var cmd = 'source /opt/tros/humble/setup.bash && ';\n    cmd += 'PLATFORM=$(cat /proc/device-tree/model 2>/dev/null | strings | grep -oE \"(X5|S100)\" | head -1 || echo \"X5\") && ';\n    cmd += 'if [ \"$PLATFORM\" = \"S100\" ]; then MODEL_FILE=\"vit_model_int16.hbm\"; else MODEL_FILE=\"vit_model_int16_v2.bin\"; fi && ';\n    cmd += 'MODEL_PATH=\"/home/sunrise/vlm_model/$MODEL_FILE\" && ';\n    cmd += 'ros2 run hobot_llamacpp hobot_llamacpp --ros-args ';\n    cmd += '-p feed_type:=0 -p image_type:=0 ';\n    cmd += '-p image:=' + imagePath + ' ';\n    cmd += '-p user_prompt:=\"' + escapedPrompt + '\" ';\n    cmd += '-p model_file_name:=$MODEL_PATH ';\n    cmd += '-p llm_model_name:=' + llmPath;\n    \n    if (modelTypeParam) {\n        cmd += ' ' + modelTypeParam;\n    }\n    \n    // 输出命令\n    const newMsg = {\n        payload: cmd,\n        imagePath: imagePath,\n        _msgid: msg._msgid\n    };\n    \n    self.status({ fill: 'blue', shape: 'dot', text: '🚀 正在启动VLM推理引擎...' });\n    self.send(newMsg);\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "fs",
+                "module": "fs"
+            },
+            {
+                "var": "path",
+                "module": "path"
+            }
+        ],
+        "x": 550,
+        "y": 280,
+        "wires": [
+            [
+                "exec_start_vlm",
+                "function_start_topic_subscriber"
+            ]
+        ]
+    },
+    {
+        "id": "exec_start_vlm",
+        "type": "exec",
+        "z": "vlm_tab",
+        "name": "启动VLM推理",
+        "command": "",
+        "addpay": true,
+        "append": "",
+        "useSpawn": true,
+        "timer": "600",
+        "oldrc": false,
+        "x": 750,
+        "y": 280,
+        "wires": [
+            [
+                "function_parse_vlm_result"
+            ],
+            [
+                "function_check_error",
+                "debug_vlm_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "exec_echo_topic",
+        "type": "exec",
+        "z": "vlm_tab",
+        "name": "订阅Topic数据",
+        "command": "",
+        "addpay": true,
+        "append": "",
+        "useSpawn": true,
+        "timer": "90",
+        "oldrc": false,
+        "x": 950,
+        "y": 320,
+        "wires": [
+            [
+                "function_parse_topic_result"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "function_parse_topic_result",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "解析Topic结果",
+        "func": "// 解析ROS Topic输出的推理结果（优先使用此方法）\n// Topic输出格式通常是 std_msgs/String，格式为：data: \"推理结果文本\"\n\nlet output = '';\nif (Buffer.isBuffer(msg.payload)) {\n    output = msg.payload.toString('utf8');\n} else if (typeof msg.payload === 'string') {\n    output = msg.payload;\n} else {\n    output = String(msg.payload || '');\n}\n\n// 检查是否是ROS2 daemon错误\nif (output.includes('RuntimeError') || output.includes('rclpy.ok()') || output.includes('xmlrpc.client.Fault') || output.includes('Fault 1') || output.includes('Unable to communicate') || output.includes('Failed to communicate')) {\n    // ROS2 daemon错误，标记为已尝试，后续使用stdout解析\n    const msgId = msg._msgid || 'default';\n    if (typeof global.vlmTopicSubscribed === 'undefined') {\n        global.vlmTopicSubscribed = {};\n    }\n    global.vlmTopicSubscribed[msgId] = true;\n    node.warn('ROS2 daemon错误，无法订阅Topic，将使用stdout解析。提示：下次启动时会自动尝试修复daemon。');\n    node.status({ fill: 'yellow', shape: 'dot', text: 'ROS2 daemon错误，使用stdout解析' });\n    return null;\n}\n\n// 检查Topic是否存在的错误信息\nif (output.includes('does not appear to be published') || \n    output.includes('Could not determine the type') || \n    output.includes('topic does not exist') ||\n    output.includes('Topic not found')) {\n    // Topic不存在，标记为已尝试，后续使用stdout解析\n    const msgId = msg._msgid || 'default';\n    if (typeof global.vlmTopicSubscribed === 'undefined') {\n        global.vlmTopicSubscribed = {};\n    }\n    global.vlmTopicSubscribed[msgId] = true;\n    node.warn('Topic不存在或未发布，将使用stdout解析。输出: ' + output.substring(0, 200));\n    node.status({ fill: 'yellow', shape: 'dot', text: 'Topic不存在，使用stdout解析' });\n    return null;\n}\n\n// 过滤掉空输出和错误信息\nif (!output || output.trim().length === 0) {\n    // Topic无数据，标记为已尝试，后续使用stdout解析\n    const msgId = msg._msgid || 'default';\n    if (typeof global.vlmTopicSubscribed === 'undefined') {\n        global.vlmTopicSubscribed = {};\n    }\n    global.vlmTopicSubscribed[msgId] = true; // 标记已尝试\n    node.status({ fill: 'yellow', shape: 'dot', text: 'Topic无数据，将使用stdout解析' });\n    return null;\n}\n\n// 过滤掉明显的错误信息或空消息\nif (output.trim() === '' || output.includes('ERROR') || output.includes('错误')) {\n    const msgId = msg._msgid || 'default';\n    if (typeof global.vlmTopicSubscribed === 'undefined') {\n        global.vlmTopicSubscribed = {};\n    }\n    global.vlmTopicSubscribed[msgId] = true;\n    node.status({ fill: 'yellow', shape: 'dot', text: 'Topic返回错误，将使用stdout解析' });\n    return null;\n}\n\n// 提取data字段的值（ROS2 topic echo的输出格式）\n// 格式可能是：data: \"推理结果\" 或 data: '推理结果' 或 直接是推理结果\nlet result = '';\n\n// 尝试匹配 data: \"...\" 格式\nconst dataMatch = output.match(/data:\\s*[\"']([^\"']+)[\"']/);\nif (dataMatch && dataMatch[1]) {\n    result = dataMatch[1].trim();\n} else {\n    // 尝试匹配 data: ... 格式（无引号）\n    const dataMatch2 = output.match(/data:\\s*(.+)/);\n    if (dataMatch2 && dataMatch2[1]) {\n        result = dataMatch2[1].trim();\n    } else {\n        // 如果没有data字段，尝试直接提取引号内的内容\n        const quoteMatch = output.match(/[\"']([^\"']+)[\"']/);\n        if (quoteMatch && quoteMatch[1]) {\n            result = quoteMatch[1].trim();\n        } else {\n            // 如果都没有，使用整个输出（去除ROS2 topic echo的元数据）\n            const lines = output.split(/[\\r\\n]+/).filter(line => {\n                const trimmed = line.trim();\n                return trimmed.length > 0 && \n                       !trimmed.startsWith('---') && \n                       !trimmed.match(/^data:/) &&\n                       !trimmed.match(/^std_msgs/);\n            });\n            if (lines.length > 0) {\n                result = lines.join(' ').trim();\n            }\n        }\n    }\n}\n\n// 清理结果：去除ROS2 topic echo的元数据\nresult = result.replace(/^data:\\s*/i, '').replace(/^[\"']|[\"']$/g, '').trim();\n\n// 如果结果太短或看起来不像推理结果，忽略\nif (!result || result.length < 5) {\n    const msgId = msg._msgid || 'default';\n    if (typeof global.vlmTopicSubscribed === 'undefined') {\n        global.vlmTopicSubscribed = {};\n    }\n    global.vlmTopicSubscribed[msgId] = true;\n    node.status({ fill: 'yellow', shape: 'dot', text: 'Topic数据无效，将使用stdout解析' });\n    return null;\n}\n\n// 检查是否是错误信息或echo输出（不应该从Topic中获取）\nif (result.includes('ERROR') || result.includes('错误') || result.match(/^\\s*$/) ||\n    result.match(/^(图片文件|提示词|模型文件|设备信息|平台|工作目录|检测到平台):/i) ||\n    result.match(/.*:\\s*\\/.*\\.(jpg|jpeg|png|bin|hbm|gguf)/i)) {\n    const msgId = msg._msgid || 'default';\n    if (typeof global.vlmTopicSubscribed === 'undefined') {\n        global.vlmTopicSubscribed = {};\n    }\n    global.vlmTopicSubscribed[msgId] = true;\n    node.status({ fill: 'yellow', shape: 'dot', text: 'Topic数据异常，将使用stdout解析' });\n    return null;\n}\n\n// 找到有效结果，标记Topic已成功获取结果\nconst msgId = msg._msgid || 'default';\nif (typeof global.vlmTopicSubscribed === 'undefined') {\n    global.vlmTopicSubscribed = {};\n}\nglobal.vlmTopicSubscribed[msgId] = true; // 标记Topic已成功获取结果\n\n// 标记此结果来自Topic，优先级最高\nmsg.result = result;\nmsg.source = 'ros_topic';\nmsg.fullOutput = output;\nmsg.fromTopic = true; // 标记来自Topic，stdout解析应该忽略\n\nnode.status({ fill: 'green', shape: 'dot', text: '✓ Topic结果: ' + result.substring(0, 30) + '...' });\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1150,
+        "y": 320,
+        "wires": [
+            [
+                "debug_vlm_result"
+            ]
+        ]
+    },
+    {
+        "id": "function_check_error",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "检查错误（隐藏）",
+        "func": "// 检查错误输出和退出码\n// 优先检查BPU内存错误，然后检查退出码\nlet errorOutput = '';\nif (Buffer.isBuffer(msg.payload)) {\n    errorOutput = msg.payload.toString('utf8');\n} else if (typeof msg.payload === 'string') {\n    errorOutput = msg.payload;\n} else {\n    errorOutput = String(msg.payload || '');\n}\n\n// 首先检查BPU内存分配错误（优先级最高）\n// BPU错误关键词\nconst bpuErrorKeywords = ['hbUCPMallocMem', 'hb_mem_alloc', 'hb_mem', 'MallocMem failed', 'allocate', 'allocation failed', 'ret: -400001', 'ret: -16777211', 'ION_ALLOCATOR', 'Fail to allocate', 'Insufficient memory', 'Fail to do ION_IOC_ALLOC'];\nlet hasBpuError = false;\nfor (const keyword of bpuErrorKeywords) {\n    if (errorOutput.includes(keyword)) {\n        hasBpuError = true;\n        break;\n    }\n}\n\n// 如果检测到BPU错误，检查Topic是否可能有结果（优先使用Topic结果）\nif (hasBpuError) {\n    const msgId = msg._msgid || 'default';\n    // 检查Topic是否已经尝试获取结果\n    const topicTried = typeof global.vlmTopicSubscribed !== 'undefined' && global.vlmTopicSubscribed[msgId];\n    \n    // 如果Topic还没有尝试，暂时不返回错误，等待Topic结果\n    if (!topicTried) {\n        // Topic还没有尝试，可能还在等待Topic结果，暂时不返回错误\n        node.status({ fill: 'yellow', shape: 'dot', text: '检测到BPU错误，等待Topic结果...' });\n        return null;\n    }\n    \n    // 如果Topic已经尝试但没有结果，返回BPU错误\n    // 但不要立即返回，让stdout解析节点处理（它也会检查Topic）\n    // 这里只标记错误，不返回，让stdout解析节点统一处理\n    node.status({ fill: 'yellow', shape: 'dot', text: '检测到BPU错误，等待stdout解析...' });\n    return null;\n}\n\n// 检查退出码（msg.rc）\n// msg.rc可能是数字、对象或undefined，需要正确提取\nlet exitCode = 0;\nlet exitCodeStr = '0';\n\ntry {\n    if (typeof msg.rc === 'number') {\n        exitCode = msg.rc;\n        exitCodeStr = String(msg.rc);\n    } else if (typeof msg.rc === 'object' && msg.rc !== null) {\n        // 如果是对象，尝试提取code属性或转换为数字\n        // 先尝试常见的属性名\n        exitCode = msg.rc.code || msg.rc.exitCode || msg.rc.status || msg.rc.rc;\n        // 如果还是NaN或undefined，尝试JSON序列化后解析\n        if (isNaN(exitCode) || exitCode === undefined || exitCode === null) {\n            try {\n                const rcStr = JSON.stringify(msg.rc);\n                // 尝试从JSON字符串中提取数字\n                const numMatch = rcStr.match(/\\d+/);\n                if (numMatch) {\n                    exitCode = parseInt(numMatch[0]) || 0;\n                } else {\n                    exitCode = 0;\n                }\n            } catch (e) {\n                exitCode = 0;\n            }\n        }\n        exitCodeStr = String(exitCode);\n        // 如果提取失败，保存原始对象用于调试\n        if (exitCode === 0 && msg.rc !== null) {\n            try {\n                exitCodeStr = 'object: ' + JSON.stringify(msg.rc).substring(0, 100);\n            } catch (e) {\n                exitCodeStr = 'object: [无法序列化]';\n            }\n        }\n    } else if (typeof msg.rc === 'string') {\n        exitCode = parseInt(msg.rc) || 0;\n        exitCodeStr = msg.rc;\n    } else {\n        // 如果没有rc或rc为null/undefined，默认为0（可能还在执行中）\n        exitCode = 0;\n        exitCodeStr = '0 (no rc)';\n    }\n} catch (e) {\n    // 如果提取失败，记录原始值用于调试\n    exitCode = 0;\n    try {\n        exitCodeStr = 'error: ' + String(msg.rc).substring(0, 100);\n    } catch (e2) {\n        exitCodeStr = 'error: [无法转换]';\n    }\n}\n\n// 只有当退出码不为0时才认为是错误（0表示成功）\n// 注意：250可能是超时错误，但也可能是BPU错误导致的退出\nif (exitCode !== 0) {\n    // 检查是否是真正的超时错误（不包含BPU错误）\n    const isTimeout = (errorOutput.includes('timeout') || errorOutput.includes('超时')) && !hasBpuError;\n    \n    if (isTimeout || (exitCode === 250 && !hasBpuError)) {\n        // 真正的超时错误\n        node.error('VLM命令执行超时或失败，退出码: ' + exitCodeStr);\n        node.status({ fill: 'red', shape: 'dot', text: '执行超时 (退出码: ' + exitCodeStr + ')' });\n        \n        // 返回错误消息\n        msg.isError = true;\n        msg.errorType = 'timeout';\n        msg.errorMessage = 'VLM命令执行超时，退出码: ' + exitCodeStr + '\\n请检查：\\n1. 模型文件是否存在\\n2. 网络连接是否正常\\n3. 设备资源是否充足\\n4. 命令是否超时（当前超时时间：600秒）\\n5. 如果手动运行命令正常，可能是Node-RED执行环境问题';\n        msg.rc = exitCode;\n        msg.originalRc = msg.rc; // 保存原始的rc值用于调试\n        return msg;\n    }\n    \n    // 如果退出码是250但包含BPU错误，不在这里处理，让stdout解析节点处理\n    if (exitCode === 250 && hasBpuError) {\n        // BPU错误导致的退出，让stdout解析节点统一处理\n        node.status({ fill: 'yellow', shape: 'dot', text: 'BPU错误导致退出，等待stdout解析...' });\n        return null;\n    }\n    \n    // 检查退出码245（可能是命令被kill或某种超时）\n    if (exitCode === 245) {\n        // 退出码245通常表示命令被终止，可能是超时或资源问题\n        node.error('VLM命令执行失败，退出码: 245（命令被终止）');\n        node.status({ fill: 'red', shape: 'dot', text: '命令被终止 (退出码: 245)' });\n        \n        msg.isError = true;\n        msg.errorType = 'command_terminated';\n        msg.errorMessage = 'VLM命令执行失败，退出码: 245（命令被终止）\\n\\n可能原因：\\n1. 命令执行时间过长被kill\\n2. 系统资源不足（内存/BPU）\\n3. 模型文件路径错误或文件不存在\\n4. 图片文件路径错误或文件不存在\\n5. ros2命令参数格式错误\\n\\n建议：\\n1. 检查模型文件是否存在: /home/sunrise/vlm_model/vit_model_int16_v2.bin\\n2. 检查图片文件是否存在: ' + (msg.imagePath || '未知路径') + '\\n3. 检查BPU资源是否充足\\n4. 查看Debug面板获取更多错误信息\\n\\n错误输出: ' + errorOutput.substring(0, 1000);\n        msg.rc = exitCode;\n        msg.originalRc = msg.rc;\n        return msg;\n    }\n    \n    // 其他错误\n    node.error('VLM命令执行失败，退出码: ' + exitCodeStr);\n    node.status({ fill: 'red', shape: 'dot', text: '执行失败 (退出码: ' + exitCodeStr + ')' });\n    \n    msg.isError = true;\n    msg.errorType = 'execution_failed';\n    msg.errorMessage = 'VLM命令执行失败，退出码: ' + exitCodeStr + '\\n错误输出: ' + errorOutput.substring(0, 500);\n    msg.rc = exitCode;\n    msg.originalRc = msg.rc; // 保存原始的rc值用于调试\n    return msg;\n}\n\n// 过滤wget下载进度信息（这些不应该被当作错误）\n// wget进度格式：数字K/M + 点 + 百分比 + 速度 + 时间\nif (errorOutput.match(/^\\s*\\d+[KM]\\s+[\\.]+\\s+\\d+%\\s+\\d+[KM]\\s+\\d+[ms]/m)) {\n    // 这是wget进度信息，不是错误，忽略\n    return null;\n}\n\n// 过滤日志信息（如[UCPT]: log level = 6）\nif (errorOutput.match(/\\[UCPT\\]|log level|UCPT.*log/i)) {\n    // 这是日志信息，不是错误，忽略\n    return null;\n}\n\n// 忽略其他错误输出，不进行任何处理\n// 因为VLM命令可能会输出错误信息，但推理结果仍然会在stdout中\n// 我们只关注stdout的输出，stderr的错误信息会被忽略\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "function_start_topic_subscriber",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "启动Topic订阅",
+        "func": "// 启动ROS Topic订阅，等待Topic发布后再订阅\nconst msgId = msg._msgid || 'default';\nif (typeof global.vlmTopicSubscribed === 'undefined') {\n    global.vlmTopicSubscribed = {};\n}\nglobal.vlmTopicSubscribed[msgId] = false;\n\n// 延迟15秒后开始检查Topic是否存在，然后订阅\n// 第一次启动VLM需要更长时间，所以增加延迟\nconst initialDelay = 15000; // 15秒初始延迟\n\n// 添加倒计时提示\nlet countdown = Math.floor(initialDelay / 1000);\nnode.status({ fill: 'blue', shape: 'dot', text: '⏳ 等待VLM启动... (' + countdown + '秒后开始订阅Topic)' });\n\nconst countdownInterval = setInterval(() => {\n    countdown--;\n    if (countdown > 0) {\n        node.status({ fill: 'blue', shape: 'dot', text: '⏳ 等待VLM启动... (' + countdown + '秒后开始订阅Topic)' });\n    } else {\n        clearInterval(countdownInterval);\n        node.status({ fill: 'blue', shape: 'dot', text: '🔍 正在检查Topic是否发布...' });\n    }\n}, 1000);\n\nsetTimeout(() => {\n    clearInterval(countdownInterval);\n    node.status({ fill: 'blue', shape: 'dot', text: '🔍 正在检查Topic是否发布...' });\n    \n    // 先检查Topic是否存在，等待最多30秒（每秒检查一次）\n    // 然后使用ros2 topic echo阻塞等待消息（最多60秒）\n    let cmd = 'source /opt/tros/humble/setup.bash 2>/dev/null && ';\n    cmd += 'for i in $(seq 1 30); do ';\n    cmd += '  if ros2 topic list 2>/dev/null | grep -q \"/tts_text\"; then break; fi; ';\n    cmd += '  sleep 1; ';\n    cmd += 'done && ';\n    cmd += 'timeout 60 ros2 topic echo /tts_text --once 2>&1 || echo \"\"';\n    \n    node.send({\n        _msgid: msg._msgid,\n        payload: cmd,\n        topicName: '/tts_text'\n    });\n    \n    // 设置清理定时器（90秒后清理）\n    setTimeout(() => {\n        if (global.vlmTopicSubscribed && global.vlmTopicSubscribed[msgId] !== undefined) {\n            delete global.vlmTopicSubscribed[msgId];\n        }\n    }, 90000);\n}, initialDelay);\n\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 280,
+        "wires": [
+            [
+                "exec_echo_topic"
+            ]
+        ]
+    },
+    {
+        "id": "function_parse_vlm_result",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "解析结果（后台）",
+        "func": "// 解析VLM推理结果（从stdout解析，作为Topic的备选方案）\n// 优先使用ROS Topic获取结果，如果Topic已有结果，则跳过stdout解析\n\nconst msgId = msg._msgid || 'default';\n\n// 检查是否已经有Topic结果（优先级最高）\n// 如果Topic已经成功获取结果，直接使用Topic结果，跳过stdout解析\nif (msg.fromTopic === true && msg.result) {\n    // Topic已成功获取结果，不需要解析stdout\n    node.status({ fill: 'green', shape: 'dot', text: '已使用Topic结果，跳过stdout解析' });\n    // 清除缓冲区\n    if (typeof global.vlmOutputBuffer !== 'undefined' && global.vlmOutputBuffer[msgId]) {\n        delete global.vlmOutputBuffer[msgId];\n    }\n    return null;\n}\n\n// 检查Topic是否已经尝试获取结果\nif (typeof global.vlmTopicSubscribed !== 'undefined' && global.vlmTopicSubscribed[msgId]) {\n    // Topic已尝试获取结果，如果msg.fromTopic为true，说明Topic已成功获取结果，跳过stdout解析\n    if (msg.fromTopic === true) {\n        // Topic已成功获取结果，不需要解析stdout\n        node.status({ fill: 'blue', shape: 'dot', text: '已使用Topic结果，跳过stdout解析' });\n        return null;\n    }\n    // 如果Topic尝试了但没有结果，继续使用stdout解析作为备选\n}\n\n// 初始化全局缓冲区\nif (typeof global.vlmOutputBuffer === 'undefined') {\n    global.vlmOutputBuffer = {};\n}\n\nif (!global.vlmOutputBuffer[msgId]) {\n    global.vlmOutputBuffer[msgId] = '';\n}\n\n// 处理buffer格式的输出\nlet chunk = '';\nif (Buffer.isBuffer(msg.payload)) {\n    // 尝试UTF-8解码\n    try {\n        chunk = msg.payload.toString('utf8');\n    } catch (e) {\n        // 如果UTF-8失败，尝试其他编码\n        try {\n            chunk = msg.payload.toString('latin1');\n        } catch (e2) {\n            chunk = msg.payload.toString();\n        }\n    }\n} else if (typeof msg.payload === 'string') {\n    chunk = msg.payload;\n} else {\n    chunk = String(msg.payload || '');\n}\n\n// 累积输出\nif (chunk) {\n    global.vlmOutputBuffer[msgId] += chunk;\n}\n\nconst output = global.vlmOutputBuffer[msgId];\n\n// 检查输出是否被截断（只包含启动信息但没有推理结果）\nconst hasStartMessage = output.includes('开始VLM推理') || output.includes('可能需要10-30秒');\nconst hasEndMessage = output.includes('===') && output.split('===').length > 2;\n\n// 如果输出太短，可能还在处理中，等待更多数据\nif (!output || output.trim().length < 30) {\n    node.status({ fill: 'yellow', shape: 'dot', text: '⏳ VLM正在启动，请稍候...' });\n    return null;\n}\n\n// 如果输出只包含启动信息但没有后续内容，可能输出被截断\nif (hasStartMessage && !hasEndMessage && output.length < 500) {\n    // 检查是否包含ros2命令的输出\n    const hasRos2Output = output.includes('ros2') || output.includes('hobot_llamacpp') || output.includes('llamacpp_node');\n    if (!hasRos2Output) {\n        // 可能输出被截断，等待更多数据\n        node.status({ fill: 'yellow', shape: 'dot', text: '⏳ VLM正在加载模型，请稍候...' });\n        return null;\n    }\n}\n\n// 查找推理结果\n// VLM的输出格式：推理结果通常在最后，可能被日志信息包围\nconst lines = output.split(/[\\r\\n]+/).filter(line => line.trim().length > 0);\n\n// 排除的日志关键词（包括启动信息和echo输出）\nconst logKeywords = [\n    'INFO', 'WARN', 'ERROR', 'DEBUG', 'TRACE',\n    '===', '工作目录', '图片文件', '模型类型', '提示词', '检查', '启动',\n    'ros2', 'source', 'cd', 'cp', 'echo', 'ls',\n    'llamacpp_node', 'This is llama',\n    '[DNN]', 'HBRT', 'version', '3.7.3',\n    'image encoder', 'prefill', 'eval time',\n    '开始', '启动', '完成', '结束',\n    'bash', 'setup.bash', 'hobot_llamacpp',\n    '[UCPT]', 'log level', 'UCPT', // 添加UCPT日志过滤\n    'wget', '下载', 'Download', '进度', 'progress', // 添加下载相关过滤\n    '平台要求', '⚠', '检测到平台', '设备信息', // 添加平台检测相关过滤\n    '模型文件检查', '启动VLM推理', '提示词:', '图片文件:', // 添加状态信息过滤\n    '模型文件不存在', '开始自动下载', '下载完成', '下载失败', // 添加下载状态过滤\n    '平台检测', '设备信息', '检测到平台', // 添加平台检测过滤\n    '检查模型文件', '模型文件检查通过', '启动VLM推理', // 添加启动流程过滤\n    '可能需要', '请耐心等待', '开始VLM推理', // 添加提示信息过滤\n    '可能需要10-30秒', '请耐心等待', '开始VLM推理（可能需要', // 添加启动提示过滤\n    '/tmp/', '/opt/', '/dev/', 'image-', 'photo.jpg', // 添加路径和文件名过滤\n    'hbUCPMallocMem', 'hb_mem_alloc', 'hb_mem', 'MallocMem failed', 'allocate', 'allocation failed', 'ret: -400001', 'ret: -16777211', 'ION_ALLOCATOR', 'Fail to allocate', 'Insufficient memory', // 添加BPU内存错误过滤\n    '[BPU_PLAT]', 'BPU_PLAT', 'BPU Platform', 'Platform Version', 'BPU Platform Version' // 添加BPU平台版本信息过滤 // 添加BPU内存错误过滤\n];\n\n// 启动信息和echo输出模式（这些不应该被识别为结果）\n// 特别注意：严格过滤所有echo输出，包括图片文件提示、提示词提示等\nconst startInfoPatterns = [\n    /可能需要.*秒.*请耐心等待/i,\n    /开始VLM推理.*可能需要/i,\n    /===.*开始.*推理.*===/i,\n    /^===.*开始/i,\n    /.*可能需要.*秒.*请耐心等待.*===/i,\n    /图片文件:.*/i, // echo输出：图片文件路径提示\n    /提示词:.*/i, // echo输出：提示词提示\n    /^图片文件:/i, // 以图片文件开头的行（严格匹配）\n    /^提示词:/i, // 以提示词开头的行（严格匹配）\n    /^模型文件:/i, // 以模型文件开头的行\n    /^设备信息:/i, // 以设备信息开头的行\n    /^平台:/i, // 以平台开头的行\n    /^工作目录:/i, // 以工作目录开头的行\n    /^检测到平台:/i, // 以检测到平台开头的行\n    /.*\\/tmp\\/.*\\.(jpg|jpeg|png)/i, // 包含/tmp/路径的图片文件\n    /.*image-\\d{8}-\\d{6}\\.(jpg|jpeg)/i, // 时间戳格式的图片文件名\n    /^echo.*图片文件/i, // echo命令输出\n    /^echo.*提示词/i // echo命令输出\n];\n\nlet result = '';\n\n// 首先检查Topic是否已经有结果（优先级最高）\n// 如果Topic已经有结果，即使stdout中有错误，也优先使用Topic结果\nif (typeof global.vlmTopicSubscribed !== 'undefined' && global.vlmTopicSubscribed[msgId]) {\n    // Topic已尝试获取结果，检查是否有Topic结果\n    if (msg.fromTopic === true && msg.result) {\n        // Topic已成功获取结果，直接返回Topic结果，忽略stdout中的任何错误\n        node.status({ fill: 'green', shape: 'dot', text: '使用Topic结果，忽略stdout错误' });\n        return msg;\n    }\n}\n\n// 检查是否是错误情况（模型文件不存在、BPU内存分配失败等）\nconst errorKeywords = ['[错误]', '错误', 'Error', 'ERROR', 'fail', 'Fail', '不存在', 'not exists', 'Can not open'];\n// BPU相关错误关键词\nconst bpuErrorKeywords = ['hbUCPMallocMem', 'hb_mem_alloc', 'hb_mem', 'MallocMem failed', 'allocate', 'allocation failed', 'ret: -400001', 'ret: -16777211', 'ION_ALLOCATOR', 'Fail to allocate', 'Insufficient memory'];\nlet isError = false;\nlet errorLines = [];\nlet errorType = '';\n\n// 检查BPU内存分配错误\nfor (const line of lines) {\n    const trimmed = line.trim();\n    for (const keyword of bpuErrorKeywords) {\n        if (trimmed.includes(keyword)) {\n            isError = true;\n            errorType = 'bpu_memory_error';\n            errorLines.push(trimmed);\n            break;\n        }\n    }\n}\n\n// 如果检测到BPU错误，先检查Topic是否可能有结果（优先使用Topic结果）\nif (isError && errorType === 'bpu_memory_error') {\n    // 检查Topic是否已经尝试获取结果\n    const topicTried = typeof global.vlmTopicSubscribed !== 'undefined' && global.vlmTopicSubscribed[msgId];\n    \n    // 如果Topic还没有尝试，等待Topic结果（最多等待30秒）\n    if (!topicTried) {\n        // Topic还没有尝试，可能还在等待Topic结果，暂时不返回错误，继续等待\n        // 检查输出长度，如果输出很长但还没有Topic结果，可能需要更长时间\n        const waitTime = output.length > 10000 ? 30000 : 15000; // 输出长则等待更久（最多30秒）\n        \n        // 计算已等待时间（如果msg.startTime存在则使用，否则使用当前时间）\n        const startTime = msg.startTime || Date.now();\n        const elapsedTime = Date.now() - startTime;\n        \n        if (elapsedTime < waitTime) {\n            node.status({ fill: 'yellow', shape: 'dot', text: '检测到BPU错误，等待Topic结果... (' + Math.round(elapsedTime/1000) + 's/' + Math.round(waitTime/1000) + 's)' });\n            return null;\n        } else {\n            // 等待超时，但Topic还没尝试，可能是Topic订阅有问题，继续等待（不返回错误）\n            node.warn('BPU错误检测到，但Topic订阅可能未启动，继续等待...');\n            node.status({ fill: 'yellow', shape: 'dot', text: 'BPU错误，等待Topic结果（已等待' + Math.round(elapsedTime/1000) + 's）...' });\n            return null;\n        }\n    }\n    \n    // Topic已尝试，检查是否有Topic结果\n    // 如果msg.fromTopic为true，说明Topic已成功获取结果，优先使用Topic结果\n    if (msg.fromTopic === true && msg.result) {\n        // Topic已成功获取结果，即使有BPU错误也优先使用Topic结果\n        node.status({ fill: 'green', shape: 'dot', text: '使用Topic结果（忽略BPU错误）' });\n        // 清除缓冲区\n        cleanupGlobalVars(msgId);\n        return msg;\n    }\n    \n    // Topic已尝试但没有结果，返回BPU错误\n    const errorMessage = errorLines.join(' ');\n    msg.isError = true;\n    msg.errorType = 'bpu_memory_error';\n    msg.errorMessage = 'BPU内存分配失败: ' + errorMessage + '\\n\\n可能原因：\\n1. BPU内存不足，请关闭其他占用BPU的应用\\n2. 模型文件过大，超出设备内存限制\\n3. 设备资源不足，请检查系统资源使用情况\\n\\n注意：Topic未获取到结果，可能推理未完成';\n    node.status({ fill: 'red', shape: 'dot', text: 'BPU内存分配失败' });\n    msg.result = errorMessage;\n    msg.fullOutput = output.substring(Math.max(0, output.length - 2000));\n    \n    // 清除缓冲区\n    cleanupGlobalVars(msgId);\n    \n    return msg;\n}\n\n// 检查其他错误\nfor (const line of lines) {\n    const trimmed = line.trim();\n    for (const keyword of errorKeywords) {\n        if (trimmed.includes(keyword)) {\n            isError = true;\n            if (!errorType) {\n                errorType = 'other_error';\n            }\n            errorLines.push(trimmed);\n            break;\n        }\n    }\n}\n\n// 如果是错误情况，提取完整的错误信息\nif (isError && errorLines.length > 0) {\n    // 提取错误相关的所有行（包括错误信息和下载命令）\n    let errorStartIndex = -1;\n    for (let i = 0; i < lines.length; i++) {\n        const trimmed = lines[i].trim();\n        if (trimmed.includes('[错误]') || trimmed.includes('错误') || trimmed.includes('Error')) {\n            errorStartIndex = i;\n            break;\n        }\n    }\n    \n    if (errorStartIndex >= 0) {\n        // 提取从错误开始到文件末尾的所有相关行\n        const errorSection = lines.slice(errorStartIndex).filter(line => {\n            const trimmed = line.trim();\n            return trimmed.length > 0 && (\n                trimmed.includes('[错误]') ||\n                trimmed.includes('错误') ||\n                trimmed.includes('请先') ||\n                trimmed.includes('下载') ||\n                trimmed.includes('wget') ||\n                trimmed.includes('平台')\n            );\n        });\n        \n        if (errorSection.length > 0) {\n            result = errorSection.join('\\n');\n            msg.isError = true;\n            msg.errorType = 'model_file_missing';\n            node.status({ fill: 'red', shape: 'dot', text: '模型文件不存在' });\n            msg.result = result;\n            msg.fullOutput = output.substring(Math.max(0, output.length - 2000));\n            \n            // 清除缓冲区\n            if (global.vlmOutputBuffer && global.vlmOutputBuffer[msgId]) {\n                delete global.vlmOutputBuffer[msgId];\n            }\n            \n            return msg;\n        }\n    }\n}\n\n// 策略1：查找[WARN] [llama_cpp_node]之后的推理结果（这是VLM的标准输出格式）\n// 格式：[WARN] [timestamp] [llama_cpp_node]:\n//       推理结果文本（可能跨多行）\nlet warnIndex = -1;\nfor (let i = lines.length - 1; i >= 0; i--) {\n    const line = lines[i].trim();\n    // 查找包含[WARN]和[llama_cpp_node]的行\n    if (line.includes('[WARN]') && line.includes('[llama_cpp_node]')) {\n        warnIndex = i;\n        break;\n    }\n}\n\nif (warnIndex >= 0) {\n    // 从WARN行之后开始查找推理结果\n    let resultLines = [];\n    for (let i = warnIndex + 1; i < lines.length; i++) {\n        const line = lines[i].trim();\n        \n        // 跳过空行\n        if (line.length === 0) continue;\n        \n        // 如果遇到下一个日志标记（如[INFO], [WARN], [ERROR]），停止\n        if (line.match(/^\\[INFO\\]|^\\[WARN\\]|^\\[ERROR\\]|^\\[DEBUG\\]/)) {\n            break;\n        }\n        \n        // 跳过明显的日志行（但不跳过WARN行本身，因为结果在它后面）\n        let isLogLine = false;\n        for (const keyword of logKeywords) {\n            // 对于WARN之后的文本，更宽松地判断\n            if (keyword !== 'WARN' && line.includes(keyword)) {\n                isLogLine = true;\n                break;\n            }\n        }\n        \n        // 跳过时间戳、进度条等\n        if (line.match(/^\\d+\\.\\d+.*$/)) continue; // 时间戳\n        if (line.match(/^\\s*\\d+[KM]\\s+[\\.]+\\s+\\d+%\\s+\\d+[KM]\\s+\\d+[ms]/)) continue; // wget进度\n        if (line.match(/\\[UCPT\\]/i) || line.match(/UCPT.*log/i) || line.match(/log level/i)) continue;\n        \n        // 检查是否是BPU错误（不应该被识别为结果）\n        let isBpuError = false;\n        for (const keyword of bpuErrorKeywords) {\n            if (line.includes(keyword)) {\n                isBpuError = true;\n                break;\n            }\n        }\n        \n        // 如果包含中文或较长的英文，且不是日志行或BPU错误，收集为结果的一部分\n        const hasChinese = /[\\u4e00-\\u9fa5]/.test(line);\n        const hasEnglish = /[a-zA-Z]{4,}/.test(line);\n        \n        if (!isLogLine && !isBpuError && (hasChinese || (hasEnglish && line.length > 10))) {\n            resultLines.push(line);\n        }\n    }\n    \n    if (resultLines.length > 0) {\n        // 合并多行结果，清理</s>等标记\n        result = resultLines.join(' ').replace(/<\\/s>/g, '').trim();\n        // 如果结果长度足够，立即返回，跳过后续策略\n        if (result.length >= 10) {\n            // 清理结果：去除多余的空格和换行\n            result = result.replace(/\\s+/g, ' ').trim();\n            \n            // 找到有效结果，保存并清除缓冲区\n            msg.result = result;\n            msg.fullOutput = output.substring(Math.max(0, output.length - 2000));\n            \n            // 立即清除缓冲区（找到结果后立即清除，避免内存泄漏）\n            if (global.vlmOutputBuffer && global.vlmOutputBuffer[msgId]) {\n                delete global.vlmOutputBuffer[msgId];\n            }\n            \n            node.status({ fill: 'green', shape: 'dot', text: '✅ 推理完成！正在解析结果...' });\n            return msg;\n        }\n    }\n}\n\n// 如果策略1没找到结果，使用原来的策略1（从后往前查找）\nif (!result || result.length < 10) {\n    for (let i = lines.length - 1; i >= 0; i--) {\n        const line = lines[i].trim();\n        if (line.length < 10) continue;\n        \n        // 检查是否是日志行\n        let isLogLine = false;\n        for (const keyword of logKeywords) {\n            if (line.includes(keyword)) {\n                isLogLine = true;\n                break;\n            }\n        }\n        \n        // 跳过明显的日志和系统信息\n        if (isLogLine) continue;\n        if (line.match(/^\\[.*\\]$/)) continue; // [xxx]格式，包括[UCPT]\n        if (line.match(/^\\d+\\.\\d+.*$/)) continue; // 数字开头的时间戳等\n        if (line.match(/^\\s*\\d+[KM]\\s+[\\.]+\\s+\\d+%\\s+\\d+[KM]\\s+\\d+[ms]/)) continue; // wget进度信息\n        // 更严格地过滤[UCPT]相关日志\n        if (line.match(/\\[UCPT\\]/i) || line.match(/UCPT.*log/i) || line.match(/log level/i)) continue;\n        \n        // 检查是否包含有意义的内容\n        const hasChinese = /[\\u4e00-\\u9fa5]/.test(line);\n        const hasEnglish = /[a-zA-Z]{4,}/.test(line);\n        \n        // 检查是否是启动信息或echo输出（不应该被识别为结果）\n        let isStartInfo = false;\n        for (const pattern of startInfoPatterns) {\n            if (pattern.test(line)) {\n                isStartInfo = true;\n                break;\n            }\n        }\n        \n        // 检查是否是echo输出格式（如图片文件提示或提示词提示）\n        // 严格过滤：任何包含冒号空格后跟路径的行都可能是echo输出\n        if (!isStartInfo && (\n            line.match(/^(图片文件|提示词|模型文件|设备信息|平台|工作目录|检测到平台|检查模型文件|启动VLM推理):/i) || \n            line.match(/.*:\\s*\\/.*\\.(jpg|jpeg|png|bin|hbm|gguf)/i) ||\n            line.match(/^echo\\s+[\"'].*[\"']/i) || // echo命令格式\n            (line.includes(':') && line.match(/\\/.*\\.(jpg|jpeg|png|bin|hbm|gguf)/i)) // 包含路径的文件名\n        )) {\n            isStartInfo = true;\n        }\n        \n        // 检查是否是BPU错误（不应该被识别为结果）\n        let isBpuError = false;\n        for (const keyword of bpuErrorKeywords) {\n            if (line.includes(keyword)) {\n                isBpuError = true;\n                break;\n            }\n        }\n        \n        // 如果包含中文或较长的英文，且不是启动信息、echo输出或BPU错误，可能是结果\n        if (!isStartInfo && !isBpuError && (hasChinese || (hasEnglish && line.length > 15))) {\n            result = line;\n            break;\n        }\n    }\n}\n\n// 策略2：如果没找到，查找可能包含推理结果的多行文本块\nif (!result || result.length < 10) {\n    let candidateLines = [];\n    // 检查最后30行\n    for (let i = lines.length - 1; i >= Math.max(0, lines.length - 30); i--) {\n        const line = lines[i].trim();\n        if (line.length < 10) continue;\n        \n        let isLogLine = false;\n        for (const keyword of logKeywords) {\n            if (line.includes(keyword)) {\n                isLogLine = true;\n                break;\n            }\n        }\n        \n        if (!isLogLine && !line.match(/^\\[.*\\]$/) && !line.match(/^\\d+\\.\\d+/)) {\n            candidateLines.unshift(line);\n        }\n    }\n    \n    if (candidateLines.length > 0) {\n        // 合并候选行，但限制长度\n        result = candidateLines.join(' ').substring(0, 800);\n    }\n}\n\n// 策略3：如果还是没找到，检查输出中是否包含推理结果的特征\nif (!result || result.length < 10) {\n    // 查找包含中文字符或较长英文文本的部分（降低最小长度要求）\n    const chineseMatch = output.match(/[\\u4e00-\\u9fa5]{3,}[^\\n]*/g);\n    if (chineseMatch && chineseMatch.length > 0) {\n        // 过滤掉启动信息，取最后一个非启动信息的匹配\n        const filteredMatches = chineseMatch.filter(match => {\n            const trimmed = match.trim();\n            // 检查是否是启动信息或echo输出\n            for (const pattern of startInfoPatterns) {\n                if (pattern.test(trimmed)) {\n                    return false;\n                }\n            }\n            // 检查是否包含启动信息关键词\n            if (trimmed.includes('可能需要') && trimmed.includes('请耐心等待')) {\n                return false;\n            }\n            // 检查是否是echo输出格式\n            if (trimmed.match(/^(图片文件|提示词|模型文件|设备信息|平台|工作目录|检测到平台):/i) || \n                trimmed.match(/.*:\\s*\\/.*\\.(jpg|jpeg|png|bin|hbm|gguf)/i)) {\n                return false;\n            }\n            return true;\n        });\n        \n        if (filteredMatches.length > 0) {\n            // 取最后一个匹配（通常是最新的结果）\n            result = filteredMatches[filteredMatches.length - 1].trim();\n            // 清理：去除可能的日志前缀\n            result = result.replace(/^.*?([\\u4e00-\\u9fa5])/, '$1');\n        }\n    }\n    \n    // 如果中文匹配失败，尝试匹配英文文本\n    if (!result || result.length < 10) {\n        const englishMatch = output.match(/[a-zA-Z]{10,}[^\\n]*/g);\n        if (englishMatch && englishMatch.length > 0) {\n            // 过滤掉明显的日志行\n            const filtered = englishMatch.filter(line => {\n                const trimmed = line.trim();\n                return !trimmed.match(/^\\[.*\\]$/) && \n                       !trimmed.includes('INFO') && \n                       !trimmed.includes('WARN') && \n                       !trimmed.includes('ERROR') &&\n                       !trimmed.includes('DEBUG') &&\n                       !trimmed.includes('UCPT') &&\n                       !trimmed.includes('log level') &&\n                       !trimmed.includes('BPU_PLAT') &&\n                       !trimmed.includes('BPU Platform Version') &&\n                       trimmed.length > 15;\n            });\n            \n            if (filtered.length > 0) {\n                // 取最后一个匹配\n                result = filtered[filtered.length - 1].trim();\n            }\n        }\n    }\n}\n\n// 策略4：如果输出看起来还在进行中（包含启动信息但没有结果），继续等待\nconst hasStartInfo = output.includes('开始') || output.includes('启动') || output.includes('=== 开始');\nconst hasResult = result && result.length >= 10 && !result.match(/^\\[.*\\]$/);\n\n// 检查输出是否只包含启动信息（可能输出被截断）\nconst onlyStartInfo = hasStartInfo && output.includes('可能需要10-30秒') && !output.includes('llamacpp_node') && output.length < 1000;\nif (onlyStartInfo && !hasResult) {\n    node.status({ fill: 'yellow', shape: 'dot', text: '⏳ VLM正在初始化，预计需要10-30秒...' });\n    return null;\n}\n\n// 检查是否包含ros2命令的输出（说明命令已经开始执行）\nconst hasRos2Output = output.includes('ros2') || output.includes('hobot_llamacpp') || output.includes('llamacpp_node');\n\n// 如果命令已经开始执行但还没有结果，检查是否真的在推理中\nif (hasStartInfo && !hasResult) {\n    // 如果输出已经很长（>5000字符）但仍然没有结果，尝试更宽松的解析策略\n    if (output.length > 5000) {\n        // 尝试提取所有非日志行\n        let allNonLogLines = [];\n        for (let i = lines.length - 1; i >= Math.max(0, lines.length - 50); i--) {\n            const line = lines[i].trim();\n            if (line.length < 5) continue;\n            \n            // 跳过明显的日志\n            let isLogLine = false;\n            for (const keyword of logKeywords) {\n                if (line.includes(keyword)) {\n                    isLogLine = true;\n                    break;\n                }\n            }\n            \n            if (!isLogLine && \n                !line.match(/^\\[.*\\]$/) && \n                !line.match(/^\\d+\\.\\d+.*$/) && \n                !line.match(/^\\s*\\d+[KM]\\s+[\\.]+\\s+\\d+%\\s+\\d+[KM]\\s+\\d+[ms]/) &&\n                !line.match(/\\[UCPT\\]/i) &&\n                !line.match(/log level/i)) {\n                allNonLogLines.unshift(line);\n            }\n        }\n        \n        // 如果找到了一些非日志行，尝试合并它们作为结果\n        if (allNonLogLines.length > 0) {\n            const mergedResult = allNonLogLines.join(' ').substring(0, 1000);\n            // 检查合并后的结果是否包含有意义的内容\n            const hasChinese = /[\\u4e00-\\u9fa5]/.test(mergedResult);\n            const hasEnglish = /[a-zA-Z]{4,}/.test(mergedResult);\n            \n            if (hasChinese || (hasEnglish && mergedResult.length > 20)) {\n                result = mergedResult;\n            }\n        }\n    }\n    \n    // 如果还是没有结果，但输出已经很长，可能还在推理中\n    if (!result || result.length < 10) {\n        // 检查是否包含推理相关的关键词（说明推理正在进行）\n        const hasInferenceKeywords = output.includes('prefill') || \n                                     output.includes('eval time') || \n                                     output.includes('image encoder') ||\n                                     output.includes('token') ||\n                                     output.includes('生成') ||\n                                     output.includes('推理');\n        \n        if (hasInferenceKeywords || hasRos2Output) {\n            // 可能还在推理中，等待更多输出\n            const elapsedSeconds = Math.floor((Date.now() - (msg.startTime || Date.now())) / 1000);\n            node.status({ fill: 'blue', shape: 'dot', text: '🤖 AI正在分析图片中... (已用时: ' + elapsedSeconds + '秒)' });\n            return null;\n        } else if (output.length > 10000) {\n            // 输出很长但没有推理关键词，可能是解析问题，输出调试信息\n            const debugOutput = output.substring(Math.max(0, output.length - 1000));\n            node.warn('VLM输出很长但未找到结果，最后1000字符: ' + debugOutput);\n            node.status({ fill: 'orange', shape: 'dot', text: '输出过长，请检查调试信息 (' + output.length + ' chars)' });\n        }\n    }\n}\n\n// 清理结果：去除多余的空格和换行\nif (result) {\n    result = result.replace(/\\s+/g, ' ').trim();\n}\n\n// 检查结果是否是启动信息、echo输出或BPU错误（不应该被识别为结果）\nif (result) {\n    // 首先检查是否是BPU内存分配错误\n    for (const keyword of bpuErrorKeywords) {\n        if (result.includes(keyword)) {\n            // 这是BPU错误，不是推理结果\n            const errorMessage = result;\n            msg.isError = true;\n            msg.errorType = 'bpu_memory_error';\n            msg.errorMessage = 'BPU内存分配失败: ' + errorMessage + '\\n\\n可能原因：\\n1. BPU内存不足，请关闭其他占用BPU的应用\\n2. 模型文件过大，超出设备内存限制\\n3. 设备资源不足，请检查系统资源使用情况';\n            node.status({ fill: 'red', shape: 'dot', text: 'BPU内存分配失败' });\n            msg.result = errorMessage;\n            msg.fullOutput = output.substring(Math.max(0, output.length - 2000));\n            \n            // 清除缓冲区\n            if (global.vlmOutputBuffer && global.vlmOutputBuffer[msgId]) {\n                delete global.vlmOutputBuffer[msgId];\n            }\n            \n            return msg;\n        }\n    }\n    \n    // 检查启动信息模式\n    for (const pattern of startInfoPatterns) {\n        if (pattern.test(result)) {\n            // 这是启动信息或echo输出，不是结果，继续等待\n            node.status({ fill: 'yellow', shape: 'dot', text: '等待推理结果... (' + output.length + ' chars)' });\n            return null;\n        }\n    }\n    \n    // 检查是否包含启动信息关键词\n    if (result.includes('可能需要') && result.includes('请耐心等待')) {\n        node.status({ fill: 'yellow', shape: 'dot', text: '等待推理结果... (' + output.length + ' chars)' });\n        return null;\n    }\n    \n    // 检查是否是echo输出格式（如图片文件提示或提示词提示）\n    // 严格过滤：任何包含冒号空格后跟路径的行都可能是echo输出\n    if (result.match(/^(图片文件|提示词|模型文件|设备信息|平台|工作目录|检测到平台|检查模型文件|启动VLM推理):/i) || \n        result.match(/.*:\\s*\\/.*\\.(jpg|jpeg|png|bin|hbm|gguf)/i) ||\n        result.match(/.*image-\\d{8}-\\d{6}\\.(jpg|jpeg)/i) ||\n        result.match(/^echo\\s+[\"'].*[\"']/i) || // echo命令格式\n        (result.includes(':') && result.match(/\\/.*\\.(jpg|jpeg|png|bin|hbm|gguf)/i))) { // 包含路径的文件名\n        // 这是echo输出，不是结果，继续等待\n        node.status({ fill: 'yellow', shape: 'dot', text: '过滤echo输出，等待推理结果... (' + output.length + ' chars)' });\n        return null;\n    }\n}\n\n// 放宽结果识别条件：如果结果包含中文或较长的英文，即使短一些也接受\nconst hasChinese = result && /[\\u4e00-\\u9fa5]/.test(result);\nconst hasEnglish = result && /[a-zA-Z]{4,}/.test(result);\nconst minLength = hasChinese ? 8 : (hasEnglish ? 12 : 15);\n\n// 如果结果太短或看起来不像推理结果，继续等待\n// 特别检查是否是日志信息或启动信息\nif (!result || result.length < minLength || result.match(/^\\[.*\\]$/) || result.match(/\\[UCPT\\]/i) || result.match(/log level/i)) {\n    // 如果输出已经很长（>50000字符），可能是解析逻辑有问题或命令卡住，返回错误\n    if (output.length > 50000) {\n        // 输出太长，可能命令卡住或输出异常\n        const debugOutput = output.substring(Math.max(0, output.length - 2000));\n        node.error('VLM输出过长（' + output.length + '字符），可能命令卡住或输出异常。最后2000字符: ' + debugOutput);\n        node.status({ fill: 'red', shape: 'dot', text: '输出异常，请检查命令执行' });\n        \n        msg.isError = true;\n        msg.errorType = 'output_too_long';\n        msg.errorMessage = 'VLM输出过长（' + output.length + '字符），可能命令卡住或输出异常。请检查：\\n1. 命令是否正常执行\\n2. 模型文件是否存在\\n3. 设备资源是否充足\\n4. 查看Debug面板获取更多信息';\n        msg.fullOutput = debugOutput;\n        \n        // 清除缓冲区\n        cleanupGlobalVars(msgId);\n        \n        return msg;\n    } else if (output.length > 10000) {\n        // 输出较长，可能是解析问题，输出调试信息但继续等待\n        const debugOutput = output.substring(Math.max(0, output.length - 1000));\n        node.warn('VLM输出较长但未找到结果（' + output.length + '字符），最后1000字符: ' + debugOutput);\n        node.status({ fill: 'orange', shape: 'dot', text: '输出较长，等待结果... (' + output.length + ' chars)' });\n    } else {\n        node.status({ fill: 'yellow', shape: 'dot', text: '等待完整输出... (' + output.length + ' chars)' });\n    }\n    return null;\n}\n\n// 找到有效结果，保存并清除缓冲区\nmsg.result = result;\nmsg.fullOutput = output.substring(Math.max(0, output.length - 2000)); // 保存最后2000字符用于调试\n\n// 清除累积的输出（如果之前没有清除，这里清除）\n// 注意：缓冲区已在找到结果时立即清除，这里只处理未找到结果的情况\nif (global.vlmOutputBuffer && global.vlmOutputBuffer[msgId] && !msg.result) {\n    // 如果没有找到结果，延迟清除（可能还在处理中）\n    setTimeout(() => {\n        cleanupGlobalVars(msgId);\n    }, 5000);\n}\n\nnode.status({ fill: 'green', shape: 'dot', text: '✅ 推理完成！结果已获取' });\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 300,
+        "wires": [
+            [
+                "debug_vlm_result"
+            ]
+        ]
+    },
+    {
+        "id": "debug_vlm_result",
+        "type": "debug",
+        "z": "vlm_tab",
+        "name": "VLM推理结果",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "result",
+        "targetType": "msg",
+        "statusVal": "result",
+        "statusType": "auto",
+        "x": 1340,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "comment_feedback_section",
+        "type": "comment",
+        "z": "vlm_tab",
+        "name": "🖼️ 本地图片回灌模式",
+        "info": "使用本地图片进行VLM推理\n\n**使用方法：**\n1. 直接点击按钮：使用默认图片 `config/image2.jpg`\n2. 自定义路径：在inject节点中设置 `msg.payload` 为图片路径\n   - 绝对路径：`/home/sunrise/vlm_model/my_image.jpg`\n   - 相对路径：`config/image2.jpg`（相对于 ~/vlm_model）\n   - 支持 ~ 路径：`~/vlm_model/my_image.jpg`",
+        "x": 150,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "inject_feedback_start",
+        "type": "inject",
+        "z": "vlm_tab",
+        "name": "启动本地图片VLM推理",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "config/image2.jpg",
+        "payloadType": "str",
+        "x": 140,
+        "y": 400,
+        "wires": [
+            [
+                "function_prepare_feedback"
+            ]
+        ]
+    },
+    {
+        "id": "function_prepare_feedback",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "准备回灌图片",
+        "func": "// 准备回灌图片路径\n// 支持自定义路径：如果msg.payload包含路径则使用，否则使用默认路径\nconst saveDir = os.homedir() + '/vlm_model';\nconst defaultImage = 'config/image2.jpg'; // 默认图片路径\n\n// 从msg.payload获取用户指定的图片路径（如果提供）\nlet userImagePath = null;\nif (msg.payload && typeof msg.payload === 'string' && msg.payload.trim() !== '') {\n    userImagePath = msg.payload.trim();\n}\n\n// 确定要使用的图片路径\nlet imagePath = userImagePath || defaultImage;\n\n// 确保目录存在\nif (!fs.existsSync(saveDir)) {\n    fs.mkdirSync(saveDir, { recursive: true });\n}\n\n// 构建绝对路径\nlet absolutePath;\nif (path.isAbsolute(imagePath)) {\n    // 如果已经是绝对路径，直接使用\n    absolutePath = imagePath;\n} else if (imagePath.startsWith('~')) {\n    // 支持 ~ 开头的路径\n    absolutePath = imagePath.replace(/^~/, os.homedir());\n} else {\n    // 相对路径，相对于saveDir\n    absolutePath = path.join(saveDir, imagePath);\n}\n\n// 检查文件是否存在\nif (fs.existsSync(absolutePath)) {\n    node.status({ fill: 'green', shape: 'dot', text: '找到图片: ' + path.basename(absolutePath) });\n} else {\n    // 如果用户指定的路径不存在，尝试默认路径\n    if (userImagePath && userImagePath !== defaultImage) {\n        const defaultAbsolutePath = path.join(saveDir, defaultImage);\n        if (fs.existsSync(defaultAbsolutePath)) {\n            node.warn('指定的图片路径不存在: ' + absolutePath + '，使用默认路径: ' + defaultAbsolutePath);\n            absolutePath = defaultAbsolutePath;\n            node.status({ fill: 'yellow', shape: 'dot', text: '使用默认图片' });\n        } else {\n            node.warn('图片文件不存在: ' + absolutePath + '，将在命令执行时检查');\n            node.status({ fill: 'yellow', shape: 'dot', text: '图片路径: ' + absolutePath });\n        }\n    } else {\n        // 尝试在config目录中查找默认图片\n        const configPath = path.join(saveDir, 'config', path.basename(imagePath));\n        if (fs.existsSync(configPath)) {\n            absolutePath = configPath;\n            node.status({ fill: 'green', shape: 'dot', text: '找到回灌图片' });\n        } else {\n            node.warn('回灌图片文件不存在: ' + absolutePath + '，将在命令执行时检查');\n            node.status({ fill: 'yellow', shape: 'dot', text: '图片路径: ' + absolutePath });\n        }\n    }\n}\n\nmsg.photoDir = saveDir;\nmsg.photoPath = absolutePath;\nmsg.photoFileName = path.basename(absolutePath);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "fs",
+                "module": "fs"
+            },
+            {
+                "var": "path",
+                "module": "path"
+            },
+            {
+                "var": "os",
+                "module": "os"
+            }
+        ],
+        "x": 350,
+        "y": 400,
+        "wires": [
+            [
+                "function_build_feedback_cmd"
+            ]
+        ]
+    },
+    {
+        "id": "function_build_feedback_cmd",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "构建回灌命令",
+        "func": "// 构建回灌模式VLM推理命令\n// 按照官方文档的方式：先source环境，复制config，然后运行ros2命令\nconst photoDir = msg.photoDir || (os.homedir() + '/vlm_model');\nlet photoPath = msg.photoPath || 'config/image2.jpg';\n\n// 如果photoPath不是绝对路径，构建绝对路径\nif (!photoPath.startsWith('/')) {\n    // 如果是相对路径，相对于photoDir构建绝对路径\n    photoPath = photoDir + '/' + photoPath;\n}\nconst photoFileName = path.basename(photoPath);\nconst absolutePhotoPath = photoPath;\n\n// 获取当前选择的模型类型\nconst modelType = (global.vlmModelType && global.vlmModelType.current) || 'internvl';\nconst modelFile = (global.vlmModelType && global.vlmModelType.modelFile) || 'vit_model_int16_v2.bin';\nconst llmModel = (global.vlmModelType && global.vlmModelType.llmModel) || 'Qwen2.5-0.5B-Instruct-Q4_0.gguf';\nconst modelTypeParam = (global.vlmModelType && global.vlmModelType.modelTypeParam) || '';\n\n// 获取提示词（优先级：msg.userPrompt > global.get('vlmPrompt') > 默认值）\nconst userPrompt = (msg.userPrompt && typeof msg.userPrompt === 'string' && msg.userPrompt.trim() !== '')\n    ? msg.userPrompt.trim()\n    : (global.get('vlmPrompt') || '描述一下这张图片.');\n\n// 构建命令\n// 按照官方文档的方式：先source环境，复制config，然后运行ros2命令\n// 检测平台并自动下载模型文件（如果不存在）\n// 首先清理旧的VLM进程，避免BPU资源冲突\n// 然后确保目录存在，切换到该目录\nlet cmd = 'echo \\\"=== 1. 清理旧进程 ===\\\" && ';\ncmd += 'pkill -f hobot_llamacpp 2>/dev/null || true && ';\ncmd += 'sleep 2 && ';\ncmd += 'echo \\\"=== 2. 准备环境 ===\\\" && ';\ncmd += 'mkdir -p ' + photoDir + ' && cd ' + photoDir + ' && ';\ncmd += 'source /opt/tros/humble/setup.bash && ';\ncmd += 'export TROS_DISTRO=${TROS_DISTRO:-humble} && cp -r /opt/tros/${TROS_DISTRO}/lib/hobot_llamacpp/config/ . && ';\ncmd += 'echo \"检查模型文件...\" && ';\n\n// 检测平台（支持 S100, S100P, X5 等）\ncmd += 'echo \"=== 平台检测 ===\" && ';\ncmd += 'DEVICE_MODEL=$(cat /proc/device-tree/model 2>/dev/null | strings || echo \"\") && ';\ncmd += 'echo \"设备信息: $DEVICE_MODEL\" && ';\ncmd += 'PLATFORM=$(echo \"$DEVICE_MODEL\" | grep -oiE \"(S100|S100P)\" | head -1 || echo \"$DEVICE_MODEL\" | grep -oiE \"X5\" | head -1 || echo \"X5\") && ';\ncmd += 'PLATFORM=$(echo \"$PLATFORM\" | tr \"[:lower:]\" \"[:upper:]\" | sed \"s/S100P/S100/g\") && ';\ncmd += 'echo \"检测到平台: $PLATFORM\" && ';\n\n// 根据平台设置下载URL\nif (modelType === 'internvl') {\n    cmd += 'if [ \"$PLATFORM\" = \"S100\" ]; then MODEL_URL=\"https://hf-mirror.com/D-Robotics/InternVL2_5-1B-GGUF-BPU/resolve/main/rdks100/vit_model_int16.hbm\"; MODEL_FILE=\"vit_model_int16.hbm\"; else MODEL_URL=\"https://hf-mirror.com/D-Robotics/InternVL2_5-1B-GGUF-BPU/resolve/main/rdkx5/vit_model_int16_v2.bin\"; MODEL_FILE=\"vit_model_int16_v2.bin\"; fi && ';\n} else {\n    // SmolVLM\n    cmd += 'if [ \"$PLATFORM\" = \"S100\" ]; then MODEL_URL=\"https://hf-mirror.com/D-Robotics/SmolVLM2-256M-Video-Instruct-GGUF-BPU/resolve/main/rdks100/SigLip_int16_SmolVLM2_256M_Instruct_S100.hbm\"; MODEL_FILE=\"SigLip_int16_SmolVLM2_256M_Instruct_S100.hbm\"; else MODEL_URL=\"https://hf-mirror.com/D-Robotics/SmolVLM2-256M-Video-Instruct-GGUF-BPU/resolve/main/rdkx5/SigLip_int16_SmolVLM2_256M_Instruct_MLP_C1_UP_X5.bin\"; MODEL_FILE=\"SigLip_int16_SmolVLM2_256M_Instruct_MLP_C1_UP_X5.bin\"; fi && ';\n}\n\n// 检查并自动下载图像编码模型（使用shell变量$MODEL_FILE）\n// 注意：wget的--show-progress会将进度输出到stderr，需要重定向到stdout以避免被误判为错误\ncmd += 'if [ ! -f \"$MODEL_FILE\" ]; then echo \"模型文件不存在，开始自动下载: $MODEL_FILE\" && wget --show-progress \"$MODEL_URL\" -O \"$MODEL_FILE\" 2>&1 && echo \"✓ 图像编码模型下载完成\" || (echo \"⚠ 模型文件下载失败，请手动下载\" && exit 1); fi && ';\n// 使用绝对路径（重要！必须使用绝对路径）\ncmd += 'ACTUAL_MODEL_FILE=\"' + photoDir + '/$MODEL_FILE\" && ';\n\n// 设置LLM模型URL\nif (modelType === 'internvl') {\n    cmd += 'LLM_URL=\"https://hf-mirror.com/D-Robotics/InternVL2_5-1B-GGUF-BPU/resolve/main/Qwen2.5-0.5B-Instruct-Q4_0.gguf\" && ';\n} else {\n    cmd += 'LLM_URL=\"https://hf-mirror.com/D-Robotics/SmolVLM2-256M-Video-Instruct-GGUF-BPU/resolve/main/SmolVLM2-256M-Video-Instruct-Q8_0.gguf\" && ';\n}\n\n// 检查并自动下载LLM模型\n// 注意：wget的--show-progress会将进度输出到stderr，需要重定向到stdout以避免被误判为错误\ncmd += 'if [ ! -f \"' + llmModel + '\" ]; then echo \"LLM模型文件不存在，开始自动下载: ' + llmModel + '\" && wget --show-progress \"$LLM_URL\" -O \"' + llmModel + '\" 2>&1 && echo \"✓ LLM模型下载完成\" || (echo \"⚠ LLM模型文件下载失败，请手动下载\" && exit 1); fi && ';\ncmd += 'echo \"模型文件检查通过，启动VLM推理...\" >&2 && ';\n// 转义userPrompt中的特殊字符（双引号和反斜杠）\nconst escapedPrompt = userPrompt.replace(/\\\\\\\\/g, '\\\\\\\\\\\\\\\\').replace(/\"/g, '\\\\\"');\ncmd += 'echo \"提示词: ' + escapedPrompt + '\" >&2 && ';\ncmd += 'echo \"图片文件: ' + absolutePhotoPath + '\" >&2 && ';\n// 检查图片文件是否存在\ncmd += 'if [ ! -f \"' + absolutePhotoPath + '\" ]; then echo \"[错误] 图片文件不存在: ' + absolutePhotoPath + '\" >&2 && exit 1; fi && ';\ncmd += 'echo \"=== 开始VLM推理（可能需要10-30秒，请耐心等待）===\" >&2 && ';\n// 使用stdbuf禁用输出缓冲，确保实时输出\n// 转义参数值中的双引号，确保shell命令正确解析\n// 使用绝对路径，确保ros2命令能找到图片文件和模型文件\ncmd += 'stdbuf -oL -eL ros2 run hobot_llamacpp hobot_llamacpp --ros-args ';\ncmd += '-p feed_type:=0 ';\ncmd += '-p image:=' + absolutePhotoPath + ' ';\ncmd += '-p image_type:=0 ';\ncmd += '-p user_prompt:=\"' + escapedPrompt + '\" ';\ncmd += '-p model_file_name:=$ACTUAL_MODEL_FILE ';\ncmd += '-p llm_model_name:=' + photoDir + '/' + llmModel;\n\n// 如果是SmolVLM，添加model_type参数\nif (modelTypeParam) {\n    cmd += ' ' + modelTypeParam;\n}\n\nmsg.payload = cmd;\nmsg.modelType = modelType;\nmsg.userPrompt = userPrompt;\nmsg.startTime = Date.now(); // 记录开始时间，用于计算等待时间\n\nnode.status({ fill: 'blue', shape: 'dot', text: '回灌命令已构建' });\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "path",
+                "module": "path"
+            },
+            {
+                "var": "os",
+                "module": "os"
+            }
+        ],
+        "x": 550,
+        "y": 400,
+        "wires": [
+            [
+                "exec_start_vlm"
+            ]
+        ]
+    },
+    {
+        "id": "comment_prompt_section",
+        "type": "comment",
+        "z": "vlm_tab",
+        "name": "💬 自定义提示词",
+        "info": "设置VLM推理的提示词（默认：描述一下这张图片.）",
+        "x": 150,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "inject_set_prompt_chinese",
+        "type": "inject",
+        "z": "vlm_tab",
+        "name": "设置提示词（中文）",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "描述一下这张图片.",
+        "payloadType": "str",
+        "x": 140,
+        "y": 540,
+        "wires": [
+            [
+                "function_save_prompt"
+            ]
+        ]
+    },
+    {
+        "id": "inject_set_prompt_english",
+        "type": "inject",
+        "z": "vlm_tab",
+        "name": "设置提示词（英文）",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "Describe the image.",
+        "payloadType": "str",
+        "x": 140,
+        "y": 580,
+        "wires": [
+            [
+                "function_save_prompt"
+            ]
+        ]
+    },
+    {
+        "id": "function_save_prompt",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "保存提示词",
+        "func": "// 保存提示词到全局变量\nconst promptToSave = (msg.payload && typeof msg.payload === 'string' && msg.payload.trim() !== '') \n    ? msg.payload.trim() \n    : (global.get('vlmPrompt') || '描述一下这张图片.');\n\nglobal.set('vlmPrompt', promptToSave);\nnode.status({ fill: 'green', shape: 'dot', text: '提示词: ' + promptToSave.substring(0, 20) + '...' });\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "comment_control_section",
+        "type": "comment",
+        "z": "vlm_tab",
+        "name": "🎮 控制功能",
+        "info": "停止VLM服务",
+        "x": 150,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "inject_stop",
+        "type": "inject",
+        "z": "vlm_tab",
+        "name": "停止VLM服务",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "stop",
+        "payloadType": "str",
+        "x": 140,
+        "y": 660,
+        "wires": [
+            [
+                "exec_stop_all"
+            ]
+        ]
+    },
+    {
+        "id": "exec_stop_all",
+        "type": "exec",
+        "z": "vlm_tab",
+        "name": "停止服务",
+        "command": "sudo pkill -9 -f hobot_llamacpp; sudo pkill -9 -f hobot_usb_cam; sudo pkill -9 -f hobot_dosod; sudo pkill -9 -f websocket; sudo pkill -9 -f python3; sudo pkill -9 -f 'ros2 launch'; sudo pkill -9 -f 'ros2 run'; sleep 2; sudo rm -rf /dev/shm/*; ros2 daemon stop 2>/dev/null; sleep 1; echo '✓ 服务已彻底停止，资源已释放'",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "10",
+        "oldrc": false,
+        "x": 350,
+        "y": 660,
+        "wires": [
+            [
+                "debug_stop_info"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "debug_stop_info",
+        "type": "debug",
+        "z": "vlm_tab",
+        "name": "停止状态",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 550,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "function_prepare_image_display",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "准备图片显示",
+        "func": "// 处理拍照节点输出，准备显示图片\n// rdk-camera takephoto节点可能输出：\n// 1. Buffer格式的图片数据（直接可用）\n// 2. 字符串格式的文件路径（需要读取文件）\n\n// 如果payload是Buffer，直接返回到image viewer（输出1）\nif (Buffer.isBuffer(msg.payload)) {\n    node.status({ fill: 'green', shape: 'dot', text: '图片Buffer已就绪' });\n    return [null, msg]; // 第一个输出为null（不读取文件），第二个输出到image viewer\n}\n\n// 如果payload是字符串路径，需要读取文件（输出0）\nif (typeof msg.payload === 'string') {\n    let imagePath = msg.payload.trim();\n    \n    // 处理路径：支持~开头的路径\n    if (imagePath.startsWith('~')) {\n        imagePath = imagePath.replace(/^~/, '/home/sunrise');\n    }\n    \n    // 如果不是绝对路径，添加默认目录\n    if (!imagePath.startsWith('/')) {\n        imagePath = '/home/sunrise/vlm_model/' + imagePath;\n    }\n    \n    // 设置filename属性，供file in节点使用\n    msg.filename = imagePath;\n    node.status({ fill: 'blue', shape: 'dot', text: '准备读取图片: ' + path.basename(imagePath) });\n    return [msg, null]; // 第一个输出到file_read_photo，第二个输出为null\n}\n\n// 如果都不是，返回null（不显示）\nnode.status({ fill: 'yellow', shape: 'dot', text: '无法识别图片格式' });\nreturn [null, null];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "path",
+                "module": "path"
+            }
+        ],
+        "x": 550,
+        "y": 340,
+        "wires": [
+            [
+                "file_read_photo"
+            ],
+            [
+                "image_viewer_photo"
+            ]
+        ]
+    },
+    {
+        "id": "file_read_photo",
+        "type": "file in",
+        "z": "vlm_tab",
+        "name": "读取图片文件",
+        "filename": "",
+        "format": "buffer",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 750,
+        "y": 340,
+        "wires": [
+            [
+                "image_viewer_photo"
+            ]
+        ]
+    },
+    {
+        "id": "image_viewer_photo",
+        "type": "image viewer",
+        "z": "vlm_tab",
+        "name": "显示拍摄的图片",
+        "width": "640",
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 950,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "global_config_vlm",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-rdk-camera": "0.0.17"
+        }
+    }
+]
