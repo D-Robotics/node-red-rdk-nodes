@@ -11,7 +11,7 @@
         "id": "d3152bf2aa8f256f",
         "type": "group",
         "z": "d857afa8400d1b28",
-        "name": "Smart Update",
+        "name": "软件包智能更新",
         "style": {
             "fill": "#ffffbf",
             "fill-opacity": "0.46",
@@ -31,7 +31,7 @@
         "id": "32be5467447d6d99",
         "type": "group",
         "z": "d857afa8400d1b28",
-        "name": "Check and execute LMK Node",
+        "name": "检查及运行LMK节点",
         "style": {
             "fill": "#e3f3d3",
             "fill-opacity": "0.5",
@@ -50,7 +50,7 @@
         "id": "f13ba6fcfee2c830",
         "type": "group",
         "z": "d857afa8400d1b28",
-        "name": "LMK Visualization",
+        "name": "LMK结果展示",
         "style": {
             "fill": "#bfdbef",
             "fill-opacity": "0.47",
@@ -70,9 +70,9 @@
         "id": "04f46a600926566c",
         "type": "comment",
         "z": "d857afa8400d1b28",
-        "name": "Name: TROS Application LMK Detection",
+        "name": "名称：TROS应用 人手关键点检查",
         "info": "",
-        "x": 220,
+        "x": 190,
         "y": 40,
         "wires": []
     },
@@ -80,7 +80,7 @@
         "id": "cafec6c32be44442",
         "type": "inject",
         "z": "d857afa8400d1b28",
-        "name": "Learn More",
+        "name": "了解更多",
         "props": [
             {
                 "p": "payload"
@@ -97,7 +97,7 @@
         "topic": "",
         "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/function/hand_lmk_detection",
         "payloadType": "str",
-        "x": 490,
+        "x": 440,
         "y": 40,
         "wires": [
             [
@@ -110,7 +110,7 @@
         "type": "rdk-tools openurl",
         "z": "d857afa8400d1b28",
         "name": "",
-        "x": 660,
+        "x": 600,
         "y": 40,
         "wires": []
     },
@@ -118,9 +118,9 @@
         "id": "fe7b72ea00864d73",
         "type": "comment",
         "z": "d857afa8400d1b28",
-        "name": "Notice: Please choose compatible cam type!",
+        "name": "注意：选择对应的摄像头类型",
         "info": "",
-        "x": 170,
+        "x": 220,
         "y": 200,
         "wires": []
     },
@@ -128,7 +128,7 @@
         "id": "ccc4ae54b12d3037",
         "type": "inject",
         "z": "d857afa8400d1b28",
-        "name": "Start(USB Cam)",
+        "name": "启动（USB摄像头）",
         "props": [
             {
                 "p": "payload"
@@ -146,7 +146,7 @@
         "topic": "",
         "payload": "iso",
         "payloadType": "date",
-        "x": 180,
+        "x": 190,
         "y": 120,
         "wires": [
             [
@@ -159,7 +159,7 @@
         "id": "f9fec823f02d08e2",
         "type": "inject",
         "z": "d857afa8400d1b28",
-        "name": "Stop(MIPI Cam)",
+        "name": "启动（MIPI摄像头）",
         "props": [
             {
                 "p": "payload"
@@ -176,7 +176,7 @@
         "topic": "mipi",
         "payload": "iso",
         "payloadType": "date",
-        "x": 180,
+        "x": 190,
         "y": 160,
         "wires": [
             [
@@ -189,7 +189,7 @@
         "id": "a4f5a6f0792ae22e",
         "type": "inject",
         "z": "d857afa8400d1b28",
-        "name": "Stop",
+        "name": "关闭",
         "props": [
             {
                 "p": "kill",
@@ -214,9 +214,9 @@
         "id": "d52a0017ca046966",
         "type": "comment",
         "z": "d857afa8400d1b28",
-        "name": "Notice: Please stop flow before closing the flow.",
+        "name": "注意：使用结束后请主动关闭",
         "info": "",
-        "x": 180,
+        "x": 220,
         "y": 280,
         "wires": []
     },
@@ -240,13 +240,13 @@
         "type": "change",
         "z": "d857afa8400d1b28",
         "g": "d3152bf2aa8f256f",
-        "name": "Update Hint",
+        "name": "更新提示",
         "rules": [
             {
                 "t": "set",
                 "p": "payload",
                 "pt": "msg",
-                "to": "Update complete",
+                "to": "智能更新已完成",
                 "tot": "str"
             }
         ],
@@ -255,7 +255,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 610,
+        "x": 600,
         "y": 120,
         "wires": [
             [
@@ -278,7 +278,7 @@
         "type": "change",
         "z": "d857afa8400d1b28",
         "g": "32be5467447d6d99",
-        "name": "Set LMK Node",
+        "name": "设定LMK节点",
         "rules": [
             {
                 "t": "set",
@@ -336,7 +336,7 @@
         "id": "5f09deb1ea1ffb4c",
         "type": "debug",
         "z": "d857afa8400d1b28",
-        "name": "Hint",
+        "name": "正确执行提示",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -345,7 +345,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 830,
+        "x": 860,
         "y": 220,
         "wires": []
     },
@@ -353,7 +353,7 @@
         "id": "1938a351c5776aa7",
         "type": "debug",
         "z": "d857afa8400d1b28",
-        "name": "Error Hint",
+        "name": "错误执行提示",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -362,7 +362,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 840,
+        "x": 860,
         "y": 260,
         "wires": []
     },
@@ -370,7 +370,7 @@
         "id": "c37ff380debe1a6b",
         "type": "debug",
         "z": "d857afa8400d1b28",
-        "name": "Result output",
+        "name": "算法结果输出",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -387,7 +387,7 @@
         "id": "bd076307089aaa8c",
         "type": "debug",
         "z": "d857afa8400d1b28",
-        "name": "Performance output",
+        "name": "性能信息输出",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -396,7 +396,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 720,
+        "x": 700,
         "y": 400,
         "wires": []
     },
@@ -431,7 +431,7 @@
         "type": "change",
         "z": "d857afa8400d1b28",
         "g": "f13ba6fcfee2c830",
-        "name": "Set Link",
+        "name": "设定链接",
         "rules": [
             {
                 "t": "set",
@@ -479,7 +479,7 @@
         "id": "892256b192875318",
         "type": "inject",
         "z": "d857afa8400d1b28",
-        "name": "Update",
+        "name": "更新软件包",
         "props": [
             {
                 "p": "payload"
@@ -496,7 +496,7 @@
         "topic": "",
         "payload": "",
         "payloadType": "str",
-        "x": 150,
+        "x": 160,
         "y": 80,
         "wires": [
             [
@@ -508,7 +508,7 @@
         "id": "739d674aebb5eab4",
         "type": "inject",
         "z": "d857afa8400d1b28",
-        "name": "Open Visualization Page",
+        "name": "打开可视化页面",
         "props": [
             {
                 "p": "payload"
@@ -525,7 +525,7 @@
         "topic": "",
         "payload": "http://{host}:8000",
         "payloadType": "str",
-        "x": 710,
+        "x": 680,
         "y": 320,
         "wires": [
             [
@@ -538,7 +538,7 @@
         "type": "rdk-tools openurl",
         "z": "d857afa8400d1b28",
         "name": "",
-        "x": 940,
+        "x": 880,
         "y": 320,
         "wires": []
     }

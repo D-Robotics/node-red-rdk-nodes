@@ -11,7 +11,7 @@
         "id": "5fde230ebb3c131d",
         "type": "group",
         "z": "c30e412c381fc40a",
-        "name": "Smart Update",
+        "name": "Smart Package Update",
         "style": {
             "fill": "#ffffbf",
             "fill-opacity": "0.46",
@@ -22,16 +22,16 @@
             "c090a08759c86544",
             "dd0a2f3eef759049"
         ],
-        "x": 314,
+        "x": 334,
         "y": 79,
-        "w": 592,
+        "w": 572,
         "h": 82
     },
     {
         "id": "6f4d009a0e22d1dd",
         "type": "group",
         "z": "c30e412c381fc40a",
-        "name": "Check and execute MobileNetV2",
+        "name": "Check & Run MobileNetV2",
         "style": {
             "fill": "#e3f3d3",
             "fill-opacity": "0.5",
@@ -43,14 +43,14 @@
         ],
         "x": 354,
         "y": 199,
-        "w": 452,
+        "w": 432,
         "h": 82
     },
     {
         "id": "928abbf1020d1f74",
         "type": "group",
         "z": "c30e412c381fc40a",
-        "name": "MobileNetV2 visualization",
+        "name": "MobileNetV2 Result Display",
         "style": {
             "fill": "#bfdbef",
             "fill-opacity": "0.47",
@@ -72,7 +72,7 @@
         "z": "c30e412c381fc40a",
         "name": "Name: TROS Image Classification MobileNetV2",
         "info": "",
-        "x": 240,
+        "x": 200,
         "y": 40,
         "wires": []
     },
@@ -97,7 +97,7 @@
         "topic": "",
         "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/classification/mobilenetv2",
         "payloadType": "str",
-        "x": 550,
+        "x": 460,
         "y": 40,
         "wires": [
             [
@@ -110,7 +110,7 @@
         "type": "rdk-tools openurl",
         "z": "c30e412c381fc40a",
         "name": "",
-        "x": 780,
+        "x": 640,
         "y": 40,
         "wires": []
     },
@@ -118,9 +118,9 @@
         "id": "2646313d82b5696e",
         "type": "comment",
         "z": "c30e412c381fc40a",
-        "name": "Notice: Please choose compatible cam type!",
+        "name": "Note: Select corresponding camera type",
         "info": "",
-        "x": 170,
+        "x": 220,
         "y": 200,
         "wires": []
     },
@@ -128,7 +128,7 @@
         "id": "a4d954b0b9c341e4",
         "type": "inject",
         "z": "c30e412c381fc40a",
-        "name": "Start(USB Cam)",
+        "name": "Start (USB Camera)",
         "props": [
             {
                 "p": "payload"
@@ -146,7 +146,7 @@
         "topic": "",
         "payload": "iso",
         "payloadType": "date",
-        "x": 180,
+        "x": 190,
         "y": 120,
         "wires": [
             [
@@ -159,7 +159,7 @@
         "id": "568743ec6d01b928",
         "type": "inject",
         "z": "c30e412c381fc40a",
-        "name": "Start(MIPI Cam)",
+        "name": "Start (MIPI Camera)",
         "props": [
             {
                 "p": "payload"
@@ -176,7 +176,7 @@
         "topic": "mipi",
         "payload": "iso",
         "payloadType": "date",
-        "x": 180,
+        "x": 190,
         "y": 160,
         "wires": [
             [
@@ -214,9 +214,9 @@
         "id": "0c1f75a0af42f69c",
         "type": "comment",
         "z": "c30e412c381fc40a",
-        "name": "Notice: Please stop flow before closing the flow.",
+        "name": "Note: Manually stop after use",
         "info": "",
-        "x": 180,
+        "x": 220,
         "y": 280,
         "wires": []
     },
@@ -240,13 +240,13 @@
         "type": "change",
         "z": "c30e412c381fc40a",
         "g": "5fde230ebb3c131d",
-        "name": "Update Hint",
+        "name": "Update Notification",
         "rules": [
             {
                 "t": "set",
                 "p": "payload",
                 "pt": "msg",
-                "to": "Update complete",
+                "to": "Smart update completed",
                 "tot": "str"
             }
         ],
@@ -255,7 +255,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 610,
+        "x": 600,
         "y": 120,
         "wires": [
             [
@@ -336,7 +336,7 @@
         "id": "6dd899cb015ff669",
         "type": "debug",
         "z": "c30e412c381fc40a",
-        "name": "Hint",
+        "name": "Success Info",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -345,7 +345,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 870,
+        "x": 900,
         "y": 220,
         "wires": []
     },
@@ -353,7 +353,7 @@
         "id": "90c1359ce0ea3963",
         "type": "debug",
         "z": "c30e412c381fc40a",
-        "name": "Error hint",
+        "name": "Error Info",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -362,7 +362,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 880,
+        "x": 900,
         "y": 260,
         "wires": []
     },
@@ -370,7 +370,7 @@
         "id": "1872d496fa53dd48",
         "type": "debug",
         "z": "c30e412c381fc40a",
-        "name": "Result output",
+        "name": "Algorithm Result",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -387,7 +387,7 @@
         "id": "22fd491288b32063",
         "type": "debug",
         "z": "c30e412c381fc40a",
-        "name": "Performace output",
+        "name": "Performance Info",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -396,7 +396,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 690,
+        "x": 680,
         "y": 400,
         "wires": []
     },
@@ -431,7 +431,7 @@
         "type": "change",
         "z": "c30e412c381fc40a",
         "g": "928abbf1020d1f74",
-        "name": "Set link",
+        "name": "Set Connection URL",
         "rules": [
             {
                 "t": "set",
@@ -480,7 +480,7 @@
         "id": "8b3565a2337e9d09",
         "type": "inject",
         "z": "c30e412c381fc40a",
-        "name": "Update",
+        "name": "Auto Update",
         "props": [
             {
                 "p": "payload"
@@ -497,7 +497,7 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 150,
+        "x": 160,
         "y": 80,
         "wires": [
             [
@@ -509,7 +509,7 @@
         "id": "9a0bd3a4ceff2879",
         "type": "change",
         "z": "c30e412c381fc40a",
-        "name": "Extract types",
+        "name": "Extract Type",
         "rules": [
             {
                 "t": "set",
@@ -524,7 +524,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 150,
+        "x": 140,
         "y": 480,
         "wires": [
             [
@@ -546,7 +546,7 @@
         "id": "690f2bbf5aef2b51",
         "type": "inject",
         "z": "c30e412c381fc40a",
-        "name": "Open visualization page",
+        "name": "Open Web Viz",
         "props": [
             {
                 "p": "payload"
@@ -563,7 +563,7 @@
         "topic": "",
         "payload": "http://{host}:8000",
         "payloadType": "str",
-        "x": 700,
+        "x": 680,
         "y": 320,
         "wires": [
             [
@@ -576,7 +576,7 @@
         "type": "rdk-tools openurl",
         "z": "c30e412c381fc40a",
         "name": "",
-        "x": 920,
+        "x": 880,
         "y": 320,
         "wires": []
     }

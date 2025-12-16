@@ -1,0 +1,647 @@
+[
+    {
+        "id": "vlm_tab",
+        "type": "tab",
+        "label": "Vision Language Model (VLM)",
+        "disabled": false,
+        "info": "# Vision Language Model (VLM)\n\n## Introduction\n\nThis section introduces how to experience the edge-side Vision Language Model (VLM) on the RDK platform. Thanks to the excellent work of InternVL and SmolVLM, we have achieved quantization and deployment on the RDK platform. This example combines the powerful KV Cache management of llama.cpp with the computing advantages of the RDK platform's BPU module to realize local VLM deployment.\n\n## ⚠️ IMPORTANT: ION Memory Configuration (Must Do!)\n\n**This is the most critical step!** If ION memory is not configured, the model is 100% guaranteed to crash due to insufficient memory (OOM Killed).\n\n### Configuration Steps:\n\n1. **Run the configuration tool:**\n   ```bash\n   sudo srpi-config\n   ```\n\n2. **Set ION Memory:**\n   - Select: `Performance Options` → `ION Memory`\n   - Select: **`320MB+640MB+640MB`** (i.e., 1.6GB)\n   - Confirm and Save\n\n3. **Reboot:**\n   ```bash\n   sudo reboot\n   ```\n   **You must reboot!** The configuration will only take effect after a restart.\n\n4. **(Optional) Optimize CPU Performance:**\n   After rebooting, you can set the CPU to high-performance mode to avoid inference lag:\n   ```bash\n   sudo bash -c 'echo performance >/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor'\n   ```\n\n### Verify Configuration:\nAfter rebooting, verify the ION memory configuration with:\n```bash\ncat /proc/device-tree/reserved-memory/*/compatible\n```\n\n## Usage Modes\n\n### 📷 Camera Mode\n1. Select Model Type (InternVL or SmolVLM)\n2. Click the \"📷 Take USB Photo\" button\n3. The system will automatically perform VLM inference on the photo\n4. The inference result (text description) will be displayed in the Node-RED editor\n\n### 🖼️ Feedback Mode (Local Image)\n1. Select Model Type (InternVL or SmolVLM)\n2. Click the \"Start Local Image Inference\" button\n3. The system will infer on the specified local image\n4. The result will be displayed in the editor\n\n## Supported Platforms\n\n- RDK X5, RDK X5 Module\n- RDK S100, RDK S100P\n\n## Supported Models\n\n### InternVL2_5 / InternVL3\n- Parameters: 1B / 2B\n- Image Encoder: vit_model_int16_*.bin (X5) / vit_model_int16_*.hbm (S100)\n- LLM: Qwen2.5-0.5B-Instruct-Q4_0.gguf\n\n### SmolVLM2\n- Parameters: 256M / 500M\n- Image Encoder: SigLip_int16_SmolVLM2_*.bin (X5) / SigLip_int16_SmolVLM2_*.hbm (S100)\n- LLM: SmolVLM2-*-Video-Instruct-Q8_0.gguf\n\n## Performance Info\n\n| Model | Params | Quant | Platform | Input Size | Encoder Time(ms) | Prefill (ms/token) | Eval (ms/token) |\n|-------|--------|-------|----------|------------|------------------|--------------------|-----------------|\n| InternVL2_5 | 0.5B | Q4_0 | X5 | 1x3x448x448 | 2456.00 | 7.7 | 51.6 |\n| InternVL3 | 0.5B | Q8_0 | S100 | 1x3x448x448 | 100.00 | 9.19 | 41.65 |\n| Smolvlm2 | 256M | Q8_0 | X5 | 1x3x512x512 | 1053 | 9.3 | 27.8 |\n\n## 📋 Read Before Use\n\n> ⚠️ **Important**: Please configure your board before using this feature!\n> \n> Refer to official docs for setup:\n> \n> 🔗 [hobot_llamacpp Official Docs](https://developer.d-robotics.cc/rdk_doc/rdk_s/Robot_development/boxs/generate/hobot_llamacpp)\n> \n> After setup, please follow the ION configuration steps above.\n\n## Preparation\n\n1. ✅ **Configure ION Memory** (See above)\n2. RDK flashed with Ubuntu 22.04\n3. TogetheROS.Bot installed\n4. Install package: `sudo apt install tros-humble-hobot-llamacpp`\n5. Models will auto-download to `$HOME/vlm_model`\n\n## Model Location\n\n- **Directory:** `$HOME/vlm_model/`\n- **Image Encoder:** Auto-downloaded based on platform\n- **LLM:** `Qwen2.5-0.5B-Instruct-Q4_0.gguf` or `SmolVLM2-256M-Video-Instruct-Q8_0.gguf`\n",
+        "env": []
+    },
+    {
+        "id": "comment_before_start",
+        "type": "comment",
+        "z": "vlm_tab",
+        "name": "⚠️ Read Before Use",
+        "info": "**IMPORTANT**: Please configure your development board before using this feature!\n\nRecommended configuration guide:\n🔗 https://developer.d-robotics.cc/rdk_doc/rdk_s/Robot_development/boxs/generate/hobot_llamacpp\n\nEnsure ION memory is configured (see Tab description).",
+        "x": 150,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "comment_model_selection",
+        "type": "comment",
+        "z": "vlm_tab",
+        "name": "🔧 Model Selection",
+        "info": "Select the VLM model type to use",
+        "x": 150,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "inject_set_internvl",
+        "type": "inject",
+        "z": "vlm_tab",
+        "name": "Select InternVL",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "internvl",
+        "payloadType": "str",
+        "x": 140,
+        "y": 120,
+        "wires": [
+            [
+                "function_save_model_type"
+            ]
+        ]
+    },
+    {
+        "id": "inject_set_smolvlm",
+        "type": "inject",
+        "z": "vlm_tab",
+        "name": "Select SmolVLM",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "smolvlm",
+        "payloadType": "str",
+        "x": 140,
+        "y": 160,
+        "wires": [
+            [
+                "function_save_model_type"
+            ]
+        ]
+    },
+    {
+        "id": "function_save_model_type",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "Save Model Type",
+        "func": "// Save model type to global variable\nconst modelType = msg.payload || 'internvl';\nif (typeof global.vlmModelType === 'undefined') {\n    global.vlmModelType = {};\n}\nglobal.vlmModelType.current = modelType;\n\n// Detect Platform (Default logic, real detection happens in Shell)\nlet platform = 'X5'; // Default\nif (typeof global.vlmPlatform === 'undefined') {\n    platform = 'X5';\n    global.vlmPlatform = platform;\n} else {\n    platform = global.vlmPlatform;\n}\n\nnode.status({ fill: 'green', shape: 'dot', text: 'Model: ' + (modelType === 'internvl' ? 'InternVL' : 'SmolVLM') + ' (' + platform + ')' });\n\n// Set default parameters based on model and platform\nif (modelType === 'internvl') {\n    // InternVL Config\n    if (platform === 'S100') {\n        global.vlmModelType.modelFile = 'vit_model_int16.hbm';\n    } else {\n        global.vlmModelType.modelFile = 'vit_model_int16_v2.bin'; // X5 Default\n    }\n    global.vlmModelType.llmModel = 'Qwen2.5-0.5B-Instruct-Q4_0.gguf';\n    global.vlmModelType.modelTypeParam = '';\n} else if (modelType === 'smolvlm') {\n    // SmolVLM Config\n    if (platform === 'S100') {\n        global.vlmModelType.modelFile = 'SigLip_int16_SmolVLM2_256M_Instruct_S100.hbm';\n    } else {\n        global.vlmModelType.modelFile = 'SigLip_int16_SmolVLM2_256M_Instruct_MLP_C1_UP_X5.bin'; // X5 Default\n    }\n    global.vlmModelType.llmModel = 'SmolVLM2-256M-Video-Instruct-Q8_0.gguf';\n    global.vlmModelType.modelTypeParam = '-p model_type:=1';\n}\n\n// Ensure prompt is initialized (English default)\nif (typeof global.vlmPrompt === 'undefined' || !global.vlmPrompt.current) {\n    global.vlmPrompt = {};\n    global.vlmPrompt.current = 'Describe this image.';\n}\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "comment_photo_section",
+        "type": "comment",
+        "z": "vlm_tab",
+        "name": "📷 Photo Inference",
+        "info": "Click the take photo button to capture an image and run VLM inference.",
+        "x": 150,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "inject_take_photo",
+        "type": "inject",
+        "z": "vlm_tab",
+        "name": "📷 Take USB Photo",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 280,
+        "wires": [
+            [
+                "rdk_camera_take_photo"
+            ]
+        ]
+    },
+    {
+        "id": "rdk_camera_take_photo",
+        "type": "rdk-camera takephoto",
+        "z": "vlm_tab",
+        "cameratype": "1",
+        "filemode": "2",
+        "filename": "photo.jpg",
+        "filedefpath": "0",
+        "filepath": "/home/sunrise/vlm_model",
+        "fileformat": "jpeg",
+        "resolution": "2",
+        "rotation": "0",
+        "fliph": "0",
+        "flipv": "0",
+        "brightness": "50",
+        "contrast": "0",
+        "sharpness": "0",
+        "quality": "80",
+        "imageeffect": "none",
+        "exposuremode": "auto",
+        "iso": "0",
+        "agcwait": "1.0",
+        "led": "0",
+        "awb": "auto",
+        "name": "Take Photo",
+        "x": 350,
+        "y": 280,
+        "wires": [
+            [
+                "function_prepare_vlm",
+                "function_prepare_image_display"
+            ]
+        ]
+    },
+    {
+        "id": "function_prepare_vlm",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "Prepare VLM",
+        "func": "// Prepare VLM Inference: Handle image path and build command\nconst self = node;\n\n// Get prompt from global (Default to English)\nmsg.vlmPrompt = global.get('vlmPrompt') || \"Describe this image.\";\n\n// Handle Image Path\nvar imagePath = msg.payload;\nif (typeof imagePath === 'string') {\n    imagePath = imagePath.trim();\n    if (imagePath.startsWith('~')) {\n        imagePath = imagePath.replace(/^~/, '/home/sunrise');\n    }\n    if (!imagePath.startsWith('/')) {\n        imagePath = '/home/sunrise/vlm_model/' + imagePath;\n    }\n} else {\n    imagePath = '/home/sunrise/vlm_model/photo.jpg';\n}\n\n// Ensure directory exists\nconst imageDir = path.dirname(imagePath);\nif (!fs.existsSync(imageDir)) {\n    try {\n        fs.mkdirSync(imageDir, { recursive: true });\n    } catch (e) {\n        // ignore\n    }\n}\n\n// Wait for file (Async)\nconst finalImagePath = imagePath;\nif (fs.existsSync(finalImagePath)) {\n    self.status({ fill: 'green', shape: 'dot', text: '✓ Image ready, preparing inference...' });\n    buildVlmCommand(finalImagePath);\n} else {\n    self.status({ fill: 'yellow', shape: 'dot', text: '📷 Waiting for image save...' });\n    let retryCount = 0;\n    const maxRetries = 6;\n    const checkFile = function() {\n        if (fs.existsSync(finalImagePath)) {\n            self.status({ fill: 'green', shape: 'dot', text: '✓ Image ready, preparing inference...' });\n            buildVlmCommand(finalImagePath);\n        } else if (retryCount < maxRetries) {\n            retryCount++;\n            self.status({ fill: 'yellow', shape: 'dot', text: '📷 Waiting for image... (' + retryCount + '/' + maxRetries + ')' });\n            setTimeout(checkFile, 500);\n        } else {\n            // Fallback: look for latest image\n            const dir = path.dirname(finalImagePath);\n            if (fs.existsSync(dir)) {\n                try {\n                    const files = fs.readdirSync(dir)\n                        .filter(file => file.toLowerCase().endsWith('.jpg') || file.toLowerCase().endsWith('.jpeg'))\n                        .map(file => {\n                            try {\n                                return { path: path.join(dir, file), mtime: fs.statSync(path.join(dir, file)).mtime };\n                            } catch (e) {\n                                return null;\n                            }\n                        })\n                        .filter(f => f !== null)\n                        .sort((a, b) => b.mtime - a.mtime);\n                    if (files.length > 0) {\n                        buildVlmCommand(files[0].path);\n                    } else {\n                        self.status({ fill: 'red', shape: 'dot', text: 'Image file not found' });\n                    }\n                } catch (e) {\n                    self.status({ fill: 'red', shape: 'dot', text: 'File search failed' });\n                }\n            } else {\n                self.status({ fill: 'red', shape: 'dot', text: 'Directory not found' });\n            }\n        }\n    };\n    setTimeout(checkFile, 500);\n    return null;\n}\n\n// Build VLM Command\nfunction buildVlmCommand(imagePath) {\n    var prompt = msg.vlmPrompt || global.get('vlmPrompt') || \"Describe this image.\";\n    \n    const modelType = (global.vlmModelType && global.vlmModelType.current) || 'internvl';\n    const llmModel = (global.vlmModelType && global.vlmModelType.llmModel) || 'Qwen2.5-0.5B-Instruct-Q4_0.gguf';\n    const modelTypeParam = (global.vlmModelType && global.vlmModelType.modelTypeParam) || '';\n    \n    // Escape prompt\n    var escapedPrompt = prompt.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"');\n    var llmPath = \"/home/sunrise/vlm_model/\" + llmModel;\n    \n    // Build Command (With Platform Detection)\n    var cmd = 'source /opt/tros/humble/setup.bash && ';\n    cmd += 'PLATFORM=$(cat /proc/device-tree/model 2>/dev/null | strings | grep -oE \"(X5|S100)\" | head -1 || echo \"X5\") && ';\n    cmd += 'if [ \"$PLATFORM\" = \"S100\" ]; then MODEL_FILE=\"vit_model_int16.hbm\"; else MODEL_FILE=\"vit_model_int16_v2.bin\"; fi && ';\n    cmd += 'MODEL_PATH=\"/home/sunrise/vlm_model/$MODEL_FILE\" && ';\n    cmd += 'ros2 run hobot_llamacpp hobot_llamacpp --ros-args ';\n    cmd += '-p feed_type:=0 -p image_type:=0 ';\n    cmd += '-p image:=' + imagePath + ' ';\n    cmd += '-p user_prompt:=\"' + escapedPrompt + '\" ';\n    cmd += '-p model_file_name:=$MODEL_PATH ';\n    cmd += '-p llm_model_name:=' + llmPath;\n    \n    if (modelTypeParam) {\n        cmd += ' ' + modelTypeParam;\n    }\n    \n    const newMsg = {\n        payload: cmd,\n        imagePath: imagePath,\n        _msgid: msg._msgid\n    };\n    \n    self.status({ fill: 'blue', shape: 'dot', text: '🚀 Starting VLM Engine...' });\n    self.send(newMsg);\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "fs",
+                "module": "fs"
+            },
+            {
+                "var": "path",
+                "module": "path"
+            }
+        ],
+        "x": 550,
+        "y": 280,
+        "wires": [
+            [
+                "exec_start_vlm",
+                "function_start_topic_subscriber"
+            ]
+        ]
+    },
+    {
+        "id": "exec_start_vlm",
+        "type": "exec",
+        "z": "vlm_tab",
+        "name": "Start VLM Inference",
+        "command": "",
+        "addpay": true,
+        "append": "",
+        "useSpawn": true,
+        "timer": "600",
+        "oldrc": false,
+        "x": 750,
+        "y": 280,
+        "wires": [
+            [
+                "function_parse_vlm_result"
+            ],
+            [
+                "function_check_error",
+                "debug_vlm_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "exec_echo_topic",
+        "type": "exec",
+        "z": "vlm_tab",
+        "name": "Subscribe Topic",
+        "command": "",
+        "addpay": true,
+        "append": "",
+        "useSpawn": true,
+        "timer": "90",
+        "oldrc": false,
+        "x": 950,
+        "y": 320,
+        "wires": [
+            [
+                "function_parse_topic_result"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "function_parse_topic_result",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "Parse Topic Result",
+        "func": "// Parse ROS Topic Output (Preferred)\n\nlet output = '';\nif (Buffer.isBuffer(msg.payload)) {\n    output = msg.payload.toString('utf8');\n} else if (typeof msg.payload === 'string') {\n    output = msg.payload;\n} else {\n    output = String(msg.payload || '');\n}\n\n// Check for ROS2 daemon errors\nif (output.includes('RuntimeError') || output.includes('rclpy.ok()') || output.includes('xmlrpc.client.Fault') || output.includes('Fault 1') || output.includes('Unable to communicate') || output.includes('Failed to communicate')) {\n    const msgId = msg._msgid || 'default';\n    if (typeof global.vlmTopicSubscribed === 'undefined') {\n        global.vlmTopicSubscribed = {};\n    }\n    global.vlmTopicSubscribed[msgId] = true;\n    node.warn('ROS2 daemon error, fallback to stdout.');\n    node.status({ fill: 'yellow', shape: 'dot', text: 'ROS2 error, fallback to stdout' });\n    return null;\n}\n\n// Check if Topic exists\nif (output.includes('does not appear to be published') || \n    output.includes('Could not determine the type') || \n    output.includes('topic does not exist') ||\n    output.includes('Topic not found')) {\n    const msgId = msg._msgid || 'default';\n    if (typeof global.vlmTopicSubscribed === 'undefined') {\n        global.vlmTopicSubscribed = {};\n    }\n    global.vlmTopicSubscribed[msgId] = true;\n    node.warn('Topic not found, fallback to stdout.');\n    node.status({ fill: 'yellow', shape: 'dot', text: 'Topic not found, fallback to stdout' });\n    return null;\n}\n\n// Filter empty output\nif (!output || output.trim().length === 0) {\n    const msgId = msg._msgid || 'default';\n    if (typeof global.vlmTopicSubscribed === 'undefined') {\n        global.vlmTopicSubscribed = {};\n    }\n    global.vlmTopicSubscribed[msgId] = true;\n    node.status({ fill: 'yellow', shape: 'dot', text: 'Topic empty, fallback to stdout' });\n    return null;\n}\n\n// Filter errors\nif (output.trim() === '' || output.includes('ERROR') || output.includes('Error')) {\n    const msgId = msg._msgid || 'default';\n    if (typeof global.vlmTopicSubscribed === 'undefined') {\n        global.vlmTopicSubscribed = {};\n    }\n    global.vlmTopicSubscribed[msgId] = true;\n    node.status({ fill: 'yellow', shape: 'dot', text: 'Topic error, fallback to stdout' });\n    return null;\n}\n\n// Extract 'data' field\nlet result = '';\nconst dataMatch = output.match(/data:\\s*[\"']([^\"']+)[\"']/);\nif (dataMatch && dataMatch[1]) {\n    result = dataMatch[1].trim();\n} else {\n    const dataMatch2 = output.match(/data:\\s*(.+)/);\n    if (dataMatch2 && dataMatch2[1]) {\n        result = dataMatch2[1].trim();\n    } else {\n        const quoteMatch = output.match(/[\"']([^\"']+)[\"']/);\n        if (quoteMatch && quoteMatch[1]) {\n            result = quoteMatch[1].trim();\n        } else {\n            const lines = output.split(/[\\r\\n]+/).filter(line => {\n                const trimmed = line.trim();\n                return trimmed.length > 0 && \n                       !trimmed.startsWith('---') && \n                       !trimmed.match(/^data:/) &&\n                       !trimmed.match(/^std_msgs/);\n            });\n            if (lines.length > 0) {\n                result = lines.join(' ').trim();\n            }\n        }\n    }\n}\n\nresult = result.replace(/^data:\\s*/i, '').replace(/^[\"']|[\"']$/g, '').trim();\n\nif (!result || result.length < 5) {\n    const msgId = msg._msgid || 'default';\n    if (typeof global.vlmTopicSubscribed === 'undefined') {\n        global.vlmTopicSubscribed = {};\n    }\n    global.vlmTopicSubscribed[msgId] = true;\n    node.status({ fill: 'yellow', shape: 'dot', text: 'Topic data invalid, fallback to stdout' });\n    return null;\n}\n\n// Check for invalid strings (English keywords now)\nif (result.includes('ERROR') || result.includes('Error') || result.match(/^\\s*$/) ||\n    result.match(/^(Image File|Prompt|Model File|Device Info|Platform|Work Dir|Detected):/i) ||\n    result.match(/.*:\\s*\\/.*\\.(jpg|jpeg|png|bin|hbm|gguf)/i)) {\n    const msgId = msg._msgid || 'default';\n    if (typeof global.vlmTopicSubscribed === 'undefined') {\n        global.vlmTopicSubscribed = {};\n    }\n    global.vlmTopicSubscribed[msgId] = true;\n    node.status({ fill: 'yellow', shape: 'dot', text: 'Topic anomaly, fallback to stdout' });\n    return null;\n}\n\nconst msgId = msg._msgid || 'default';\nif (typeof global.vlmTopicSubscribed === 'undefined') {\n    global.vlmTopicSubscribed = {};\n}\nglobal.vlmTopicSubscribed[msgId] = true;\n\nmsg.result = result;\nmsg.source = 'ros_topic';\nmsg.fullOutput = output;\nmsg.fromTopic = true;\n\nnode.status({ fill: 'green', shape: 'dot', text: '✓ Topic Result: ' + result.substring(0, 30) + '...' });\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1150,
+        "y": 320,
+        "wires": [
+            [
+                "debug_vlm_result"
+            ]
+        ]
+    },
+    {
+        "id": "function_check_error",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "Check Errors",
+        "func": "// Check error output and exit codes\nlet errorOutput = '';\nif (Buffer.isBuffer(msg.payload)) {\n    errorOutput = msg.payload.toString('utf8');\n} else if (typeof msg.payload === 'string') {\n    errorOutput = msg.payload;\n} else {\n    errorOutput = String(msg.payload || '');\n}\n\n// Check BPU Errors\nconst bpuErrorKeywords = ['hbUCPMallocMem', 'hb_mem_alloc', 'hb_mem', 'MallocMem failed', 'allocate', 'allocation failed', 'ret: -400001', 'ret: -16777211', 'ION_ALLOCATOR', 'Fail to allocate', 'Insufficient memory', 'Fail to do ION_IOC_ALLOC'];\nlet hasBpuError = false;\nfor (const keyword of bpuErrorKeywords) {\n    if (errorOutput.includes(keyword)) {\n        hasBpuError = true;\n        break;\n    }\n}\n\nif (hasBpuError) {\n    const msgId = msg._msgid || 'default';\n    const topicTried = typeof global.vlmTopicSubscribed !== 'undefined' && global.vlmTopicSubscribed[msgId];\n    \n    if (!topicTried) {\n        node.status({ fill: 'yellow', shape: 'dot', text: 'BPU Error detected, waiting for Topic...' });\n        return null;\n    }\n    node.status({ fill: 'yellow', shape: 'dot', text: 'BPU Error, waiting for stdout...' });\n    return null;\n}\n\n// Check Exit Codes\nlet exitCode = 0;\nlet exitCodeStr = '0';\n\ntry {\n    if (typeof msg.rc === 'number') {\n        exitCode = msg.rc;\n        exitCodeStr = String(msg.rc);\n    } else if (typeof msg.rc === 'object' && msg.rc !== null) {\n        exitCode = msg.rc.code || msg.rc.exitCode || msg.rc.status || msg.rc.rc;\n        if (isNaN(exitCode) || exitCode === undefined || exitCode === null) {\n            exitCode = 0;\n        }\n        exitCodeStr = String(exitCode);\n    } else if (typeof msg.rc === 'string') {\n        exitCode = parseInt(msg.rc) || 0;\n        exitCodeStr = msg.rc;\n    } else {\n        exitCode = 0;\n        exitCodeStr = '0 (no rc)';\n    }\n} catch (e) {\n    exitCode = 0;\n    exitCodeStr = 'error';\n}\n\nif (exitCode !== 0) {\n    const isTimeout = (errorOutput.includes('timeout') || errorOutput.includes('timed out')) && !hasBpuError;\n    \n    if (isTimeout || (exitCode === 250 && !hasBpuError)) {\n        node.error('VLM Timeout or Fail, Code: ' + exitCodeStr);\n        node.status({ fill: 'red', shape: 'dot', text: 'Timeout (Code: ' + exitCodeStr + ')' });\n        \n        msg.isError = true;\n        msg.errorType = 'timeout';\n        msg.errorMessage = 'VLM Timeout (Code: ' + exitCodeStr + '). Check model file, network, or resources.';\n        msg.rc = exitCode;\n        return msg;\n    }\n    \n    if (exitCode === 250 && hasBpuError) {\n        node.status({ fill: 'yellow', shape: 'dot', text: 'BPU exit, waiting for stdout...' });\n        return null;\n    }\n    \n    if (exitCode === 245) {\n        node.error('VLM Terminated (Code 245)');\n        node.status({ fill: 'red', shape: 'dot', text: 'Terminated (Code: 245)' });\n        \n        msg.isError = true;\n        msg.errorType = 'command_terminated';\n        msg.errorMessage = 'VLM Terminated (Code 245). Likely OOM or resource limit.';\n        msg.rc = exitCode;\n        return msg;\n    }\n    \n    node.error('VLM Execution Failed, Code: ' + exitCodeStr);\n    node.status({ fill: 'red', shape: 'dot', text: 'Failed (Code: ' + exitCodeStr + ')' });\n    \n    msg.isError = true;\n    msg.errorType = 'execution_failed';\n    msg.errorMessage = 'VLM Failed, Code: ' + exitCodeStr + '\\n' + errorOutput.substring(0, 500);\n    msg.rc = exitCode;\n    return msg;\n}\n\nif (errorOutput.match(/^\\s*\\d+[KM]\\s+[\\.]+\\s+\\d+%\\s+\\d+[KM]\\s+\\d+[ms]/m)) {\n    return null;\n}\n\nif (errorOutput.match(/\\[UCPT\\]|log level|UCPT.*log/i)) {\n    return null;\n}\n\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "function_start_topic_subscriber",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "Start Topic Sub",
+        "func": "// Start ROS Topic subscriber delayed\nconst msgId = msg._msgid || 'default';\nif (typeof global.vlmTopicSubscribed === 'undefined') {\n    global.vlmTopicSubscribed = {};\n}\nglobal.vlmTopicSubscribed[msgId] = false;\n\nconst initialDelay = 15000; // 15s delay\n\nlet countdown = Math.floor(initialDelay / 1000);\nnode.status({ fill: 'blue', shape: 'dot', text: '⏳ Waiting VLM... (' + countdown + 's until Topic sub)' });\n\nconst countdownInterval = setInterval(() => {\n    countdown--;\n    if (countdown > 0) {\n        node.status({ fill: 'blue', shape: 'dot', text: '⏳ Waiting VLM... (' + countdown + 's until Topic sub)' });\n    } else {\n        clearInterval(countdownInterval);\n        node.status({ fill: 'blue', shape: 'dot', text: '🔍 Checking Topic...' });\n    }\n}, 1000);\n\nsetTimeout(() => {\n    clearInterval(countdownInterval);\n    node.status({ fill: 'blue', shape: 'dot', text: '🔍 Checking Topic...' });\n    \n    let cmd = 'source /opt/tros/humble/setup.bash 2>/dev/null && ';\n    cmd += 'for i in $(seq 1 30); do ';\n    cmd += '  if ros2 topic list 2>/dev/null | grep -q \"/tts_text\"; then break; fi; ';\n    cmd += '  sleep 1; ';\n    cmd += 'done && ';\n    cmd += 'timeout 60 ros2 topic echo /tts_text --once 2>&1 || echo \"\"';\n    \n    node.send({\n        _msgid: msg._msgid,\n        payload: cmd,\n        topicName: '/tts_text'\n    });\n    \n    setTimeout(() => {\n        if (global.vlmTopicSubscribed && global.vlmTopicSubscribed[msgId] !== undefined) {\n            delete global.vlmTopicSubscribed[msgId];\n        }\n    }, 90000);\n}, initialDelay);\n\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 280,
+        "wires": [
+            [
+                "exec_echo_topic"
+            ]
+        ]
+    },
+    {
+        "id": "function_parse_vlm_result",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "Parse Result (Stdout)",
+        "func": "// Parse VLM Result from Stdout (Backup)\n// Updated for English logs\n\nconst msgId = msg._msgid || 'default';\n\nif (msg.fromTopic === true && msg.result) {\n    node.status({ fill: 'green', shape: 'dot', text: 'Using Topic result, skipping stdout' });\n    if (typeof global.vlmOutputBuffer !== 'undefined' && global.vlmOutputBuffer[msgId]) {\n        delete global.vlmOutputBuffer[msgId];\n    }\n    return null;\n}\n\nif (typeof global.vlmTopicSubscribed !== 'undefined' && global.vlmTopicSubscribed[msgId]) {\n    if (msg.fromTopic === true) {\n        node.status({ fill: 'blue', shape: 'dot', text: 'Using Topic result, skipping stdout' });\n        return null;\n    }\n}\n\nif (typeof global.vlmOutputBuffer === 'undefined') {\n    global.vlmOutputBuffer = {};\n}\n\nif (!global.vlmOutputBuffer[msgId]) {\n    global.vlmOutputBuffer[msgId] = '';\n}\n\nlet chunk = '';\nif (Buffer.isBuffer(msg.payload)) {\n    try {\n        chunk = msg.payload.toString('utf8');\n    } catch (e) {\n        chunk = msg.payload.toString();\n    }\n} else if (typeof msg.payload === 'string') {\n    chunk = msg.payload;\n} else {\n    chunk = String(msg.payload || '');\n}\n\nif (chunk) {\n    global.vlmOutputBuffer[msgId] += chunk;\n}\n\nconst output = global.vlmOutputBuffer[msgId];\n\n// Check if output is truncated\nconst hasStartMessage = output.includes('Starting VLM inference') || output.includes('take 10-30s');\nconst hasEndMessage = output.includes('===') && output.split('===').length > 2;\n\nif (!output || output.trim().length < 30) {\n    node.status({ fill: 'yellow', shape: 'dot', text: '⏳ VLM starting...' });\n    return null;\n}\n\nif (hasStartMessage && !hasEndMessage && output.length < 500) {\n    const hasRos2Output = output.includes('ros2') || output.includes('hobot_llamacpp') || output.includes('llamacpp_node');\n    if (!hasRos2Output) {\n        node.status({ fill: 'yellow', shape: 'dot', text: '⏳ Loading model...' });\n        return null;\n    }\n}\n\nconst lines = output.split(/[\\r\\n]+/).filter(line => line.trim().length > 0);\n\n// Logs to filter (English)\nconst logKeywords = [\n    'INFO', 'WARN', 'ERROR', 'DEBUG', 'TRACE',\n    '===', 'Work Dir', 'Image File', 'Model Type', 'Prompt', 'Checking', 'Starting',\n    'ros2', 'source', 'cd', 'cp', 'echo', 'ls',\n    'llamacpp_node', 'This is llama',\n    '[DNN]', 'HBRT', 'version', '3.7.3',\n    'image encoder', 'prefill', 'eval time',\n    'Start', 'Finish', 'Completed',\n    'bash', 'setup.bash', 'hobot_llamacpp',\n    '[UCPT]', 'log level', 'UCPT',\n    'wget', 'Download', 'progress', 'Downloading',\n    'Platform Requirement', '⚠', 'Platform Detected', 'Device Info',\n    'Model check', 'Starting VLM inference', 'User Prompt:', 'Image:',\n    'Model file not found', 'Auto downloading', 'Download complete', 'Download failed',\n    'Cleaning up', 'Preparing environment',\n    'please wait', 'may take',\n    '/tmp/', '/opt/', '/dev/', 'image-', 'photo.jpg',\n    'hbUCPMallocMem', 'hb_mem_alloc', 'hb_mem', 'MallocMem failed', 'ION_ALLOCATOR', 'Insufficient memory',\n    '[BPU_PLAT]', 'BPU_PLAT', 'BPU Platform'\n];\n\n// Patterns for start info (English)\nconst startInfoPatterns = [\n    /may take.*wait/i,\n    /Starting VLM inference.*may take/i,\n    /===.*Starting.*===/i,\n    /^===.*Starting/i,\n    /Image File:.*/i,\n    /User Prompt:.*/i,\n    /^Image:/i,\n    /^Prompt:/i,\n    /^Model File:/i,\n    /^Device Info:/i,\n    /^Platform:/i,\n    /^Work Dir:/i,\n    /^Detected Platform:/i,\n    /.*\\/tmp\\/.*\\.(jpg|jpeg|png)/i,\n    /.*image-\\d{8}-\\d{6}\\.(jpg|jpeg)/i,\n    /^echo.*Image/i,\n    /^echo.*Prompt/i\n];\n\nlet result = '';\n\nif (typeof global.vlmTopicSubscribed !== 'undefined' && global.vlmTopicSubscribed[msgId]) {\n    if (msg.fromTopic === true && msg.result) {\n        node.status({ fill: 'green', shape: 'dot', text: 'Used Topic Result' });\n        return msg;\n    }\n}\n\n// Error Checking\nconst errorKeywords = ['[Error]', 'Error', 'ERROR', 'fail', 'Fail', 'not exist', 'Can not open'];\nconst bpuErrorKeywords = ['hbUCPMallocMem', 'hb_mem_alloc', 'hb_mem', 'MallocMem failed', 'ION_ALLOCATOR', 'Fail to allocate', 'Insufficient memory'];\nlet isError = false;\nlet errorLines = [];\nlet errorType = '';\n\nfor (const line of lines) {\n    const trimmed = line.trim();\n    for (const keyword of bpuErrorKeywords) {\n        if (trimmed.includes(keyword)) {\n            isError = true;\n            errorType = 'bpu_memory_error';\n            errorLines.push(trimmed);\n            break;\n        }\n    }\n}\n\nif (isError && errorType === 'bpu_memory_error') {\n    const topicTried = typeof global.vlmTopicSubscribed !== 'undefined' && global.vlmTopicSubscribed[msgId];\n    \n    if (!topicTried) {\n        const waitTime = output.length > 10000 ? 30000 : 15000;\n        const startTime = msg.startTime || Date.now();\n        const elapsedTime = Date.now() - startTime;\n        \n        if (elapsedTime < waitTime) {\n            node.status({ fill: 'yellow', shape: 'dot', text: 'BPU Error, waiting for Topic... (' + Math.round(elapsedTime/1000) + 's)' });\n            return null;\n        } else {\n            node.warn('BPU error, topic timeout, waiting...');\n            node.status({ fill: 'yellow', shape: 'dot', text: 'BPU Error, waiting...' });\n            return null;\n        }\n    }\n    \n    if (msg.fromTopic === true && msg.result) {\n        node.status({ fill: 'green', shape: 'dot', text: 'Using Topic (Ignoring BPU Error)' });\n        cleanupGlobalVars(msgId);\n        return msg;\n    }\n    \n    const errorMessage = errorLines.join(' ');\n    msg.isError = true;\n    msg.errorType = 'bpu_memory_error';\n    msg.errorMessage = 'BPU Memory Allocation Failed: ' + errorMessage + '\\n\\nPossible causes:\\n1. BPU memory full\\n2. Model too large\\n3. System resources low';\n    node.status({ fill: 'red', shape: 'dot', text: 'BPU Memory Failed' });\n    msg.result = errorMessage;\n    msg.fullOutput = output.substring(Math.max(0, output.length - 2000));\n    \n    cleanupGlobalVars(msgId);\n    return msg;\n}\n\n// Other errors\nfor (const line of lines) {\n    const trimmed = line.trim();\n    for (const keyword of errorKeywords) {\n        if (trimmed.includes(keyword)) {\n            isError = true;\n            if (!errorType) errorType = 'other_error';\n            errorLines.push(trimmed);\n            break;\n        }\n    }\n}\n\nif (isError && errorLines.length > 0) {\n    let errorStartIndex = -1;\n    for (let i = 0; i < lines.length; i++) {\n        const trimmed = lines[i].trim();\n        if (trimmed.includes('[Error]') || trimmed.includes('Error')) {\n            errorStartIndex = i;\n            break;\n        }\n    }\n    \n    if (errorStartIndex >= 0) {\n        const errorSection = lines.slice(errorStartIndex).filter(line => {\n            const trimmed = line.trim();\n            return trimmed.length > 0 && (\n                trimmed.includes('Error') ||\n                trimmed.includes('Please') ||\n                trimmed.includes('Download') ||\n                trimmed.includes('wget') ||\n                trimmed.includes('Platform')\n            );\n        });\n        \n        if (errorSection.length > 0) {\n            result = errorSection.join('\\n');\n            msg.isError = true;\n            msg.errorType = 'model_file_missing';\n            node.status({ fill: 'red', shape: 'dot', text: 'Error Detected' });\n            msg.result = result;\n            msg.fullOutput = output.substring(Math.max(0, output.length - 2000));\n            \n            if (global.vlmOutputBuffer && global.vlmOutputBuffer[msgId]) {\n                delete global.vlmOutputBuffer[msgId];\n            }\n            return msg;\n        }\n    }\n}\n\n// Strategy 1: Look for [WARN] [llama_cpp_node]\nlet warnIndex = -1;\nfor (let i = lines.length - 1; i >= 0; i--) {\n    const line = lines[i].trim();\n    if (line.includes('[WARN]') && line.includes('[llama_cpp_node]')) {\n        warnIndex = i;\n        break;\n    }\n}\n\nif (warnIndex >= 0) {\n    let resultLines = [];\n    for (let i = warnIndex + 1; i < lines.length; i++) {\n        const line = lines[i].trim();\n        if (line.length === 0) continue;\n        if (line.match(/^\\[INFO\\]|^\\[WARN\\]|^\\[ERROR\\]|^\\[DEBUG\\]/)) break;\n        \n        let isLogLine = false;\n        for (const keyword of logKeywords) {\n            if (keyword !== 'WARN' && line.includes(keyword)) {\n                isLogLine = true;\n                break;\n            }\n        }\n        \n        if (line.match(/^\\d+\\.\\d+.*$/)) continue;\n        if (line.match(/^\\s*\\d+[KM]\\s+[\\.]+\\s+\\d+%\\s+\\d+[KM]\\s+\\d+[ms]/)) continue;\n        if (line.match(/\\[UCPT\\]/i) || line.match(/UCPT.*log/i)) continue;\n        \n        let isBpuError = false;\n        for (const keyword of bpuErrorKeywords) {\n            if (line.includes(keyword)) {\n                isBpuError = true;\n                break;\n            }\n        }\n        \n        // Accept English sentences\n        const hasEnglish = /[a-zA-Z]{3,}/.test(line);\n        \n        if (!isLogLine && !isBpuError && hasEnglish) {\n            resultLines.push(line);\n        }\n    }\n    \n    if (resultLines.length > 0) {\n        result = resultLines.join(' ').replace(/<\\/s>/g, '').trim();\n        if (result.length >= 10) {\n            result = result.replace(/\\s+/g, ' ').trim();\n            msg.result = result;\n            msg.fullOutput = output.substring(Math.max(0, output.length - 2000));\n            \n            if (global.vlmOutputBuffer && global.vlmOutputBuffer[msgId]) {\n                delete global.vlmOutputBuffer[msgId];\n            }\n            \n            node.status({ fill: 'green', shape: 'dot', text: '✅ Inference Complete!' });\n            return msg;\n        }\n    }\n}\n\n// Strategy 2: Fallback (Scan lines)\nif (!result || result.length < 10) {\n    let candidateLines = [];\n    for (let i = lines.length - 1; i >= Math.max(0, lines.length - 30); i--) {\n        const line = lines[i].trim();\n        if (line.length < 5) continue;\n        \n        let isLogLine = false;\n        for (const keyword of logKeywords) {\n            if (line.includes(keyword)) {\n                isLogLine = true;\n                break;\n            }\n        }\n        \n        if (!isLogLine && !line.match(/^\\[.*\\]$/) && !line.match(/^\\d+\\.\\d+/)) {\n            candidateLines.unshift(line);\n        }\n    }\n    if (candidateLines.length > 0) {\n        result = candidateLines.join(' ').substring(0, 800);\n    }\n}\n\n// Strategy 3: Heuristic scan for English Text\nif (!result || result.length < 10) {\n    const englishMatch = output.match(/[a-zA-Z]{10,}[^\\n]*/g);\n    if (englishMatch && englishMatch.length > 0) {\n        const filtered = englishMatch.filter(line => {\n            const trimmed = line.trim();\n            return !trimmed.match(/^\\[.*\\]$/) && \n                   !trimmed.includes('INFO') && \n                   !trimmed.includes('WARN') && \n                   !trimmed.includes('ERROR') &&\n                   !trimmed.includes('UCPT') &&\n                   !trimmed.includes('log level') &&\n                   !trimmed.includes('BPU_PLAT') &&\n                   trimmed.length > 15;\n        });\n        if (filtered.length > 0) {\n            result = filtered[filtered.length - 1].trim();\n        }\n    }\n}\n\n// Strategy 4: Check if still processing\nconst hasStartInfo = output.includes('Starting') || output.includes('===');\nconst hasResult = result && result.length >= 5 && !result.match(/^\\[.*\\]$/);\n\nconst onlyStartInfo = hasStartInfo && output.includes('may take 10-30s') && !output.includes('llamacpp_node') && output.length < 1000;\nif (onlyStartInfo && !hasResult) {\n    node.status({ fill: 'yellow', shape: 'dot', text: '⏳ Initializing (10-30s)...' });\n    return null;\n}\n\nconst hasRos2Output = output.includes('ros2') || output.includes('hobot_llamacpp') || output.includes('llamacpp_node');\nif (hasStartInfo && !hasResult) {\n    if (output.length > 5000) {\n        // Try lenient extraction\n        let allNonLogLines = [];\n        for (let i = lines.length - 1; i >= Math.max(0, lines.length - 50); i--) {\n            const line = lines[i].trim();\n            if (line.length < 5) continue;\n            let isLogLine = false;\n            for (const keyword of logKeywords) {\n                if (line.includes(keyword)) {\n                    isLogLine = true;\n                    break;\n                }\n            }\n            if (!isLogLine && !line.match(/^\\[.*\\]$/) && !line.match(/\\[UCPT\\]/i)) {\n                allNonLogLines.unshift(line);\n            }\n        }\n        if (allNonLogLines.length > 0) {\n             const merged = allNonLogLines.join(' ').substring(0, 1000);\n             if (/[a-zA-Z]{10,}/.test(merged)) {\n                 result = merged;\n             }\n        }\n    }\n    \n    if (!result || result.length < 10) {\n        const hasInferenceKeywords = output.includes('prefill') || output.includes('eval time') || output.includes('image encoder') || output.includes('token');\n        if (hasInferenceKeywords || hasRos2Output) {\n            const elapsedSeconds = Math.floor((Date.now() - (msg.startTime || Date.now())) / 1000);\n            node.status({ fill: 'blue', shape: 'dot', text: '🤖 Processing... (' + elapsedSeconds + 's)' });\n            return null;\n        } else if (output.length > 10000) {\n             node.status({ fill: 'orange', shape: 'dot', text: 'Output long, check debug' });\n        }\n    }\n}\n\nif (result) {\n    result = result.replace(/\\s+/g, ' ').trim();\n}\n\n// Final Check\nif (result) {\n    for (const keyword of bpuErrorKeywords) {\n        if (result.includes(keyword)) {\n            msg.isError = true;\n            msg.errorType = 'bpu_memory_error';\n            msg.errorMessage = 'BPU Memory Fail: ' + result;\n            node.status({ fill: 'red', shape: 'dot', text: 'BPU Memory Fail' });\n            msg.result = result;\n            msg.fullOutput = output.substring(Math.max(0, output.length - 2000));\n            if (global.vlmOutputBuffer && global.vlmOutputBuffer[msgId]) {\n                delete global.vlmOutputBuffer[msgId];\n            }\n            return msg;\n        }\n    }\n    \n    for (const pattern of startInfoPatterns) {\n        if (pattern.test(result)) {\n            node.status({ fill: 'yellow', shape: 'dot', text: 'Waiting result...' });\n            return null;\n        }\n    }\n    \n    if (result.includes('may take') && result.includes('wait')) {\n        node.status({ fill: 'yellow', shape: 'dot', text: 'Waiting result...' });\n        return null;\n    }\n}\n\nconst minLength = 5;\nif (!result || result.length < minLength || result.match(/^\\[.*\\]$/) || result.match(/\\[UCPT\\]/i)) {\n    if (output.length > 50000) {\n         const debugOutput = output.substring(Math.max(0, output.length - 2000));\n         node.error('Output too long. Check debug.');\n         node.status({ fill: 'red', shape: 'dot', text: 'Output Overflow' });\n         msg.isError = true;\n         msg.errorType = 'output_too_long';\n         msg.fullOutput = debugOutput;\n         cleanupGlobalVars(msgId);\n         return msg;\n    }\n    node.status({ fill: 'yellow', shape: 'dot', text: 'Waiting output... (' + output.length + ' chars)' });\n    return null;\n}\n\nmsg.result = result;\nmsg.fullOutput = output.substring(Math.max(0, output.length - 2000));\n\nif (global.vlmOutputBuffer && global.vlmOutputBuffer[msgId] && !msg.result) {\n    setTimeout(() => {\n        cleanupGlobalVars(msgId);\n    }, 5000);\n}\n\nnode.status({ fill: 'green', shape: 'dot', text: '✅ Result captured' });\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 300,
+        "wires": [
+            [
+                "debug_vlm_result"
+            ]
+        ]
+    },
+    {
+        "id": "debug_vlm_result",
+        "type": "debug",
+        "z": "vlm_tab",
+        "name": "VLM Result",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "result",
+        "targetType": "msg",
+        "statusVal": "result",
+        "statusType": "auto",
+        "x": 1340,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "comment_feedback_section",
+        "type": "comment",
+        "z": "vlm_tab",
+        "name": "🖼️ Local Image Feedback",
+        "info": "Use local images for VLM inference.\n\n**Usage:**\n1. Click Button: Uses default image `config/image2.jpg`\n2. Custom Path: Set `msg.payload` in Inject node\n   - Absolute: `/home/sunrise/vlm_model/my_image.jpg`\n   - Relative: `config/image2.jpg` (Relative to ~/vlm_model)\n   - Home: `~/vlm_model/my_image.jpg`",
+        "x": 150,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "inject_feedback_start",
+        "type": "inject",
+        "z": "vlm_tab",
+        "name": "Start Local Image Inference",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "config/image2.jpg",
+        "payloadType": "str",
+        "x": 140,
+        "y": 400,
+        "wires": [
+            [
+                "function_prepare_feedback"
+            ]
+        ]
+    },
+    {
+        "id": "function_prepare_feedback",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "Prepare Feedback Image",
+        "func": "// Prepare feedback image path\nconst saveDir = os.homedir() + '/vlm_model';\nconst defaultImage = 'config/image2.jpg';\n\nlet userImagePath = null;\nif (msg.payload && typeof msg.payload === 'string' && msg.payload.trim() !== '') {\n    userImagePath = msg.payload.trim();\n}\n\nlet imagePath = userImagePath || defaultImage;\n\nif (!fs.existsSync(saveDir)) {\n    fs.mkdirSync(saveDir, { recursive: true });\n}\n\nlet absolutePath;\nif (path.isAbsolute(imagePath)) {\n    absolutePath = imagePath;\n} else if (imagePath.startsWith('~')) {\n    absolutePath = imagePath.replace(/^~/, os.homedir());\n} else {\n    absolutePath = path.join(saveDir, imagePath);\n}\n\nif (fs.existsSync(absolutePath)) {\n    node.status({ fill: 'green', shape: 'dot', text: 'Found Image: ' + path.basename(absolutePath) });\n} else {\n    if (userImagePath && userImagePath !== defaultImage) {\n        const defaultAbsolutePath = path.join(saveDir, defaultImage);\n        if (fs.existsSync(defaultAbsolutePath)) {\n            node.warn('Path not found: ' + absolutePath + ', using default: ' + defaultAbsolutePath);\n            absolutePath = defaultAbsolutePath;\n            node.status({ fill: 'yellow', shape: 'dot', text: 'Using default image' });\n        } else {\n            node.warn('Image not found: ' + absolutePath);\n            node.status({ fill: 'yellow', shape: 'dot', text: 'Path: ' + absolutePath });\n        }\n    } else {\n        const configPath = path.join(saveDir, 'config', path.basename(imagePath));\n        if (fs.existsSync(configPath)) {\n            absolutePath = configPath;\n            node.status({ fill: 'green', shape: 'dot', text: 'Found config image' });\n        } else {\n            node.warn('Image not found: ' + absolutePath);\n            node.status({ fill: 'yellow', shape: 'dot', text: 'Path: ' + absolutePath });\n        }\n    }\n}\n\nmsg.photoDir = saveDir;\nmsg.photoPath = absolutePath;\nmsg.photoFileName = path.basename(absolutePath);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "fs",
+                "module": "fs"
+            },
+            {
+                "var": "path",
+                "module": "path"
+            },
+            {
+                "var": "os",
+                "module": "os"
+            }
+        ],
+        "x": 350,
+        "y": 400,
+        "wires": [
+            [
+                "function_build_feedback_cmd"
+            ]
+        ]
+    },
+    {
+        "id": "function_build_feedback_cmd",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "Build Feedback Command",
+        "func": "// Build Feedback VLM Command (English Logs)\nconst photoDir = msg.photoDir || (os.homedir() + '/vlm_model');\nlet photoPath = msg.photoPath || 'config/image2.jpg';\n\nif (!photoPath.startsWith('/')) {\n    photoPath = photoDir + '/' + photoPath;\n}\nconst photoFileName = path.basename(photoPath);\nconst absolutePhotoPath = photoPath;\n\nconst modelType = (global.vlmModelType && global.vlmModelType.current) || 'internvl';\nconst modelFile = (global.vlmModelType && global.vlmModelType.modelFile) || 'vit_model_int16_v2.bin';\nconst llmModel = (global.vlmModelType && global.vlmModelType.llmModel) || 'Qwen2.5-0.5B-Instruct-Q4_0.gguf';\nconst modelTypeParam = (global.vlmModelType && global.vlmModelType.modelTypeParam) || '';\n\nconst userPrompt = (msg.userPrompt && typeof msg.userPrompt === 'string' && msg.userPrompt.trim() !== '')\n    ? msg.userPrompt.trim()\n    : (global.get('vlmPrompt') || 'Describe this image.');\n\nlet cmd = 'echo \"=== 1. Cleaning up old processes ===\" && ';\ncmd += 'pkill -f hobot_llamacpp 2>/dev/null || true && ';\ncmd += 'sleep 2 && ';\ncmd += 'echo \"=== 2. Preparing environment ===\" && ';\ncmd += 'mkdir -p ' + photoDir + ' && cd ' + photoDir + ' && ';\ncmd += 'source /opt/tros/humble/setup.bash && ';\ncmd += 'export TROS_DISTRO=${TROS_DISTRO:-humble} && cp -r /opt/tros/${TROS_DISTRO}/lib/hobot_llamacpp/config/ . && ';\ncmd += 'echo \"Checking model files...\" && ';\n\n// Platform Detection\ncmd += 'echo \"=== Platform Detection ===\" && ';\ncmd += 'DEVICE_MODEL=$(cat /proc/device-tree/model 2>/dev/null | strings || echo \"\") && ';\ncmd += 'echo \"Device Info: $DEVICE_MODEL\" && ';\ncmd += 'PLATFORM=$(echo \"$DEVICE_MODEL\" | grep -oiE \"(S100|S100P)\" | head -1 || echo \"$DEVICE_MODEL\" | grep -oiE \"X5\" | head -1 || echo \"X5\") && ';\ncmd += 'PLATFORM=$(echo \"$PLATFORM\" | tr \"[:lower:]\" \"[:upper:]\" | sed \"s/S100P/S100/g\") && ';\ncmd += 'echo \"Platform Detected: $PLATFORM\" && ';\n\n// Download URLs\nif (modelType === 'internvl') {\n    cmd += 'if [ \"$PLATFORM\" = \"S100\" ]; then MODEL_URL=\"https://hf-mirror.com/D-Robotics/InternVL2_5-1B-GGUF-BPU/resolve/main/rdks100/vit_model_int16.hbm\"; MODEL_FILE=\"vit_model_int16.hbm\"; else MODEL_URL=\"https://hf-mirror.com/D-Robotics/InternVL2_5-1B-GGUF-BPU/resolve/main/rdkx5/vit_model_int16_v2.bin\"; MODEL_FILE=\"vit_model_int16_v2.bin\"; fi && ';\n} else {\n    // SmolVLM\n    cmd += 'if [ \"$PLATFORM\" = \"S100\" ]; then MODEL_URL=\"https://hf-mirror.com/D-Robotics/SmolVLM2-256M-Video-Instruct-GGUF-BPU/resolve/main/rdks100/SigLip_int16_SmolVLM2_256M_Instruct_S100.hbm\"; MODEL_FILE=\"SigLip_int16_SmolVLM2_256M_Instruct_S100.hbm\"; else MODEL_URL=\"https://hf-mirror.com/D-Robotics/SmolVLM2-256M-Video-Instruct-GGUF-BPU/resolve/main/rdkx5/SigLip_int16_SmolVLM2_256M_Instruct_MLP_C1_UP_X5.bin\"; MODEL_FILE=\"SigLip_int16_SmolVLM2_256M_Instruct_MLP_C1_UP_X5.bin\"; fi && ';\n}\n\ncmd += 'if [ ! -f \"$MODEL_FILE\" ]; then echo \"Model file not found, downloading: $MODEL_FILE\" && wget --show-progress \"$MODEL_URL\" -O \"$MODEL_FILE\" 2>&1 && echo \"✓ Image Encoder Downloaded\" || (echo \"⚠ Download failed\" && exit 1); fi && ';\ncmd += 'ACTUAL_MODEL_FILE=\"' + photoDir + '/$MODEL_FILE\" && ';\n\nif (modelType === 'internvl') {\n    cmd += 'LLM_URL=\"https://hf-mirror.com/D-Robotics/InternVL2_5-1B-GGUF-BPU/resolve/main/Qwen2.5-0.5B-Instruct-Q4_0.gguf\" && ';\n} else {\n    cmd += 'LLM_URL=\"https://hf-mirror.com/D-Robotics/SmolVLM2-256M-Video-Instruct-GGUF-BPU/resolve/main/SmolVLM2-256M-Video-Instruct-Q8_0.gguf\" && ';\n}\n\ncmd += 'if [ ! -f \"' + llmModel + '\" ]; then echo \"LLM file not found, downloading: ' + llmModel + '\" && wget --show-progress \"$LLM_URL\" -O \"' + llmModel + '\" 2>&1 && echo \"✓ LLM Downloaded\" || (echo \"⚠ LLM Download failed\" && exit 1); fi && ';\ncmd += 'echo \"Model check passed, starting VLM...\" >&2 && ';\n\nconst escapedPrompt = userPrompt.replace(/\\\\\\\\/g, '\\\\\\\\\\\\\\\\').replace(/\"/g, '\\\\\"');\ncmd += 'echo \"User Prompt: ' + escapedPrompt + '\" >&2 && ';\ncmd += 'echo \"Image File: ' + absolutePhotoPath + '\" >&2 && ';\ncmd += 'if [ ! -f \"' + absolutePhotoPath + '\" ]; then echo \"[Error] Image not found: ' + absolutePhotoPath + '\" >&2 && exit 1; fi && ';\ncmd += 'echo \"=== Starting VLM inference (may take 10-30s, please wait) ===\" >&2 && ';\n\ncmd += 'stdbuf -oL -eL ros2 run hobot_llamacpp hobot_llamacpp --ros-args ';\ncmd += '-p feed_type:=0 ';\ncmd += '-p image:=' + absolutePhotoPath + ' ';\ncmd += '-p image_type:=0 ';\ncmd += '-p user_prompt:=\"' + escapedPrompt + '\" ';\ncmd += '-p model_file_name:=$ACTUAL_MODEL_FILE ';\ncmd += '-p llm_model_name:=' + photoDir + '/' + llmModel;\n\nif (modelTypeParam) {\n    cmd += ' ' + modelTypeParam;\n}\n\nmsg.payload = cmd;\nmsg.modelType = modelType;\nmsg.userPrompt = userPrompt;\nmsg.startTime = Date.now();\n\nnode.status({ fill: 'blue', shape: 'dot', text: 'Command Built' });\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "path",
+                "module": "path"
+            },
+            {
+                "var": "os",
+                "module": "os"
+            }
+        ],
+        "x": 550,
+        "y": 400,
+        "wires": [
+            [
+                "exec_start_vlm"
+            ]
+        ]
+    },
+    {
+        "id": "comment_prompt_section",
+        "type": "comment",
+        "z": "vlm_tab",
+        "name": "💬 Custom Prompt",
+        "info": "Set VLM inference prompts (Default: Describe this image.)",
+        "x": 150,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "inject_set_prompt_chinese",
+        "type": "inject",
+        "z": "vlm_tab",
+        "name": "Set Prompt (Chinese)",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "描述一下这张图片.",
+        "payloadType": "str",
+        "x": 140,
+        "y": 540,
+        "wires": [
+            [
+                "function_save_prompt"
+            ]
+        ]
+    },
+    {
+        "id": "inject_set_prompt_english",
+        "type": "inject",
+        "z": "vlm_tab",
+        "name": "Set Prompt (English)",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "Describe the image.",
+        "payloadType": "str",
+        "x": 140,
+        "y": 580,
+        "wires": [
+            [
+                "function_save_prompt"
+            ]
+        ]
+    },
+    {
+        "id": "function_save_prompt",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "Save Prompt",
+        "func": "// Save prompt to global variable\nconst promptToSave = (msg.payload && typeof msg.payload === 'string' && msg.payload.trim() !== '') \n    ? msg.payload.trim() \n    : (global.get('vlmPrompt') || 'Describe this image.');\n\nglobal.set('vlmPrompt', promptToSave);\nnode.status({ fill: 'green', shape: 'dot', text: 'Prompt: ' + promptToSave.substring(0, 20) + '...' });\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "comment_control_section",
+        "type": "comment",
+        "z": "vlm_tab",
+        "name": "🎮 Controls",
+        "info": "Stop VLM Service",
+        "x": 150,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "inject_stop",
+        "type": "inject",
+        "z": "vlm_tab",
+        "name": "Stop VLM Service",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "stop",
+        "payloadType": "str",
+        "x": 140,
+        "y": 660,
+        "wires": [
+            [
+                "exec_stop_all"
+            ]
+        ]
+    },
+    {
+        "id": "exec_stop_all",
+        "type": "exec",
+        "z": "vlm_tab",
+        "name": "Stop Service",
+        "command": "sudo pkill -9 -f hobot_llamacpp; sudo pkill -9 -f hobot_usb_cam; sudo pkill -9 -f hobot_dosod; sudo pkill -9 -f websocket; sudo pkill -9 -f python3; sudo pkill -9 -f 'ros2 launch'; sudo pkill -9 -f 'ros2 run'; sleep 2; sudo rm -rf /dev/shm/*; ros2 daemon stop 2>/dev/null; sleep 1; echo '✓ Service stopped, resources freed'",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "10",
+        "oldrc": false,
+        "x": 350,
+        "y": 660,
+        "wires": [
+            [
+                "debug_stop_info"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "debug_stop_info",
+        "type": "debug",
+        "z": "vlm_tab",
+        "name": "Stop Status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 550,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "function_prepare_image_display",
+        "type": "function",
+        "z": "vlm_tab",
+        "name": "Prepare Display",
+        "func": "// Handle photo display\n// rdk-camera outputs either Buffer or Path string\n\nif (Buffer.isBuffer(msg.payload)) {\n    node.status({ fill: 'green', shape: 'dot', text: 'Buffer ready' });\n    return [null, msg];\n}\n\nif (typeof msg.payload === 'string') {\n    let imagePath = msg.payload.trim();\n    \n    if (imagePath.startsWith('~')) {\n        imagePath = imagePath.replace(/^~/, '/home/sunrise');\n    }\n    \n    if (!imagePath.startsWith('/')) {\n        imagePath = '/home/sunrise/vlm_model/' + imagePath;\n    }\n    \n    msg.filename = imagePath;\n    node.status({ fill: 'blue', shape: 'dot', text: 'Reading: ' + path.basename(imagePath) });\n    return [msg, null];\n}\n\nnode.status({ fill: 'yellow', shape: 'dot', text: 'Unknown image format' });\nreturn [null, null];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "path",
+                "module": "path"
+            }
+        ],
+        "x": 550,
+        "y": 340,
+        "wires": [
+            [
+                "file_read_photo"
+            ],
+            [
+                "image_viewer_photo"
+            ]
+        ]
+    },
+    {
+        "id": "file_read_photo",
+        "type": "file in",
+        "z": "vlm_tab",
+        "name": "Read Image",
+        "filename": "",
+        "format": "buffer",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 750,
+        "y": 340,
+        "wires": [
+            [
+                "image_viewer_photo"
+            ]
+        ]
+    },
+    {
+        "id": "image_viewer_photo",
+        "type": "image viewer",
+        "z": "vlm_tab",
+        "name": "Display Photo",
+        "width": "640",
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 950,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "global_config_vlm",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-rdk-camera": "0.0.17"
+        }
+    }
+]

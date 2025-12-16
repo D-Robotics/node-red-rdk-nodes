@@ -1,0 +1,334 @@
+[
+    {
+        "id": "face_age_detection_tab",
+        "type": "tab",
+        "label": "Face Age Detection",
+        "info": "# Face Age Detection Application\n\n**Function Description**: Face age detection based on `mono2d_body_detection`, supporting real-time detection via MIPI and USB cameras.\n\n**Reference**: This example follows the configuration style of \"Body Detection and Tracking (YOLO Pose)\".\n\n## 🎯 Quick Start\n\n### Usage Steps\n1. **Select Camera Type**: Choose MIPI or USB camera based on your hardware.\n2. **Start Detection Service**: Click the corresponding start button.\n3. **View Video Stream**: Click \"Open Visualization Page\" to view real-time detection results in the browser.\n4. **Stop Services**: Click \"Stop All Services\" when finished.\n\n## Supported Platforms\n- RDK X3 / X5 / S100\n- TROS Humble\n\n## Core Features\n- Body Detection\n- Face Detection\n- Age Recognition\n\n## Core Communication Config\n\n### WebSocket Video Stream\n- **Stream URL**: `http://{host}:8000`\n- **Image Topic**: `/image` (JPEG encoded image stream)\n- **Result Topic**: Configured by the launch file\n- **Performance**: Real-time detection, low latency\n\n## Parameters\n- **Config File**: Copied from `/opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/`\n- **Launch File**: `face_age_detection/body_det_face_age_det.launch.py`\n- **Visualization URL**: http://{host}:8000 (WebSocket Stream)\n\n## 📝 Manual Execution Commands (Reference)\n\n### Using MIPI Camera\n```bash\n# Configure tros.b environment\nsource /opt/tros/humble/setup.bash\n\n# Set TROS_DISTRO variable (Important!)\nexport TROS_DISTRO=humble\n\n# Copy config files from installation path\ncp -r /opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/ .\n\n# Configure MIPI Camera\nexport CAM_TYPE=mipi\n\n# Start launch file\nros2 launch face_age_detection body_det_face_age_det.launch.py\n```\n\n### Using USB Camera\n```bash\n# Configure tros.b environment\nsource /opt/tros/humble/setup.bash\n\n# Set TROS_DISTRO variable (Important!)\nexport TROS_DISTRO=humble\n\n# Copy config files from installation path\ncp -r /opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/ .\n\n# Configure USB Camera\nexport CAM_TYPE=usb\n\n# Start launch file\nros2 launch face_age_detection body_det_face_age_det.launch.py\n```\n\n**⚠️ Notice**: You must set `export TROS_DISTRO=humble` before using the `${TROS_DISTRO}` variable, otherwise the command will fail!"
+    },
+    {
+        "id": "comment_camera_section",
+        "type": "comment",
+        "z": "face_age_detection_tab",
+        "name": "1️⃣ Select Camera Type",
+        "info": "Choose the corresponding detection method based on your hardware",
+        "x": 200,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "comment_mipi_section",
+        "type": "comment",
+        "z": "face_age_detection_tab",
+        "name": "📷 MIPI Camera Detection",
+        "info": "Real-time face age detection using MIPI camera",
+        "x": 180,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "inject_mipi_start",
+        "type": "inject",
+        "z": "face_age_detection_tab",
+        "name": "Start MIPI Detection",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "mipi_detection",
+        "payload": "start",
+        "payloadType": "str",
+        "x": 160,
+        "y": 120,
+        "wires": [
+            [
+                "exec_mipi_detection"
+            ]
+        ]
+    },
+    {
+        "id": "exec_mipi_detection",
+        "type": "exec",
+        "z": "face_age_detection_tab",
+        "name": "MIPI Launcher",
+        "command": "cd /tmp && source /opt/tros/humble/setup.bash && TROS_DISTRO=humble && cp -r /opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/ . 2>/dev/null || true && export CAM_TYPE=mipi && echo \"=== Start MIPI Camera Face Age Detection ===\" && ros2 launch face_age_detection body_det_face_age_det.launch.py",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "120",
+        "oldrc": false,
+        "x": 400,
+        "y": 120,
+        "wires": [
+            [
+                "debug_mipi_output"
+            ],
+            [
+                "debug_mipi_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "comment_usb_section",
+        "type": "comment",
+        "z": "face_age_detection_tab",
+        "name": "📷 USB Camera Detection",
+        "info": "Real-time face age detection using USB camera",
+        "x": 180,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "inject_usb_start",
+        "type": "inject",
+        "z": "face_age_detection_tab",
+        "name": "Start USB Detection",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "usb_detection",
+        "payload": "start",
+        "payloadType": "str",
+        "x": 160,
+        "y": 200,
+        "wires": [
+            [
+                "exec_usb_detection"
+            ]
+        ]
+    },
+    {
+        "id": "exec_usb_detection",
+        "type": "exec",
+        "z": "face_age_detection_tab",
+        "name": "USB Launcher",
+        "command": "cd /tmp && source /opt/tros/humble/setup.bash && TROS_DISTRO=humble && cp -r /opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/ . 2>/dev/null || true && export CAM_TYPE=usb && echo \"=== Start USB Camera Face Age Detection ===\" && ros2 launch face_age_detection body_det_face_age_det.launch.py",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "120",
+        "oldrc": false,
+        "x": 400,
+        "y": 200,
+        "wires": [
+            [
+                "debug_usb_output"
+            ],
+            [
+                "debug_usb_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "comment_browser_section",
+        "type": "comment",
+        "z": "face_age_detection_tab",
+        "name": "2️⃣ View Results",
+        "info": "View real-time detection results in the browser",
+        "x": 180,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "inject_browser",
+        "type": "inject",
+        "z": "face_age_detection_tab",
+        "name": "Open Visualization Page",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 170,
+        "y": 280,
+        "wires": [
+            [
+                "openurl_browser"
+            ]
+        ]
+    },
+    {
+        "id": "openurl_browser",
+        "type": "rdk-tools openurl",
+        "z": "face_age_detection_tab",
+        "name": "",
+        "x": 400,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "comment_stop_section",
+        "type": "comment",
+        "z": "face_age_detection_tab",
+        "name": "3️⃣ Stop Services",
+        "info": "Stop all detection related services",
+        "x": 180,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "inject_stop",
+        "type": "inject",
+        "z": "face_age_detection_tab",
+        "name": "Stop All Services",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "stop",
+        "payload": "stop",
+        "payloadType": "str",
+        "x": 160,
+        "y": 360,
+        "wires": [
+            [
+                "exec_stop_all"
+            ]
+        ]
+    },
+    {
+        "id": "exec_stop_all",
+        "type": "exec",
+        "z": "face_age_detection_tab",
+        "name": "Stop All Services",
+        "command": "sudo pkill -9 -f hobot_usb_cam; sudo pkill -9 -f face_age_detection; sudo pkill -9 -f mono2d_body_detection; sudo pkill -9 -f hobot_codec_republish; sudo pkill -9 -f websocket; sudo pkill -9 -f python3; sudo pkill -9 -f 'ros2 launch'; sudo pkill -9 -f 'ros2 run'; sleep 2; sudo rm -rf /dev/shm/*; ros2 daemon stop 2>/dev/null; sleep 1; echo '✓ Services stopped completely, resources released'",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "10",
+        "oldrc": false,
+        "x": 400,
+        "y": 360,
+        "wires": [
+            [
+                "debug_stop_info"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "debug_mipi_output",
+        "type": "debug",
+        "z": "face_age_detection_tab",
+        "name": "MIPI Detection Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 650,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "debug_mipi_error",
+        "type": "debug",
+        "z": "face_age_detection_tab",
+        "name": "MIPI Error Info",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "debug_usb_output",
+        "type": "debug",
+        "z": "face_age_detection_tab",
+        "name": "USB Detection Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 650,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "debug_usb_error",
+        "type": "debug",
+        "z": "face_age_detection_tab",
+        "name": "USB Error Info",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "debug_stop_info",
+        "type": "debug",
+        "z": "face_age_detection_tab",
+        "name": "Stop Service Status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 640,
+        "y": 360,
+        "wires": []
+    }
+]

@@ -1,0 +1,367 @@
+[
+    {
+        "id": "tab1",
+        "type": "tab",
+        "label": "S100 Pose Detection",
+        "info": "S100 Body Detection and Tracking (YOLO Pose) - One-click Start"
+    },
+    {
+        "id": "inject_mipi_start",
+        "type": "inject",
+        "z": "tab1",
+        "name": "Start MIPI Detection",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "mipi_detection",
+        "payload": "start",
+        "payloadType": "str",
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "exec_mipi_detection"
+            ]
+        ]
+    },
+    {
+        "id": "exec_mipi_detection",
+        "type": "exec",
+        "z": "tab1",
+        "name": "MIPI Launcher",
+        "command": "cd /tmp && source /opt/tros/humble/setup.bash && cp -r /opt/tros/humble/lib/mono2d_body_detection/config/ . 2>/dev/null || true && export CAM_TYPE=mipi && echo \"Starting MIPI Camera Body Detection...\" && ros2 launch mono2d_body_detection mono2d_body_detection.launch.py kps_model_type:=1 kps_image_width:=1920 kps_image_height:=1080 kps_model_file_name:=config/yolo11x_pose_nashe_640x640_nv12.hbm",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "120",
+        "oldrc": false,
+        "x": 380,
+        "y": 100,
+        "wires": [
+            [
+                "debug_mipi_output"
+            ],
+            [
+                "debug_mipi_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "inject_usb_start",
+        "type": "inject",
+        "z": "tab1",
+        "name": "Start USB Detection",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "usb_detection",
+        "payload": "start",
+        "payloadType": "str",
+        "x": 140,
+        "y": 160,
+        "wires": [
+            [
+                "exec_usb_detection"
+            ]
+        ]
+    },
+    {
+        "id": "exec_usb_detection",
+        "type": "exec",
+        "z": "tab1",
+        "name": "USB Launcher",
+        "command": "cd /tmp && source /opt/tros/humble/setup.bash && cp -r /opt/tros/humble/lib/mono2d_body_detection/config/ . 2>/dev/null || true && export CAM_TYPE=usb && echo \"Starting USB Camera Body Detection...\" && ros2 launch mono2d_body_detection mono2d_body_detection.launch.py kps_model_type:=1 kps_image_width:=1920 kps_image_height:=1080 kps_model_file_name:=config/yolo11x_pose_nashe_640x640_nv12.hbm",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "120",
+        "oldrc": false,
+        "x": 380,
+        "y": 160,
+        "wires": [
+            [
+                "debug_usb_output"
+            ],
+            [
+                "debug_usb_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "inject_fb_start",
+        "type": "inject",
+        "z": "tab1",
+        "name": "Start Local Image",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "fb_detection",
+        "payload": "start",
+        "payloadType": "str",
+        "x": 140,
+        "y": 220,
+        "wires": [
+            [
+                "exec_fb_detection"
+            ]
+        ]
+    },
+    {
+        "id": "exec_fb_detection",
+        "type": "exec",
+        "z": "tab1",
+        "name": "Local Image Launcher",
+        "command": "cd /tmp && source /opt/tros/humble/setup.bash && cp -r /opt/tros/humble/lib/mono2d_body_detection/config/ . 2>/dev/null || true && cp -r /opt/tros/humble/lib/dnn_node_example/config/ . 2>/dev/null || true && export CAM_TYPE=fb && echo \"Starting Local Image Body Detection...\" && ros2 launch mono2d_body_detection mono2d_body_detection.launch.py publish_image_source:=config/person_body.jpg publish_image_format:=jpg kps_model_type:=1 kps_image_width:=640 kps_image_height:=640 kps_model_file_name:=config/yolo11x_pose_nashe_640x640_nv12.hbm",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "60",
+        "oldrc": false,
+        "x": 380,
+        "y": 220,
+        "wires": [
+            [
+                "debug_fb_output"
+            ],
+            [
+                "debug_fb_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "inject_browser",
+        "type": "inject",
+        "z": "tab1",
+        "name": "Open Visual Page",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 140,
+        "y": 300,
+        "wires": [
+            [
+                "openurl_browser"
+            ]
+        ]
+    },
+    {
+        "id": "openurl_browser",
+        "type": "rdk-tools openurl",
+        "z": "tab1",
+        "name": "",
+        "x": 380,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "inject_stop",
+        "type": "inject",
+        "z": "tab1",
+        "name": "Stop All Services",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "stop",
+        "payload": "stop",
+        "payloadType": "str",
+        "x": 140,
+        "y": 360,
+        "wires": [
+            [
+                "exec_stop_all"
+            ]
+        ]
+    },
+    {
+        "id": "exec_stop_all",
+        "type": "exec",
+        "z": "tab1",
+        "name": "Stop All Services",
+        "command": "sudo pkill -9 -f hobot_usb_cam; sudo pkill -9 -f hobot_dosod; sudo pkill -9 -f hobot_codec_republish; sudo pkill -9 -f websocket; sudo pkill -9 -f python3; sudo pkill -9 -f \"ros2 launch\"; sudo pkill -9 -f \"ros2 run\"; sleep 2; sudo rm -rf /dev/shm/*; ros2 daemon stop 2>/dev/null; sleep 1; echo \"✓ Services stopped completely, resources released\"",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "10",
+        "oldrc": false,
+        "x": 380,
+        "y": 360,
+        "wires": [
+            [
+                "debug_stop_info"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "debug_mipi_output",
+        "type": "debug",
+        "z": "tab1",
+        "name": "MIPI Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 650,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "debug_mipi_error",
+        "type": "debug",
+        "z": "tab1",
+        "name": "MIPI Error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "debug_usb_output",
+        "type": "debug",
+        "z": "tab1",
+        "name": "USB Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 650,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "debug_usb_error",
+        "type": "debug",
+        "z": "tab1",
+        "name": "USB Error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "debug_fb_output",
+        "type": "debug",
+        "z": "tab1",
+        "name": "Local Image Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 650,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "debug_fb_error",
+        "type": "debug",
+        "z": "tab1",
+        "name": "Local Image Error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "debug_stop_info",
+        "type": "debug",
+        "z": "tab1",
+        "name": "Stop Status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 640,
+        "y": 360,
+        "wires": []
+    }
+]

@@ -1,0 +1,351 @@
+[
+    {
+        "id": "dosod_simple_tab",
+        "type": "tab",
+        "label": "DOSOD Object Detection",
+        "info": "# DOSOD Object Detection\n\nUses the system pre-installed int8 model to detect 80 common objects in the COCO dataset.\n\n## Usage\n1. Adjust confidence threshold (Optional)\n2. Click to start detection (MIPI or USB)\n3. Click to open visualization page to view results"
+    },
+    {
+        "id": "comment_score",
+        "type": "comment",
+        "z": "dosod_simple_tab",
+        "name": "⚙️ Confidence Threshold (Optional)",
+        "info": "Default: 0.4\n- Lower value: More objects detected (potential false positives)\n- Higher value: Only high-confidence objects (potential false negatives)\nRecommended range: 0.2 ~ 0.5",
+        "x": 150,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "inject_score",
+        "type": "inject",
+        "z": "dosod_simple_tab",
+        "name": "Set Confidence",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "0.4",
+        "payloadType": "str",
+        "x": 120,
+        "y": 80,
+        "wires": [
+            [
+                "function_save_score"
+            ]
+        ],
+        "info": "Double click to modify confidence value (0.1~0.5)"
+    },
+    {
+        "id": "function_save_score",
+        "type": "function",
+        "z": "dosod_simple_tab",
+        "name": "Save Confidence",
+        "func": "var score = parseFloat(msg.payload) || 0.4;\nif (score < 0.1) score = 0.1;\nif (score > 0.5) score = 0.5;\n\nglobal.set('dosod_score_threshold', score);\n\nnode.status({\n    fill: \"green\",\n    shape: \"dot\",\n    text: \"Confidence: \" + score.toFixed(2)\n});\n\nmsg.payload = '✓ Confidence set to: ' + score.toFixed(2);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 80,
+        "wires": [
+            [
+                "debug_score"
+            ]
+        ]
+    },
+    {
+        "id": "debug_score",
+        "type": "debug",
+        "z": "dosod_simple_tab",
+        "name": "Confidence Status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 520,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "comment_start",
+        "type": "comment",
+        "z": "dosod_simple_tab",
+        "name": "📷 Start Detection",
+        "info": "",
+        "x": 150,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "inject_mipi",
+        "type": "inject",
+        "z": "dosod_simple_tab",
+        "name": "📹 MIPI Camera",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "mipi",
+        "payloadType": "str",
+        "x": 120,
+        "y": 180,
+        "wires": [
+            [
+                "function_build_cmd"
+            ]
+        ]
+    },
+    {
+        "id": "inject_usb",
+        "type": "inject",
+        "z": "dosod_simple_tab",
+        "name": "🎥 USB Camera",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "usb",
+        "payloadType": "str",
+        "x": 120,
+        "y": 220,
+        "wires": [
+            [
+                "function_build_cmd"
+            ]
+        ]
+    },
+    {
+        "id": "function_build_cmd",
+        "type": "function",
+        "z": "dosod_simple_tab",
+        "name": "Build Start Command",
+        "func": "var mode = msg.payload || 'usb';\nvar score = global.get('dosod_score_threshold') || 0.4;\n\n// Build command: bash start_dosod.sh <mode> <score>\nmsg.payload = mode + ' ' + score;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 200,
+        "wires": [
+            [
+                "exec_start"
+            ]
+        ]
+    },
+    {
+        "id": "exec_start",
+        "type": "exec",
+        "z": "dosod_simple_tab",
+        "command": "stdbuf -oL -eL bash /home/sunrise/.dosod_config/start_dosod.sh",
+        "addpay": true,
+        "append": "",
+        "useSpawn": true,
+        "timer": "0",
+        "oldrc": false,
+        "name": "Start Detection",
+        "x": 520,
+        "y": 200,
+        "wires": [
+            [
+                "debug_output"
+            ],
+            [
+                "debug_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "debug_output",
+        "type": "debug",
+        "z": "dosod_simple_tab",
+        "name": "Start Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 720,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "debug_error",
+        "type": "debug",
+        "z": "dosod_simple_tab",
+        "name": "Start Error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 720,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "comment_view",
+        "type": "comment",
+        "z": "dosod_simple_tab",
+        "name": "👁️ View Results",
+        "info": "",
+        "x": 150,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "inject_browser",
+        "type": "inject",
+        "z": "dosod_simple_tab",
+        "name": "Open Visual Page",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 320,
+        "wires": [
+            [
+                "function_get_url"
+            ]
+        ]
+    },
+    {
+        "id": "function_get_url",
+        "type": "function",
+        "z": "dosod_simple_tab",
+        "name": "Get URL",
+        "func": "msg.payload = 'http://{host}:8000';\n\nnode.status({\n    fill: \"blue\",\n    shape: \"dot\",\n    text: \"Opening: \" + msg.payload\n});\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 320,
+        "wires": [
+            [
+                "openurl"
+            ]
+        ]
+    },
+    {
+        "id": "openurl",
+        "type": "rdk-tools openurl",
+        "z": "dosod_simple_tab",
+        "name": "Open Browser",
+        "x": 520,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "comment_stop",
+        "type": "comment",
+        "z": "dosod_simple_tab",
+        "name": "⏹️ Stop Services",
+        "info": "",
+        "x": 150,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "inject_stop",
+        "type": "inject",
+        "z": "dosod_simple_tab",
+        "name": "Stop All Services",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 400,
+        "wires": [
+            [
+                "exec_stop"
+            ]
+        ]
+    },
+    {
+        "id": "exec_stop",
+        "type": "exec",
+        "z": "dosod_simple_tab",
+        "command": "pkill -f hobot_dosod && pkill -f websocket && sudo pkill -9 nginx 2>/dev/null || true && echo '✓ All DOSOD services stopped'",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "10",
+        "oldrc": false,
+        "name": "Stop Services",
+        "x": 320,
+        "y": 400,
+        "wires": [
+            [
+                "debug_stop"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "debug_stop",
+        "type": "debug",
+        "z": "dosod_simple_tab",
+        "name": "Stop Status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 520,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "6fd56306711aa06f",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-rdk-tools": "0.0.27"
+        }
+    }
+]

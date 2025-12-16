@@ -1,0 +1,331 @@
+[
+    {
+        "id": "yolov8_seg_photo_tab",
+        "type": "tab",
+        "label": "YOLOv8-Seg Instance Segmentation",
+        "disabled": false,
+        "info": "# YOLOv8-Seg Instance Segmentation\n\n## Introduction\n\nYOLOv8-Seg instance segmentation algorithm, supporting real-time video stream mode for USB and MIPI cameras.\n\n## Usage Process\n\n### USB Video Stream Segmentation (Real-time)\n1. **Start Stream**: Click \"🎥 USB Camera Stream\" button\n2. **View Visuals**: Click \"Open Web Visualization\" to view results in browser\n3. **Stop Service**: Click \"Stop Segmentation Service\" when finished\n\n### MIPI Video Stream Segmentation (Real-time)\n1. **Start Stream**: Click \"🎥 MIPI Camera Stream\" button\n2. **View Visuals**: Click \"Open Web Visualization\" to view results in browser\n3. **Stop Service**: Click \"Stop Segmentation Service\" when finished\n\n## Supported Platforms\n\n- RDK X5\n- RDK S100\n\n## Core Communication Config\n\n### WebSocket Video Stream\n- **Stream URL**: `http://{host}:8000`\n- **Image Topic**: `/image` (JPEG encoded stream)\n- **Performance**: Real-time detection, low latency\n\n## Notes\n\n- You must start the video stream first before opening the visualization page.\n- The segmentation process may take a few seconds to initialize, please wait patiently.",
+        "env": []
+    },
+    {
+        "id": "comment_video_section",
+        "type": "comment",
+        "z": "yolov8_seg_photo_tab",
+        "name": "🎥 USB Stream Segmentation Workflow",
+        "info": "Click the stream button to start real-time segmentation, then open the visualization page to view results.",
+        "x": 150,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "inject_usb_video",
+        "type": "inject",
+        "z": "yolov8_seg_photo_tab",
+        "name": "🎥 USB Camera Stream",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "usb_video",
+        "payload": "start",
+        "payloadType": "str",
+        "x": 140,
+        "y": 420,
+        "wires": [
+            [
+                "exec_usb_video"
+            ]
+        ]
+    },
+    {
+        "id": "exec_usb_video",
+        "type": "exec",
+        "z": "yolov8_seg_photo_tab",
+        "name": "USB Stream Launcher",
+        "command": "source /opt/tros/humble/setup.bash && export CAM_TYPE=usb && ros2 launch dnn_node_example dnn_node_example.launch.py dnn_example_dump_render_img:=0 dnn_example_config_file:=config/yolov8segworkconfig.json dnn_example_image_width:=1920 dnn_example_image_height:=1080",
+        "addpay": false,
+        "append": "",
+        "useSpawn": true,
+        "timer": "120",
+        "oldrc": false,
+        "x": 380,
+        "y": 420,
+        "wires": [
+            [
+                "debug_usb_video_output"
+            ],
+            [
+                "debug_usb_video_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "debug_usb_video_output",
+        "type": "debug",
+        "z": "yolov8_seg_photo_tab",
+        "name": "USB Stream Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 650,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "debug_usb_video_error",
+        "type": "debug",
+        "z": "yolov8_seg_photo_tab",
+        "name": "USB Stream Error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "comment_mipi_video_section",
+        "type": "comment",
+        "z": "yolov8_seg_photo_tab",
+        "name": "🎥 MIPI Stream Segmentation Workflow",
+        "info": "Click the stream button to start real-time segmentation, then open the visualization page to view results.",
+        "x": 150,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "inject_mipi_video",
+        "type": "inject",
+        "z": "yolov8_seg_photo_tab",
+        "name": "🎥 MIPI Camera Stream",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "mipi_video",
+        "payload": "start",
+        "payloadType": "str",
+        "x": 140,
+        "y": 560,
+        "wires": [
+            [
+                "exec_mipi_video"
+            ]
+        ]
+    },
+    {
+        "id": "exec_mipi_video",
+        "type": "exec",
+        "z": "yolov8_seg_photo_tab",
+        "name": "MIPI Stream Launcher",
+        "command": "source /opt/tros/humble/setup.bash && export CAM_TYPE=mipi && ros2 launch dnn_node_example dnn_node_example.launch.py dnn_example_dump_render_img:=0 dnn_example_config_file:=config/yolov8segworkconfig.json dnn_example_image_width:=1920 dnn_example_image_height:=1080",
+        "addpay": false,
+        "append": "",
+        "useSpawn": true,
+        "timer": "120",
+        "oldrc": false,
+        "x": 380,
+        "y": 560,
+        "wires": [
+            [
+                "debug_mipi_video_output"
+            ],
+            [
+                "debug_mipi_video_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "debug_mipi_video_output",
+        "type": "debug",
+        "z": "yolov8_seg_photo_tab",
+        "name": "MIPI Stream Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 650,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "debug_mipi_video_error",
+        "type": "debug",
+        "z": "yolov8_seg_photo_tab",
+        "name": "MIPI Stream Error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "comment_browser_section",
+        "type": "comment",
+        "z": "yolov8_seg_photo_tab",
+        "name": "2️⃣ View Detection Results",
+        "info": "View real-time detection feed in browser",
+        "x": 200,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "inject_browser",
+        "type": "inject",
+        "z": "yolov8_seg_photo_tab",
+        "name": "Open Web Visualization",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 140,
+        "y": 680,
+        "wires": [
+            [
+                "openurl_browser"
+            ]
+        ]
+    },
+    {
+        "id": "openurl_browser",
+        "type": "rdk-tools openurl",
+        "z": "yolov8_seg_photo_tab",
+        "name": "",
+        "x": 380,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "comment_control_section",
+        "type": "comment",
+        "z": "yolov8_seg_photo_tab",
+        "name": "🎮 Controls",
+        "info": "Stop Segmentation Service",
+        "x": 150,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "inject_stop",
+        "type": "inject",
+        "z": "yolov8_seg_photo_tab",
+        "name": "Stop Segmentation Service",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "stop",
+        "payloadType": "str",
+        "x": 140,
+        "y": 780,
+        "wires": [
+            [
+                "exec_stop_all"
+            ]
+        ]
+    },
+    {
+        "id": "exec_stop_all",
+        "type": "exec",
+        "z": "yolov8_seg_photo_tab",
+        "name": "Stop Service",
+        "command": "sudo pkill -9 -f hobot_usb_cam; sudo pkill -9 -f dnn_node_example; sudo pkill -9 -f hobot_codec_republish; sudo pkill -9 -f websocket; sudo pkill -9 -f python3; sudo pkill -9 -f 'ros2 launch'; sudo pkill -9 -f 'ros2 run'; sleep 2; sudo rm -rf /dev/shm/*; ros2 daemon stop 2>/dev/null; sleep 1; echo '✓ Service stopped, resources freed'",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "10",
+        "oldrc": false,
+        "x": 350,
+        "y": 780,
+        "wires": [
+            [
+                "debug_stop_info"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "debug_stop_info",
+        "type": "debug",
+        "z": "yolov8_seg_photo_tab",
+        "name": "Stop Status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 550,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "global_config_yolov8",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-rdk-camera": "0.0.17",
+            "node-red-contrib-image-tools": "2.1.1"
+        }
+    }
+]

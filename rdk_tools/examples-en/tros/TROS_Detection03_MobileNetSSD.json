@@ -11,7 +11,7 @@
         "id": "c7a1aee6a76cadd9",
         "type": "group",
         "z": "5143258bfe846b74",
-        "name": "Smart Update",
+        "name": "软件包智能更新",
         "style": {
             "fill": "#ffffbf",
             "fill-opacity": "0.46",
@@ -22,16 +22,16 @@
             "52f0550f586ca9ec",
             "357da92b25b02598"
         ],
-        "x": 314,
+        "x": 334,
         "y": 79,
-        "w": 592,
+        "w": 572,
         "h": 82
     },
     {
         "id": "d96336254aef9b25",
         "type": "group",
         "z": "5143258bfe846b74",
-        "name": "Check and execute MobileNet",
+        "name": "检查及运行MobileNet",
         "style": {
             "fill": "#e3f3d3",
             "fill-opacity": "0.5",
@@ -43,14 +43,14 @@
         ],
         "x": 354,
         "y": 199,
-        "w": 452,
+        "w": 412,
         "h": 82
     },
     {
         "id": "dbd729cc140b046b",
         "type": "group",
         "z": "5143258bfe846b74",
-        "name": "MobileNet Visualization",
+        "name": "MobileNet结果展示",
         "style": {
             "fill": "#bfdbef",
             "fill-opacity": "0.47",
@@ -70,9 +70,9 @@
         "id": "503d2e4255388c64",
         "type": "comment",
         "z": "5143258bfe846b74",
-        "name": "Name: TROS Object Detection MobileNet SSD",
+        "name": "名称：TROS目标检测 MobileNet SSD",
         "info": "",
-        "x": 240,
+        "x": 210,
         "y": 40,
         "wires": []
     },
@@ -80,7 +80,7 @@
         "id": "7a81faa31c119160",
         "type": "inject",
         "z": "5143258bfe846b74",
-        "name": "Learn More",
+        "name": "了解更多",
         "props": [
             {
                 "p": "payload"
@@ -97,7 +97,7 @@
         "topic": "",
         "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/detection/mobilenet",
         "payloadType": "str",
-        "x": 530,
+        "x": 500,
         "y": 40,
         "wires": [
             [
@@ -110,7 +110,7 @@
         "type": "rdk-tools openurl",
         "z": "5143258bfe846b74",
         "name": "",
-        "x": 720,
+        "x": 680,
         "y": 40,
         "wires": []
     },
@@ -118,9 +118,9 @@
         "id": "32803ce27e16ef51",
         "type": "comment",
         "z": "5143258bfe846b74",
-        "name": "Notice: Please choose compatible cam type!",
+        "name": "注意：选择对应的摄像头类型",
         "info": "",
-        "x": 170,
+        "x": 220,
         "y": 200,
         "wires": []
     },
@@ -128,7 +128,7 @@
         "id": "9b210a9ed5556444",
         "type": "inject",
         "z": "5143258bfe846b74",
-        "name": "Start(USB Cam)",
+        "name": "启动（USB摄像头）",
         "props": [
             {
                 "p": "payload"
@@ -146,7 +146,7 @@
         "topic": "",
         "payload": "iso",
         "payloadType": "date",
-        "x": 180,
+        "x": 190,
         "y": 120,
         "wires": [
             [
@@ -159,7 +159,7 @@
         "id": "2fbbe91a777b092c",
         "type": "inject",
         "z": "5143258bfe846b74",
-        "name": "Start(MIPI Cam)",
+        "name": "启动（MIPI摄像头）",
         "props": [
             {
                 "p": "payload"
@@ -176,7 +176,7 @@
         "topic": "mipi",
         "payload": "iso",
         "payloadType": "date",
-        "x": 180,
+        "x": 190,
         "y": 160,
         "wires": [
             [
@@ -189,7 +189,7 @@
         "id": "3c631ef3a095cc49",
         "type": "inject",
         "z": "5143258bfe846b74",
-        "name": "Stop",
+        "name": "关闭",
         "props": [
             {
                 "p": "kill",
@@ -214,9 +214,9 @@
         "id": "1179306f9c321dfa",
         "type": "comment",
         "z": "5143258bfe846b74",
-        "name": "Notice: Please stop flow before closing the flow.",
+        "name": "注意：使用结束后请主动关闭",
         "info": "",
-        "x": 180,
+        "x": 220,
         "y": 280,
         "wires": []
     },
@@ -240,7 +240,7 @@
         "type": "change",
         "z": "5143258bfe846b74",
         "g": "c7a1aee6a76cadd9",
-        "name": "Update hint",
+        "name": "更新提示",
         "rules": [
             {
                 "t": "set",
@@ -255,7 +255,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 610,
+        "x": 600,
         "y": 120,
         "wires": [
             [
@@ -278,7 +278,7 @@
         "type": "change",
         "z": "5143258bfe846b74",
         "g": "d96336254aef9b25",
-        "name": "Set MobileNet Node",
+        "name": "设定MobileNet节点",
         "rules": [
             {
                 "t": "set",
@@ -307,7 +307,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 480,
+        "x": 470,
         "y": 240,
         "wires": [
             [
@@ -321,7 +321,7 @@
         "z": "5143258bfe846b74",
         "g": "d96336254aef9b25",
         "name": "",
-        "x": 690,
+        "x": 670,
         "y": 240,
         "wires": [
             [
@@ -336,7 +336,7 @@
         "id": "7cb7c05d16d59210",
         "type": "debug",
         "z": "5143258bfe846b74",
-        "name": "Hint",
+        "name": "正确执行提示",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -345,7 +345,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 870,
+        "x": 880,
         "y": 220,
         "wires": []
     },
@@ -353,7 +353,7 @@
         "id": "db74434a96802860",
         "type": "debug",
         "z": "5143258bfe846b74",
-        "name": "Error Hint",
+        "name": "错误执行提示",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -370,7 +370,7 @@
         "id": "1e09057f11bf04f1",
         "type": "debug",
         "z": "5143258bfe846b74",
-        "name": "Result output",
+        "name": "算法结果输出",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -387,7 +387,7 @@
         "id": "285aabdca4dade8e",
         "type": "debug",
         "z": "5143258bfe846b74",
-        "name": "Performance output",
+        "name": "性能信息输出",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -396,7 +396,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 700,
+        "x": 680,
         "y": 400,
         "wires": []
     },
@@ -431,7 +431,7 @@
         "type": "change",
         "z": "5143258bfe846b74",
         "g": "dbd729cc140b046b",
-        "name": "set link",
+        "name": "设定链接",
         "rules": [
             {
                 "t": "set",
@@ -480,7 +480,7 @@
         "id": "a4bf39e5c94a96d7",
         "type": "inject",
         "z": "5143258bfe846b74",
-        "name": "Update",
+        "name": "更新软件包",
         "props": [
             {
                 "p": "payload"
@@ -497,7 +497,7 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 150,
+        "x": 160,
         "y": 80,
         "wires": [
             [
@@ -509,7 +509,7 @@
         "id": "68cb4d922209bdd7",
         "type": "inject",
         "z": "5143258bfe846b74",
-        "name": "Open visualization Page",
+        "name": "打开可视化页面",
         "props": [
             {
                 "p": "payload"
@@ -526,7 +526,7 @@
         "topic": "",
         "payload": "http://{host}:8000",
         "payloadType": "str",
-        "x": 700,
+        "x": 680,
         "y": 320,
         "wires": [
             [
@@ -539,7 +539,7 @@
         "type": "rdk-tools openurl",
         "z": "5143258bfe846b74",
         "name": "",
-        "x": 920,
+        "x": 880,
         "y": 320,
         "wires": []
     },
@@ -547,7 +547,7 @@
         "id": "02cbbbaa69837ff8",
         "type": "change",
         "z": "5143258bfe846b74",
-        "name": "Extract type",
+        "name": "提取类型",
         "rules": [
             {
                 "t": "set",
@@ -562,7 +562,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 150,
+        "x": 140,
         "y": 480,
         "wires": [
             [

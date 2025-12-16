@@ -1,0 +1,367 @@
+[
+    {
+        "id": "hand_landmarks_tab",
+        "type": "tab",
+        "label": "Hand Landmarks & Gesture (MediaPipe)",
+        "info": "# Hand Landmarks & Gesture Recognition (MediaPipe)\n\n**Function Description**: Hand keypoint detection and gesture recognition based on MediaPipe, supporting MIPI Camera, USB Camera, and Local Image modes.\n\n## 🎯 Quick Start\n\n### Usage Steps\n1. **Select Mode**: Choose MIPI Camera, USB Camera, or Local Image detection.\n2. **Start Service**: Click the corresponding start button.\n3. **View Results**: Click \"Open Visualization Page\" to view real-time detection results in the browser.\n4. **Stop Services**: Click \"Stop All Services\" when finished.\n\n## Supported Platforms\n- RDK X3 / X5 / S100\n- TROS Humble\n\n## Core Features\n- Hand Detection\n- 21 Hand Landmarks\n- Gesture Recognition\n\n## Core Communication Config\n\n### WebSocket Video Stream\n- **Stream URL**: `http://{host}:8000`\n- **Performance**: Real-time detection, low latency\n\n## 📝 Manual Execution Commands (Reference)\n\n### MIPI Camera\n```bash\nsource /opt/tros/humble/setup.bash\ncp -r /opt/tros/humble/lib/palm_detection_mediapipe/config/ . \ncp -r /opt/tros/humble/lib/hand_landmarks_mediapipe/config/ . \nexport CAM_TYPE=mipi\nros2 launch hand_landmarks_mediapipe hand_landmarks.launch.py\n```\n\n### USB Camera\n```bash\nsource /opt/tros/humble/setup.bash\ncp -r /opt/tros/humble/lib/palm_detection_mediapipe/config/ . \ncp -r /opt/tros/humble/lib/hand_landmarks_mediapipe/config/ . \nexport CAM_TYPE=usb\nros2 launch hand_landmarks_mediapipe hand_landmarks.launch.py\n```"
+    },
+    {
+        "id": "inject_mipi_start",
+        "type": "inject",
+        "z": "hand_landmarks_tab",
+        "name": "Start MIPI Detection",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "mipi_detection",
+        "payload": "start",
+        "payloadType": "str",
+        "x": 160,
+        "y": 100,
+        "wires": [
+            [
+                "exec_mipi_detection"
+            ]
+        ]
+    },
+    {
+        "id": "exec_mipi_detection",
+        "type": "exec",
+        "z": "hand_landmarks_tab",
+        "name": "MIPI Launcher",
+        "command": "cd /tmp && source /opt/tros/humble/setup.bash && cp -r /opt/tros/humble/lib/palm_detection_mediapipe/config/ . 2>/dev/null || true && cp -r /opt/tros/humble/lib/hand_landmarks_mediapipe/config/ . 2>/dev/null || true && export CAM_TYPE=mipi && echo \"Starting MIPI Hand Landmarks Detection...\" && ros2 launch hand_landmarks_mediapipe hand_landmarks.launch.py",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "120",
+        "oldrc": false,
+        "x": 400,
+        "y": 100,
+        "wires": [
+            [
+                "debug_mipi_output"
+            ],
+            [
+                "debug_mipi_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "inject_usb_start",
+        "type": "inject",
+        "z": "hand_landmarks_tab",
+        "name": "Start USB Detection",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "usb_detection",
+        "payload": "start",
+        "payloadType": "str",
+        "x": 160,
+        "y": 160,
+        "wires": [
+            [
+                "exec_usb_detection"
+            ]
+        ]
+    },
+    {
+        "id": "exec_usb_detection",
+        "type": "exec",
+        "z": "hand_landmarks_tab",
+        "name": "USB Launcher",
+        "command": "cd /tmp && source /opt/tros/humble/setup.bash && cp -r /opt/tros/humble/lib/palm_detection_mediapipe/config/ . 2>/dev/null || true && cp -r /opt/tros/humble/lib/hand_landmarks_mediapipe/config/ . 2>/dev/null || true && export CAM_TYPE=usb && echo \"Starting USB Hand Landmarks Detection...\" && ros2 launch hand_landmarks_mediapipe hand_landmarks.launch.py",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "120",
+        "oldrc": false,
+        "x": 400,
+        "y": 160,
+        "wires": [
+            [
+                "debug_usb_output"
+            ],
+            [
+                "debug_usb_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "inject_fb_start",
+        "type": "inject",
+        "z": "hand_landmarks_tab",
+        "name": "Start Local Image Detection",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "fb_detection",
+        "payload": "start",
+        "payloadType": "str",
+        "x": 180,
+        "y": 220,
+        "wires": [
+            [
+                "exec_fb_detection"
+            ]
+        ]
+    },
+    {
+        "id": "exec_fb_detection",
+        "type": "exec",
+        "z": "hand_landmarks_tab",
+        "name": "Local Image Launcher",
+        "command": "cd /tmp && source /opt/tros/humble/setup.bash && cp -r /opt/tros/humble/lib/palm_detection_mediapipe/config/ . 2>/dev/null || true && cp -r /opt/tros/humble/lib/hand_landmarks_mediapipe/config/ . 2>/dev/null || true && export CAM_TYPE=fb && echo \"Starting Local Image Hand Landmarks Detection...\" && ros2 launch hand_landmarks_mediapipe hand_landmarks.launch.py publish_image_source:=config/example.jpg publish_image_format:=jpg publish_output_image_w:=640 publish_output_image_h:=480",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "60",
+        "oldrc": false,
+        "x": 420,
+        "y": 220,
+        "wires": [
+            [
+                "debug_fb_output"
+            ],
+            [
+                "debug_fb_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "inject_browser",
+        "type": "inject",
+        "z": "hand_landmarks_tab",
+        "name": "Open Visualization Page",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 170,
+        "y": 300,
+        "wires": [
+            [
+                "openurl_browser"
+            ]
+        ]
+    },
+    {
+        "id": "openurl_browser",
+        "type": "rdk-tools openurl",
+        "z": "hand_landmarks_tab",
+        "name": "",
+        "x": 400,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "inject_stop",
+        "type": "inject",
+        "z": "hand_landmarks_tab",
+        "name": "Stop All Services",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "stop",
+        "payload": "stop",
+        "payloadType": "str",
+        "x": 160,
+        "y": 360,
+        "wires": [
+            [
+                "exec_stop_all"
+            ]
+        ]
+    },
+    {
+        "id": "exec_stop_all",
+        "type": "exec",
+        "z": "hand_landmarks_tab",
+        "name": "Stop All Services",
+        "command": "sudo pkill -9 -f hobot_usb_cam; sudo pkill -9 -f hand_landmarks_mediapipe; sudo pkill -9 -f palm_detection_mediapipe; sudo pkill -9 -f hobot_codec_republish; sudo pkill -9 -f websocket; sudo pkill -9 -f python3; sudo pkill -9 -f 'ros2 launch'; sudo pkill -9 -f 'ros2 run'; sleep 2; sudo rm -rf /dev/shm/*; ros2 daemon stop 2>/dev/null; sleep 1; echo '✓ Services stopped completely, resources released'",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "10",
+        "oldrc": false,
+        "x": 400,
+        "y": 360,
+        "wires": [
+            [
+                "debug_stop_info"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "debug_mipi_output",
+        "type": "debug",
+        "z": "hand_landmarks_tab",
+        "name": "MIPI Detection Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 650,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "debug_mipi_error",
+        "type": "debug",
+        "z": "hand_landmarks_tab",
+        "name": "MIPI Error Info",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "debug_usb_output",
+        "type": "debug",
+        "z": "hand_landmarks_tab",
+        "name": "USB Detection Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 650,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "debug_usb_error",
+        "type": "debug",
+        "z": "hand_landmarks_tab",
+        "name": "USB Error Info",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "debug_fb_output",
+        "type": "debug",
+        "z": "hand_landmarks_tab",
+        "name": "Local Detection Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 650,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "debug_fb_error",
+        "type": "debug",
+        "z": "hand_landmarks_tab",
+        "name": "Local Detection Error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "debug_stop_info",
+        "type": "debug",
+        "z": "hand_landmarks_tab",
+        "name": "Stop Service Status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 640,
+        "y": 360,
+        "wires": []
+    }
+]

@@ -1,0 +1,331 @@
+[
+    {
+        "id": "edgesam_tab",
+        "type": "tab",
+        "label": "EdgeSAM Segment Anything",
+        "disabled": false,
+        "info": "# EdgeSAM Segment Anything\n\n## Introduction\n\nEdgeSAM segmentation algorithm supports USB and MIPI video stream modes. EdgeSAM relies on detection box input for segmentation, requiring only a box without specific target category information.\n\n## Usage Process\n\n### Mode 1: USB Video Stream (Real-time)\n1. **Start Stream**: Click \"🎥 USB Camera Stream\" button\n2. **View Visuals**: Click \"Open Web Visualization\" to view results in browser\n3. **Stop Service**: Click \"Stop Segmentation Service\" when finished\n\n### Mode 2: MIPI Video Stream (Real-time)\n1. **Start Stream**: Click \"📹 MIPI Camera Stream\" button\n2. **View Visuals**: Click \"Open Web Visualization\" to view results in browser\n3. **Stop Service**: Click \"Stop Segmentation Service\" when finished\n\n## Supported Platforms\n\n- RDK X5\n- RDK S100\n\n## Algorithm Info\n\n| Model | Platform | Input Size | FPS |\n|-------|----------|------------|-----|\n| edgesam | X5 | 1×3×512×512 | 9.09 |\n| edgesam | S100 | 1×3×512×512 | 77.0 |\n\n## Core Communication Config\n\n### WebSocket Video Stream\n- **Stream URL**: `http://{host}:8000`\n- **Image Topic**: `/image` (JPEG encoded stream)\n- **Performance**: Real-time, low latency\n\n## Notes\n\n- EdgeSAM relies on box input; this demo uses a fixed box (center of image) for segmentation.\n- Start the video stream before opening the visualization page.\n- Segmentation may take a few seconds to initialize.",
+        "env": []
+    },
+    {
+        "id": "comment_video_section",
+        "type": "comment",
+        "z": "edgesam_tab",
+        "name": "🎥 USB Stream Segmentation Workflow",
+        "info": "Start USB camera real-time stream for continuous segmentation",
+        "x": 150,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "inject_usb_video",
+        "type": "inject",
+        "z": "edgesam_tab",
+        "name": "🎥 USB Camera Stream",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "usb_video",
+        "payload": "start",
+        "payloadType": "str",
+        "x": 140,
+        "y": 260,
+        "wires": [
+            [
+                "exec_usb_video"
+            ]
+        ]
+    },
+    {
+        "id": "exec_usb_video",
+        "type": "exec",
+        "z": "edgesam_tab",
+        "name": "USB Stream Launcher",
+        "command": "cd /tmp && mkdir -p logs && chmod 777 logs && source /opt/tros/humble/setup.bash && echo '=== Auto-detect USB Camera ===' && DEVICE='' && for vdev in /dev/video{0..15}; do if [ -e \"$vdev\" ] && [ -c \"$vdev\" ]; then USB_PATH=$(udevadm info \"$vdev\" 2>&1 | grep 'ID_PATH=' | head -1 | cut -d'=' -f2) && if [ -n \"$USB_PATH\" ] && echo \"$USB_PATH\" | grep -qi usb; then if v4l2-ctl --device=\"$vdev\" --info >/dev/null 2>&1; then DEVICE=\"$vdev\" && echo \"✓ Found USB Camera: $DEVICE\" && v4l2-ctl --device=\"$DEVICE\" --info 2>&1 | grep -E 'Driver name|Card type' | head -2 && break; fi; fi; fi; done && if [ -z \"$DEVICE\" ]; then echo '⚠️ Device not found via USB path, trying by-path...' && if [ -d /dev/v4l/by-path ]; then for link in /dev/v4l/by-path/*usb*-video-index0; do if [ -L \"$link\" ]; then DEVICE=$(readlink -f \"$link\") && if v4l2-ctl --device=\"$DEVICE\" --info >/dev/null 2>&1; then echo \"✓ Found via by-path: $DEVICE\" && break; fi; fi; done; fi; fi && if [ -z \"$DEVICE\" ]; then echo '❌ No available USB camera found' && echo 'Please check if USB camera is connected' && exit 1; fi && echo \"Using Device: $DEVICE\" && ls -l \"$DEVICE\" 2>&1 && echo '=== Starting EdgeSAM USB Stream (with WebSocket) ===' && export CAM_TYPE=usb && ros2 launch mono_edgesam sam.launch.py device:=\"$DEVICE\" 2>&1 || (ERR_CODE=$? && echo \"Launch failed, error code: $ERR_CODE\" && exit $ERR_CODE)",
+        "addpay": false,
+        "append": "",
+        "useSpawn": true,
+        "timer": "0",
+        "oldrc": false,
+        "x": 380,
+        "y": 260,
+        "wires": [
+            [
+                "debug_usb_video_output"
+            ],
+            [
+                "debug_usb_video_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "debug_usb_video_output",
+        "type": "debug",
+        "z": "edgesam_tab",
+        "name": "USB Stream Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 650,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "debug_usb_video_error",
+        "type": "debug",
+        "z": "edgesam_tab",
+        "name": "USB Stream Error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "comment_mipi_video_section",
+        "type": "comment",
+        "z": "edgesam_tab",
+        "name": "📹 MIPI Stream Segmentation Workflow",
+        "info": "Start MIPI camera real-time stream for continuous segmentation",
+        "x": 150,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "inject_mipi_video",
+        "type": "inject",
+        "z": "edgesam_tab",
+        "name": "📹 MIPI Camera Stream",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "mipi_video",
+        "payload": "start",
+        "payloadType": "str",
+        "x": 140,
+        "y": 380,
+        "wires": [
+            [
+                "exec_mipi_video"
+            ]
+        ]
+    },
+    {
+        "id": "exec_mipi_video",
+        "type": "exec",
+        "z": "edgesam_tab",
+        "name": "MIPI Stream Launcher",
+        "command": "cd /tmp && mkdir -p logs && chmod 777 logs && source /opt/tros/humble/setup.bash && export CAM_TYPE=mipi && ros2 launch mono_edgesam sam.launch.py",
+        "addpay": false,
+        "append": "",
+        "useSpawn": true,
+        "timer": "120",
+        "oldrc": false,
+        "x": 380,
+        "y": 380,
+        "wires": [
+            [
+                "debug_mipi_video_output"
+            ],
+            [
+                "debug_mipi_video_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "debug_mipi_video_output",
+        "type": "debug",
+        "z": "edgesam_tab",
+        "name": "MIPI Stream Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 650,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "debug_mipi_video_error",
+        "type": "debug",
+        "z": "edgesam_tab",
+        "name": "MIPI Stream Error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "comment_browser_section",
+        "type": "comment",
+        "z": "edgesam_tab",
+        "name": "2️⃣ View Results",
+        "info": "View real-time detection feed in browser",
+        "x": 200,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "inject_browser",
+        "type": "inject",
+        "z": "edgesam_tab",
+        "name": "Open Web Visualization",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 140,
+        "y": 480,
+        "wires": [
+            [
+                "openurl_browser"
+            ]
+        ]
+    },
+    {
+        "id": "openurl_browser",
+        "type": "rdk-tools openurl",
+        "z": "edgesam_tab",
+        "name": "",
+        "x": 380,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "comment_control_section",
+        "type": "comment",
+        "z": "edgesam_tab",
+        "name": "🎮 Controls",
+        "info": "Stop Segmentation Service",
+        "x": 150,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "inject_stop",
+        "type": "inject",
+        "z": "edgesam_tab",
+        "name": "Stop Segmentation Service",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "stop",
+        "payloadType": "str",
+        "x": 140,
+        "y": 740,
+        "wires": [
+            [
+                "exec_stop_all"
+            ]
+        ]
+    },
+    {
+        "id": "exec_stop_all",
+        "type": "exec",
+        "z": "edgesam_tab",
+        "name": "Stop Service",
+        "command": "sudo pkill -9 -f hobot_usb_cam; sudo pkill -9 -f mono_edgesam; sudo pkill -9 -f hobot_codec_republish; sudo pkill -9 -f websocket; sudo pkill -9 -f python3; sudo pkill -9 -f 'ros2 launch'; sudo pkill -9 -f 'ros2 run'; sleep 2; sudo rm -rf /dev/shm/*; ros2 daemon stop 2>/dev/null; sleep 1; echo '✓ Service stopped, resources freed'",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "10",
+        "oldrc": false,
+        "x": 350,
+        "y": 740,
+        "wires": [
+            [
+                "debug_stop_info"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "debug_stop_info",
+        "type": "debug",
+        "z": "edgesam_tab",
+        "name": "Stop Status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 550,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "global_config_edgesam",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-rdk-camera": "0.0.17",
+            "node-red-contrib-image-tools": "2.1.1"
+        }
+    }
+]
