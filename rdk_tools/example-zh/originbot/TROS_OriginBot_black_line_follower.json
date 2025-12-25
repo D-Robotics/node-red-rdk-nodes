@@ -1,0 +1,681 @@
+[
+    {
+        "id": "63977db28cf06dc2",
+        "type": "tab",
+        "label": "TROS OriginBot LineFollower",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7b6f75d31fe1baad",
+        "type": "group",
+        "z": "63977db28cf06dc2",
+        "name": "更新检测及提示",
+        "style": {
+            "label": true,
+            "fill": "#ffffbf",
+            "color": "#000000"
+        },
+        "nodes": [
+            "09156532e825daf6",
+            "93f1884052b733e2",
+            "b3b7ee359fc9447c"
+        ],
+        "x": 294,
+        "y": 99,
+        "w": 572,
+        "h": 82
+    },
+    {
+        "id": "4c06a32351264e77",
+        "type": "group",
+        "z": "63977db28cf06dc2",
+        "name": "摄像头节点检查并执行",
+        "style": {
+            "fill": "#e3f3d3",
+            "label": true,
+            "color": "#000000"
+        },
+        "nodes": [
+            "386cdb8eecf236cf",
+            "e434897ac3a5e430"
+        ],
+        "x": 334,
+        "y": 299,
+        "w": 552,
+        "h": 82
+    },
+    {
+        "id": "72b3156e709f6349",
+        "type": "group",
+        "z": "63977db28cf06dc2",
+        "name": "巡线节点检查与执行",
+        "style": {
+            "fill": "#bfdbef",
+            "label": true,
+            "color": "#000000"
+        },
+        "nodes": [
+            "bd8658be9c1450b5",
+            "564193c847a38ca0",
+            "c26691d4f86fa087"
+        ],
+        "x": 334,
+        "y": 399,
+        "w": 552,
+        "h": 82
+    },
+    {
+        "id": "077b162503495c13",
+        "type": "group",
+        "z": "63977db28cf06dc2",
+        "name": "底盘节点检查与执行",
+        "style": {
+            "fill": "#bfc7d7",
+            "fill-opacity": "0.6",
+            "label": true,
+            "color": "#000000"
+        },
+        "nodes": [
+            "6c855588e53612b5",
+            "2016043fdb22c190"
+        ],
+        "x": 334,
+        "y": 499,
+        "w": 552,
+        "h": 82
+    },
+    {
+        "id": "564193c847a38ca0",
+        "type": "change",
+        "z": "63977db28cf06dc2",
+        "g": "72b3156e709f6349",
+        "name": "设定巡线节点",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "tros-line-follower-perception tros-line-follower-model",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "run",
+                "pt": "msg",
+                "to": "line_follower_perception line_follower_perception --ros-args -p model_path:=/opt/tros/share/line_follower_perception/resnet18_224x224_nv12.bin -p model_name:=resnet18_224x224_nv12",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 600,
+        "y": 440,
+        "wires": [
+            [
+                "c26691d4f86fa087"
+            ]
+        ]
+    },
+    {
+        "id": "c26691d4f86fa087",
+        "type": "rdk-tools checkexecute",
+        "z": "63977db28cf06dc2",
+        "g": "72b3156e709f6349",
+        "name": "",
+        "x": 790,
+        "y": 440,
+        "wires": [
+            [
+                "9371a066361792e1"
+            ],
+            [
+                "a893b235ea4bf87a"
+            ]
+        ]
+    },
+    {
+        "id": "2ed37ebff62d0361",
+        "type": "inject",
+        "z": "63977db28cf06dc2",
+        "name": " 更新软件包",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 120,
+        "y": 140,
+        "wires": [
+            [
+                "09156532e825daf6"
+            ]
+        ]
+    },
+    {
+        "id": "fcb4f088444d1428",
+        "type": "inject",
+        "z": "63977db28cf06dc2",
+        "name": "全部关闭",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 120,
+        "y": 260,
+        "wires": [
+            [
+                "e434897ac3a5e430",
+                "c26691d4f86fa087",
+                "2016043fdb22c190"
+            ]
+        ]
+    },
+    {
+        "id": "09156532e825daf6",
+        "type": "rdk-tools smartupdate",
+        "z": "63977db28cf06dc2",
+        "g": "7b6f75d31fe1baad",
+        "name": "",
+        "x": 380,
+        "y": 140,
+        "wires": [
+            [
+                "93f1884052b733e2"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "93f1884052b733e2",
+        "type": "change",
+        "z": "63977db28cf06dc2",
+        "g": "7b6f75d31fe1baad",
+        "name": "更新提示",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "智能更新已完成",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 580,
+        "y": 140,
+        "wires": [
+            [
+                "b3b7ee359fc9447c"
+            ]
+        ]
+    },
+    {
+        "id": "b3b7ee359fc9447c",
+        "type": "rdk-tools texttoaudio",
+        "z": "63977db28cf06dc2",
+        "g": "7b6f75d31fe1baad",
+        "name": "",
+        "x": 770,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "386cdb8eecf236cf",
+        "type": "change",
+        "z": "63977db28cf06dc2",
+        "g": "4c06a32351264e77",
+        "name": "设定MIPI摄像头节点",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "tros-mipi-cam",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "launch",
+                "pt": "msg",
+                "to": "mipi_cam mipi_cam.launch.py",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 460,
+        "y": 340,
+        "wires": [
+            [
+                "e434897ac3a5e430"
+            ]
+        ]
+    },
+    {
+        "id": "e434897ac3a5e430",
+        "type": "rdk-tools checkexecute",
+        "z": "63977db28cf06dc2",
+        "g": "4c06a32351264e77",
+        "name": "",
+        "x": 790,
+        "y": 340,
+        "wires": [
+            [
+                "9371a066361792e1"
+            ],
+            [
+                "a893b235ea4bf87a"
+            ]
+        ]
+    },
+    {
+        "id": "bd8658be9c1450b5",
+        "type": "delay",
+        "z": "63977db28cf06dc2",
+        "g": "72b3156e709f6349",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 420,
+        "y": 440,
+        "wires": [
+            [
+                "564193c847a38ca0"
+            ]
+        ]
+    },
+    {
+        "id": "6c855588e53612b5",
+        "type": "change",
+        "z": "63977db28cf06dc2",
+        "g": "077b162503495c13",
+        "name": "设定底盘节点",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "tros-hobot-usb-cam",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "launch",
+                "pt": "msg",
+                "to": "originbot_base robot.launch.py ",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 540,
+        "wires": [
+            [
+                "2016043fdb22c190"
+            ]
+        ]
+    },
+    {
+        "id": "2016043fdb22c190",
+        "type": "rdk-tools checkexecute",
+        "z": "63977db28cf06dc2",
+        "g": "077b162503495c13",
+        "name": "",
+        "x": 790,
+        "y": 540,
+        "wires": [
+            [
+                "9371a066361792e1"
+            ],
+            [
+                "a893b235ea4bf87a"
+            ]
+        ]
+    },
+    {
+        "id": "9371a066361792e1",
+        "type": "debug",
+        "z": "63977db28cf06dc2",
+        "name": "正常结束提示",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1040,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "a893b235ea4bf87a",
+        "type": "debug",
+        "z": "63977db28cf06dc2",
+        "name": "异常结束提示",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1040,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "a5f1bc90e95e4882",
+        "type": "comment",
+        "z": "63977db28cf06dc2",
+        "name": "名称：OriginBot巡黑线小车    版本：v0.0.2",
+        "info": "",
+        "x": 200,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "2fce678a0cd239e1",
+        "type": "comment",
+        "z": "63977db28cf06dc2",
+        "name": "注意：该示例需要将Gitee中的模型拷贝到/opt/tros/share/line_follower_perception/目录下",
+        "info": "",
+        "x": 770,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "0fa9afe4d978f1d0",
+        "type": "inject",
+        "z": "63977db28cf06dc2",
+        "name": "查看Gitee中的黑线识别模型",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://gitee.com/guyuehome/originbot_desktop/blob/master/originbot_deeplearning/line_follower_model/resnet18_224x224_nv12.bin",
+        "payloadType": "str",
+        "x": 580,
+        "y": 60,
+        "wires": [
+            [
+                "dbbdee297e021eea"
+            ]
+        ]
+    },
+    {
+        "id": "dbbdee297e021eea",
+        "type": "rdk-tools openurl",
+        "z": "63977db28cf06dc2",
+        "name": "",
+        "x": 860,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "9315c62e15b95c76",
+        "type": "inject",
+        "z": "63977db28cf06dc2",
+        "name": "全部开启",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 220,
+        "wires": [
+            [
+                "386cdb8eecf236cf",
+                "bd8658be9c1450b5",
+                "6c855588e53612b5"
+            ]
+        ]
+    },
+    {
+        "id": "f5e39592f4110999",
+        "type": "inject",
+        "z": "63977db28cf06dc2",
+        "name": "开启摄像头",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 320,
+        "wires": [
+            [
+                "386cdb8eecf236cf"
+            ]
+        ]
+    },
+    {
+        "id": "07d834533ad6c3b7",
+        "type": "inject",
+        "z": "63977db28cf06dc2",
+        "name": "关闭摄像头",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 180,
+        "y": 360,
+        "wires": [
+            [
+                "e434897ac3a5e430"
+            ]
+        ]
+    },
+    {
+        "id": "de3ecd8862827c85",
+        "type": "inject",
+        "z": "63977db28cf06dc2",
+        "name": "开启巡线",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 420,
+        "wires": [
+            [
+                "564193c847a38ca0"
+            ]
+        ]
+    },
+    {
+        "id": "4dc0ed5c06e70ef4",
+        "type": "inject",
+        "z": "63977db28cf06dc2",
+        "name": "关闭巡线",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 180,
+        "y": 460,
+        "wires": [
+            [
+                "c26691d4f86fa087"
+            ]
+        ]
+    },
+    {
+        "id": "15e2497450721092",
+        "type": "inject",
+        "z": "63977db28cf06dc2",
+        "name": "开启巡线",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 520,
+        "wires": [
+            [
+                "6c855588e53612b5"
+            ]
+        ]
+    },
+    {
+        "id": "9b6bd0a550110377",
+        "type": "inject",
+        "z": "63977db28cf06dc2",
+        "name": "关闭巡线",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 180,
+        "y": 560,
+        "wires": [
+            [
+                "2016043fdb22c190"
+            ]
+        ]
+    }
+]

@@ -1,0 +1,446 @@
+[
+    {
+        "id": "24d22efe8f77fc5e",
+        "type": "tab",
+        "label": "EdgeSAM 分割一切",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "0ea4b706767baba2",
+        "type": "group",
+        "z": "24d22efe8f77fc5e",
+        "name": "实时视频流分割",
+        "style": {
+            "fill": "#e3f3d3",
+            "fill-opacity": "0.6",
+            "label": true
+        },
+        "nodes": [
+            "e9d26cb4e9e24986",
+            "4bdb94952d284f1a",
+            "e5521e1e17acd293",
+            "903b4b494332e696",
+            "765aa3fbc68c69b5",
+            "80bee49e04058b06",
+            "f3d8dd8765bfefba"
+        ],
+        "x": 114,
+        "y": 159,
+        "w": 1012,
+        "h": 182
+    },
+    {
+        "id": "655a7ae059623f2e",
+        "type": "group",
+        "z": "24d22efe8f77fc5e",
+        "name": "结果可视化",
+        "style": {
+            "fill": "#d1e7f5",
+            "fill-opacity": "0.6",
+            "label": true
+        },
+        "nodes": [
+            "ac38e699ea21b6c7",
+            "2b81322b0d6a74ab",
+            "d783ef3d1de0ef16",
+            "365fb06286dae915"
+        ],
+        "x": 114,
+        "y": 399,
+        "w": 372,
+        "h": 122
+    },
+    {
+        "id": "cbd134a88d49b50f",
+        "type": "group",
+        "z": "24d22efe8f77fc5e",
+        "name": "环境准备",
+        "style": {
+            "fill": "#fff9c4",
+            "fill-opacity": "0.6",
+            "label": true
+        },
+        "nodes": [
+            "c06ddac643b67a94",
+            "8939d9658b958324",
+            "5476a133db52f522",
+            "8f1a57ca9fd01092"
+        ],
+        "x": 114,
+        "y": 39,
+        "w": 652,
+        "h": 82
+    },
+    {
+        "id": "e9d26cb4e9e24986",
+        "type": "inject",
+        "z": "24d22efe8f77fc5e",
+        "g": "0ea4b706767baba2",
+        "name": "启动 (USB视频流)",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "camera",
+                "v": "usb",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 250,
+        "y": 200,
+        "wires": [
+            [
+                "f3d8dd8765bfefba"
+            ]
+        ]
+    },
+    {
+        "id": "4bdb94952d284f1a",
+        "type": "inject",
+        "z": "24d22efe8f77fc5e",
+        "g": "0ea4b706767baba2",
+        "name": "启动 (MIPI视频流)",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "camera",
+                "v": "mipi",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 250,
+        "y": 240,
+        "wires": [
+            [
+                "f3d8dd8765bfefba"
+            ]
+        ]
+    },
+    {
+        "id": "f3d8dd8765bfefba",
+        "type": "exec",
+        "z": "24d22efe8f77fc5e",
+        "g": "0ea4b706767baba2",
+        "command": "cp -r /opt/tros/humble/lib/mono_edgesam/config/ . || true",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "",
+        "oldrc": false,
+        "name": "初始化配置 (CP)",
+        "x": 460,
+        "y": 220,
+        "wires": [
+            [
+                "e5521e1e17acd293",
+                "d783ef3d1de0ef16"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "e5521e1e17acd293",
+        "type": "change",
+        "z": "24d22efe8f77fc5e",
+        "g": "0ea4b706767baba2",
+        "name": "配置流参数",
+        "rules": [
+            {
+                "t": "set",
+                "p": "launch",
+                "pt": "msg",
+                "to": "mono_edgesam sam.launch.py",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "insert",
+                "pt": "msg",
+                "to": "$join(['export CAM_TYPE=', msg.camera])",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 670,
+        "y": 220,
+        "wires": [
+            [
+                "903b4b494332e696"
+            ]
+        ]
+    },
+    {
+        "id": "903b4b494332e696",
+        "type": "rdk-tools checkexecute",
+        "z": "24d22efe8f77fc5e",
+        "g": "0ea4b706767baba2",
+        "name": "执行EdgeSAM",
+        "x": 860,
+        "y": 260,
+        "wires": [
+            [
+                "80bee49e04058b06"
+            ],
+            [
+                "80bee49e04058b06"
+            ]
+        ]
+    },
+    {
+        "id": "765aa3fbc68c69b5",
+        "type": "inject",
+        "z": "24d22efe8f77fc5e",
+        "g": "0ea4b706767baba2",
+        "name": "关闭服务",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 220,
+        "y": 300,
+        "wires": [
+            [
+                "903b4b494332e696"
+            ]
+        ]
+    },
+    {
+        "id": "80bee49e04058b06",
+        "type": "debug",
+        "z": "24d22efe8f77fc5e",
+        "g": "0ea4b706767baba2",
+        "name": "系统日志",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "ac38e699ea21b6c7",
+        "type": "inject",
+        "z": "24d22efe8f77fc5e",
+        "g": "655a7ae059623f2e",
+        "name": "打开浏览器",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 220,
+        "y": 440,
+        "wires": [
+            [
+                "2b81322b0d6a74ab"
+            ]
+        ]
+    },
+    {
+        "id": "2b81322b0d6a74ab",
+        "type": "rdk-tools openurl",
+        "z": "24d22efe8f77fc5e",
+        "g": "655a7ae059623f2e",
+        "name": "",
+        "x": 400,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "d783ef3d1de0ef16",
+        "type": "delay",
+        "z": "24d22efe8f77fc5e",
+        "g": "655a7ae059623f2e",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 240,
+        "y": 480,
+        "wires": [
+            [
+                "365fb06286dae915"
+            ]
+        ]
+    },
+    {
+        "id": "365fb06286dae915",
+        "type": "change",
+        "z": "24d22efe8f77fc5e",
+        "g": "655a7ae059623f2e",
+        "name": "设定视频流",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "ws://{host}:8000",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c06ddac643b67a94",
+        "type": "inject",
+        "z": "24d22efe8f77fc5e",
+        "g": "cbd134a88d49b50f",
+        "name": "检查更新",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 220,
+        "y": 80,
+        "wires": [
+            [
+                "8939d9658b958324"
+            ]
+        ]
+    },
+    {
+        "id": "8939d9658b958324",
+        "type": "rdk-tools smartupdate",
+        "z": "24d22efe8f77fc5e",
+        "g": "cbd134a88d49b50f",
+        "name": "",
+        "x": 380,
+        "y": 80,
+        "wires": [
+            [
+                "5476a133db52f522"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "5476a133db52f522",
+        "type": "change",
+        "z": "24d22efe8f77fc5e",
+        "g": "cbd134a88d49b50f",
+        "name": "提示内容",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "环境检查完成",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 540,
+        "y": 80,
+        "wires": [
+            [
+                "8f1a57ca9fd01092"
+            ]
+        ]
+    },
+    {
+        "id": "8f1a57ca9fd01092",
+        "type": "rdk-tools texttoaudio",
+        "z": "24d22efe8f77fc5e",
+        "g": "cbd134a88d49b50f",
+        "name": "",
+        "x": 670,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "bd1df5d01cd027eb",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-rdk-tools": "0.0.27"
+        }
+    }
+]
