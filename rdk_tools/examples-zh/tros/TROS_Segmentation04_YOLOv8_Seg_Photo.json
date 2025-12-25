@@ -50,13 +50,13 @@
         "id": "exec_usb_video",
         "type": "exec",
         "z": "yolov8_seg_photo_tab",
-        "name": "USB视频流启动器",
         "command": "source /opt/tros/humble/setup.bash && export CAM_TYPE=usb && ros2 launch dnn_node_example dnn_node_example.launch.py dnn_example_dump_render_img:=0 dnn_example_config_file:=config/yolov8segworkconfig.json dnn_example_image_width:=1920 dnn_example_image_height:=1080",
         "addpay": false,
         "append": "",
         "useSpawn": true,
         "timer": "120",
         "oldrc": false,
+        "name": "USB视频流启动器",
         "x": 380,
         "y": 420,
         "wires": [
@@ -146,13 +146,13 @@
         "id": "exec_mipi_video",
         "type": "exec",
         "z": "yolov8_seg_photo_tab",
-        "name": "MIPI视频流启动器",
         "command": "source /opt/tros/humble/setup.bash && export CAM_TYPE=mipi && ros2 launch dnn_node_example dnn_node_example.launch.py dnn_example_dump_render_img:=0 dnn_example_config_file:=config/yolov8segworkconfig.json dnn_example_image_width:=1920 dnn_example_image_height:=1080",
         "addpay": false,
         "append": "",
         "useSpawn": true,
         "timer": "120",
         "oldrc": false,
+        "name": "MIPI视频流启动器",
         "x": 380,
         "y": 560,
         "wires": [
@@ -285,13 +285,14 @@
         "id": "exec_stop_all",
         "type": "exec",
         "z": "yolov8_seg_photo_tab",
-        "name": "停止服务",
-        "command": "sudo pkill -9 -f hobot_usb_cam; sudo pkill -9 -f dnn_node_example; sudo pkill -9 -f hobot_codec_republish; sudo pkill -9 -f websocket; sudo pkill -9 -f python3; sudo pkill -9 -f 'ros2 launch'; sudo pkill -9 -f 'ros2 run'; sleep 2; sudo rm -rf /dev/shm/*; ros2 daemon stop 2>/dev/null; sleep 1; echo '✓ 服务已彻底停止，资源已释放'",
+        "command": "sudo pkill -2 -f ros; sleep 3;",
         "addpay": false,
         "append": "",
-        "useSpawn": false,
+        "useSpawn": "false",
         "timer": "10",
+        "winHide": false,
         "oldrc": false,
+        "name": "停止服务",
         "x": 350,
         "y": 780,
         "wires": [
@@ -320,12 +321,11 @@
         "wires": []
     },
     {
-        "id": "global_config_yolov8",
+        "id": "dfd37d9a6d617aa3",
         "type": "global-config",
         "env": [],
         "modules": {
-            "node-red-node-rdk-camera": "0.0.17",
-            "node-red-contrib-image-tools": "2.1.1"
+            "node-red-node-rdk-tools": "0.0.27"
         }
     }
 ]

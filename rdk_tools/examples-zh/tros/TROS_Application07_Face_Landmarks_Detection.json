@@ -1,128 +1,299 @@
 [
     {
-        "id": "face_landmarks_detection_tab",
+        "id": "6ea85a80b169f687",
         "type": "tab",
-        "label": "人脸关键点检测 (Face Landmarks Detection)",
-        "info": "# 人脸关键点检测应用示例 (Face Landmarks Detection)\n\n**功能说明**：基于mono2d_body_detection的人脸关键点检测，支持MIPI和USB摄像头实时检测\n\n**参考示例**：本示例参考\"人体检测和跟踪(YOLO Pose)\"的配置方式\n\n## 🎯 快速开始\n\n### 使用流程\n1. **选择摄像头类型**：根据硬件选择MIPI或USB摄像头\n2. **启动检测服务**：点击对应的启动按钮\n3. **查看视频流**：点击\"打开可视化页面\"在浏览器中查看实时检测画面\n4. **停止服务**：完成后点击\"停止所有服务\"\n\n## 支持平台\n- RDK X3 / X5 / S100\n- TROS Humble\n\n## 核心功能\n- 人体检测\n- 人脸检测\n- 关键点识别\n\n## 核心通信配置\n\n### WebSocket视频流\n- **视频流地址**: `http://{host}:8000`\n- **图像Topic**: `/image` (JPEG编码的图像流)\n- **检测结果Topic**: 由launch文件配置\n- **性能**: 实时检测，延迟低\n\n## 参数说明\n- **配置文件**：从`/opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/`拷贝\n- **Launch文件**：`face_landmarks_detection/body_det_face_landmarks_det.launch.py`\n- **可视化地址**：http://{host}:8000（WebSocket视频流）\n\n## 📝 手动执行命令（参考）\n\n### 使用MIPI摄像头\n```bash\n# 配置tros.b环境\nsource /opt/tros/humble/setup.bash\n\n# 设置TROS_DISTRO变量（重要！）\nexport TROS_DISTRO=humble\n\n# 从tros.b的安装路径中拷贝出运行示例需要的配置文件\ncp -r /opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/ .\n\n# 配置MIPI摄像头\nexport CAM_TYPE=mipi\n\n# 启动launch文件\nros2 launch face_landmarks_detection body_det_face_landmarks_det.launch.py\n```\n\n### 使用USB摄像头\n```bash\n# 配置tros.b环境\nsource /opt/tros/humble/setup.bash\n\n# 设置TROS_DISTRO变量（重要！）\nexport TROS_DISTRO=humble\n\n# 从tros.b的安装路径中拷贝出运行示例需要的配置文件\ncp -r /opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/ .\n\n# 配置USB摄像头\nexport CAM_TYPE=usb\n\n# 启动launch文件\nros2 launch face_landmarks_detection body_det_face_landmarks_det.launch.py\n```\n\n**⚠️ 注意**：使用 `${TROS_DISTRO}` 变量前必须先设置 `export TROS_DISTRO=humble`，否则命令会失败！"
+        "label": "人脸关键点检测",
+        "disabled": false,
+        "info": ""
     },
     {
-        "id": "comment_camera_section",
-        "type": "comment",
-        "z": "face_landmarks_detection_tab",
-        "name": "1️⃣ 选择摄像头类型",
-        "info": "根据您的硬件选择相应的检测方式",
-        "x": 200,
-        "y": 40,
-        "wires": []
+        "id": "7823ddb4fee194ed",
+        "type": "group",
+        "z": "6ea85a80b169f687",
+        "name": "核心控制",
+        "style": {
+            "fill": "#e3f3d3",
+            "fill-opacity": "0.6",
+            "label": true
+        },
+        "nodes": [
+            "3731a1f8f7281d7f",
+            "1f6982eb9a54a0db",
+            "6e44e1a8d909ed22",
+            "7aed82efb2e2d4db",
+            "c7c7fc671434fba5",
+            "fed6b0f5ca9a60bb",
+            "befd2e978fcda92e",
+            "41f244d3e7bf3127"
+        ],
+        "x": 114,
+        "y": 159,
+        "w": 1012,
+        "h": 182
     },
     {
-        "id": "comment_mipi_section",
-        "type": "comment",
-        "z": "face_landmarks_detection_tab",
-        "name": "📷 MIPI摄像头检测",
-        "info": "使用MIPI摄像头进行实时人脸关键点检测",
-        "x": 180,
-        "y": 80,
-        "wires": []
+        "id": "e841fd2932a7bbec",
+        "type": "group",
+        "z": "6ea85a80b169f687",
+        "name": "结果可视化",
+        "style": {
+            "fill": "#d1e7f5",
+            "fill-opacity": "0.6",
+            "label": true
+        },
+        "nodes": [
+            "0172d60d9df794a6",
+            "5374197b79637a1e",
+            "f1815e43a82e8725",
+            "e4a3607b7fb792ef",
+            "91fdc5151d26fc1a"
+        ],
+        "x": 114,
+        "y": 399,
+        "w": 412,
+        "h": 169.5
     },
     {
-        "id": "inject_mipi_start",
+        "id": "13453ea772ef0ca7",
+        "type": "group",
+        "z": "6ea85a80b169f687",
+        "name": "环境准备",
+        "style": {
+            "fill": "#fff9c4",
+            "fill-opacity": "0.6",
+            "label": true
+        },
+        "nodes": [
+            "ebabe08cd88b71cf",
+            "91f713dbb505fade",
+            "db8f56176febe28a",
+            "178723005092c00f"
+        ],
+        "x": 114,
+        "y": 39,
+        "w": 652,
+        "h": 82
+    },
+    {
+        "id": "3731a1f8f7281d7f",
         "type": "inject",
-        "z": "face_landmarks_detection_tab",
-        "name": "MIPI摄像头检测",
+        "z": "6ea85a80b169f687",
+        "g": "7823ddb4fee194ed",
+        "name": "启动 (USB摄像头)",
         "props": [
-            {"p": "payload"},
-            {"p": "topic", "vt": "str"}
+            {
+                "p": "payload"
+            },
+            {
+                "p": "camera",
+                "v": "usb",
+                "vt": "str"
+            }
         ],
         "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "topic": "mipi_detection",
-        "payload": "start",
-        "payloadType": "str",
-        "x": 140,
-        "y": 120,
-        "wires": [["exec_mipi_detection"]]
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 250,
+        "y": 200,
+        "wires": [
+            [
+                "41f244d3e7bf3127"
+            ]
+        ]
     },
     {
-        "id": "exec_mipi_detection",
-        "type": "exec",
-        "z": "face_landmarks_detection_tab",
-        "name": "MIPI检测启动器",
-        "command": "cd /tmp && source /opt/tros/humble/setup.bash && TROS_DISTRO=humble && cp -r /opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/ . 2>/dev/null || true && export CAM_TYPE=mipi && echo \"=== 启动MIPI摄像头人脸关键点检测 ===\" && ros2 launch face_landmarks_detection body_det_face_landmarks_det.launch.py",
-        "addpay": false,
-        "append": "",
-        "useSpawn": false,
-        "timer": "120",
-        "oldrc": false,
-        "x": 380,
-        "y": 120,
-        "wires": [["debug_mipi_output"], ["debug_mipi_error"], []]
-    },
-    {
-        "id": "comment_usb_section",
-        "type": "comment",
-        "z": "face_landmarks_detection_tab",
-        "name": "📷 USB摄像头检测",
-        "info": "使用USB摄像头进行实时人脸关键点检测",
-        "x": 180,
-        "y": 160,
-        "wires": []
-    },
-    {
-        "id": "inject_usb_start",
+        "id": "1f6982eb9a54a0db",
         "type": "inject",
-        "z": "face_landmarks_detection_tab",
-        "name": "USB摄像头检测",
+        "z": "6ea85a80b169f687",
+        "g": "7823ddb4fee194ed",
+        "name": "启动 (MIPI摄像头)",
         "props": [
-            {"p": "payload"},
-            {"p": "topic", "vt": "str"}
+            {
+                "p": "payload"
+            },
+            {
+                "p": "camera",
+                "v": "mipi",
+                "vt": "str"
+            }
         ],
         "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "topic": "usb_detection",
-        "payload": "start",
-        "payloadType": "str",
-        "x": 140,
-        "y": 200,
-        "wires": [["exec_usb_detection"]]
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 250,
+        "y": 240,
+        "wires": [
+            [
+                "41f244d3e7bf3127"
+            ]
+        ]
     },
     {
-        "id": "exec_usb_detection",
+        "id": "41f244d3e7bf3127",
         "type": "exec",
-        "z": "face_landmarks_detection_tab",
-        "name": "USB检测启动器",
-        "command": "cd /tmp && source /opt/tros/humble/setup.bash && TROS_DISTRO=humble && cp -r /opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/ . 2>/dev/null || true && export CAM_TYPE=usb && echo \"=== 启动USB摄像头人脸关键点检测 ===\" && ros2 launch face_landmarks_detection body_det_face_landmarks_det.launch.py",
+        "z": "6ea85a80b169f687",
+        "g": "7823ddb4fee194ed",
+        "command": "cp -r /opt/tros/humble/lib/mono2d_body_detection/config/ . || true",
         "addpay": false,
         "append": "",
         "useSpawn": false,
-        "timer": "120",
+        "timer": "",
         "oldrc": false,
-        "x": 380,
-        "y": 200,
-        "wires": [["debug_usb_output"], ["debug_usb_error"], []]
+        "name": "初始化配置(拷贝文件)",
+        "x": 480,
+        "y": 220,
+        "wires": [
+            [
+                "6e44e1a8d909ed22",
+                "f1815e43a82e8725"
+            ],
+            [],
+            []
+        ]
     },
     {
-        "id": "comment_browser_section",
-        "type": "comment",
-        "z": "face_landmarks_detection_tab",
-        "name": "2️⃣ 查看检测结果",
-        "info": "在浏览器中查看实时检测画面",
-        "x": 200,
+        "id": "6e44e1a8d909ed22",
+        "type": "change",
+        "z": "6ea85a80b169f687",
+        "g": "7823ddb4fee194ed",
+        "name": "配置运行参数",
+        "rules": [
+            {
+                "t": "set",
+                "p": "launch",
+                "pt": "msg",
+                "to": "face_landmarks_detection body_det_face_landmarks_det.launch.py",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "insert",
+                "pt": "msg",
+                "to": "$join(['export CAM_TYPE=', msg.camera])",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 700,
+        "y": 220,
+        "wires": [
+            [
+                "7aed82efb2e2d4db"
+            ]
+        ]
+    },
+    {
+        "id": "7aed82efb2e2d4db",
+        "type": "rdk-tools checkexecute",
+        "z": "6ea85a80b169f687",
+        "g": "7823ddb4fee194ed",
+        "name": "执行检测",
+        "x": 880,
+        "y": 260,
+        "wires": [
+            [
+                "fed6b0f5ca9a60bb"
+            ],
+            [
+                "befd2e978fcda92e"
+            ]
+        ]
+    },
+    {
+        "id": "c7c7fc671434fba5",
+        "type": "inject",
+        "z": "6ea85a80b169f687",
+        "g": "7823ddb4fee194ed",
+        "name": "关闭服务",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 220,
+        "y": 300,
+        "wires": [
+            [
+                "7aed82efb2e2d4db"
+            ]
+        ]
+    },
+    {
+        "id": "fed6b0f5ca9a60bb",
+        "type": "debug",
+        "z": "6ea85a80b169f687",
+        "g": "7823ddb4fee194ed",
+        "name": "运行日志",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
         "y": 240,
         "wires": []
     },
     {
-        "id": "inject_browser",
+        "id": "befd2e978fcda92e",
+        "type": "debug",
+        "z": "6ea85a80b169f687",
+        "g": "7823ddb4fee194ed",
+        "name": "错误警告",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "0172d60d9df794a6",
         "type": "inject",
-        "z": "face_landmarks_detection_tab",
-        "name": "打开可视化页面",
+        "z": "6ea85a80b169f687",
+        "g": "e841fd2932a7bbec",
+        "name": "打开浏览器",
         "props": [
-            {"p": "payload"},
-            {"p": "topic", "vt": "str"}
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
         ],
         "repeat": "",
         "crontab": "",
@@ -131,147 +302,184 @@
         "topic": "",
         "payload": "http://{host}:8000",
         "payloadType": "str",
-        "x": 140,
-        "y": 280,
-        "wires": [["openurl_browser"]]
+        "x": 220,
+        "y": 440,
+        "wires": [
+            [
+                "5374197b79637a1e"
+            ]
+        ]
     },
     {
-        "id": "openurl_browser",
+        "id": "5374197b79637a1e",
         "type": "rdk-tools openurl",
-        "z": "face_landmarks_detection_tab",
+        "z": "6ea85a80b169f687",
+        "g": "e841fd2932a7bbec",
         "name": "",
-        "x": 380,
-        "y": 280,
+        "x": 400,
+        "y": 440,
         "wires": []
     },
     {
-        "id": "comment_stop_section",
-        "type": "comment",
-        "z": "face_landmarks_detection_tab",
-        "name": "3️⃣ 停止服务",
-        "info": "停止所有检测相关服务",
-        "x": 200,
-        "y": 320,
-        "wires": []
-    },
-    {
-        "id": "inject_stop",
+        "id": "ebabe08cd88b71cf",
         "type": "inject",
-        "z": "face_landmarks_detection_tab",
-        "name": "停止所有服务",
+        "z": "6ea85a80b169f687",
+        "g": "13453ea772ef0ca7",
+        "name": "检查更新",
         "props": [
-            {"p": "payload"},
-            {"p": "topic", "vt": "str"}
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
         ],
         "repeat": "",
         "crontab": "",
         "once": false,
-        "topic": "stop",
-        "payload": "stop",
-        "payloadType": "str",
-        "x": 140,
-        "y": 360,
-        "wires": [["exec_stop_all"]]
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 220,
+        "y": 80,
+        "wires": [
+            [
+                "91f713dbb505fade"
+            ]
+        ]
     },
     {
-        "id": "exec_stop_all",
-        "type": "exec",
-        "z": "face_landmarks_detection_tab",
-        "name": "停止所有服务",
-        "command": "sudo pkill -9 -f hobot_usb_cam; sudo pkill -9 -f face_landmarks_detection; sudo pkill -9 -f mono2d_body_detection; sudo pkill -9 -f hobot_codec_republish; sudo pkill -9 -f websocket; sudo pkill -9 -f python3; sudo pkill -9 -f 'ros2 launch'; sudo pkill -9 -f 'ros2 run'; sleep 2; sudo rm -rf /dev/shm/*; ros2 daemon stop 2>/dev/null; sleep 1; echo '✓ 服务已彻底停止，资源已释放'",
-        "addpay": false,
-        "append": "",
-        "useSpawn": false,
-        "timer": "10",
-        "oldrc": false,
+        "id": "91f713dbb505fade",
+        "type": "rdk-tools smartupdate",
+        "z": "6ea85a80b169f687",
+        "g": "13453ea772ef0ca7",
+        "name": "",
         "x": 380,
-        "y": 360,
-        "wires": [["debug_stop_info"], [], []]
+        "y": 80,
+        "wires": [
+            [
+                "db8f56176febe28a"
+            ],
+            []
+        ]
     },
     {
-        "id": "debug_mipi_output",
-        "type": "debug",
-        "z": "face_landmarks_detection_tab",
-        "name": "MIPI检测输出",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 650,
-        "y": 100,
+        "id": "db8f56176febe28a",
+        "type": "change",
+        "z": "6ea85a80b169f687",
+        "g": "13453ea772ef0ca7",
+        "name": "提示内容",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "环境检查完成",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 540,
+        "y": 80,
+        "wires": [
+            [
+                "178723005092c00f"
+            ]
+        ]
+    },
+    {
+        "id": "178723005092c00f",
+        "type": "rdk-tools texttoaudio",
+        "z": "6ea85a80b169f687",
+        "g": "13453ea772ef0ca7",
+        "name": "",
+        "x": 670,
+        "y": 80,
         "wires": []
     },
     {
-        "id": "debug_mipi_error",
-        "type": "debug",
-        "z": "face_landmarks_detection_tab",
-        "name": "MIPI错误信息",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 650,
-        "y": 140,
-        "wires": []
+        "id": "f1815e43a82e8725",
+        "type": "delay",
+        "z": "6ea85a80b169f687",
+        "g": "e841fd2932a7bbec",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 240,
+        "y": 480,
+        "wires": [
+            [
+                "e4a3607b7fb792ef"
+            ]
+        ]
     },
     {
-        "id": "debug_usb_output",
-        "type": "debug",
-        "z": "face_landmarks_detection_tab",
-        "name": "USB检测输出",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 650,
-        "y": 180,
-        "wires": []
+        "id": "e4a3607b7fb792ef",
+        "type": "change",
+        "z": "6ea85a80b169f687",
+        "g": "e841fd2932a7bbec",
+        "name": "设定视频流",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "ws://{host}:8000",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 480,
+        "wires": [
+            [
+                "91fdc5151d26fc1a"
+            ]
+        ]
     },
     {
-        "id": "debug_usb_error",
-        "type": "debug",
-        "z": "face_landmarks_detection_tab",
-        "name": "USB错误信息",
+        "id": "91fdc5151d26fc1a",
+        "type": "rdk-tools videows",
+        "z": "6ea85a80b169f687",
+        "g": "e841fd2932a7bbec",
+        "name": "Web预览",
+        "fps": "10",
+        "width": "480",
         "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 650,
-        "y": 220,
-        "wires": []
+        "x": 420,
+        "y": 520,
+        "wires": [
+            [],
+            [],
+            []
+        ]
     },
     {
-        "id": "debug_stop_info",
-        "type": "debug",
-        "z": "face_landmarks_detection_tab",
-        "name": "停止服务状态",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 640,
-        "y": 360,
-        "wires": []
+        "id": "c061b1658ac4e344",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-rdk-tools": "0.0.27"
+        }
     }
 ]
-

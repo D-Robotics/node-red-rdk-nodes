@@ -1,170 +1,213 @@
 [
     {
-        "id": "centerpoint_tab",
+        "id": "99d991848a0eb804",
         "type": "tab",
-        "label": "激光雷达物体检测 (CenterPoint)",
-        "info": "# 激光雷达物体检测算法示例 (CenterPoint)\n\n**功能说明**：使用激光雷达点云文件回灌，经过推理后将算法结果渲染后的图片msg，通过websocket package实现在PC端浏览器上渲染显示发布的图片和对应的算法结果。\n\n## 🎯 快速开始\n\n### 使用流程\n1. **准备点云文件**：安装时会自动下载并解压点云文件\n2. **启动检测服务**：点击\"启动CenterPoint检测\"按钮\n3. **查看检测结果**：点击\"打开可视化页面\"在浏览器中查看渲染后的图片和算法结果\n4. **停止服务**：完成后点击\"停止所有服务\"\n\n## 支持平台\n- RDK X3 / X5 / S100\n- TROS Humble\n\n## 核心功能\n- 激光雷达点云物体检测\n- 点云数据回灌\n- 算法结果可视化渲染\n- WebSocket实时显示\n\n## 核心通信配置\n\n### WebSocket视频流\n- **视频流地址**: `http://{host}:8000`\n- **图像Topic**: `/image` (渲染后的图片)\n- **检测结果Topic**: 由launch文件配置\n- **性能**: 实时检测，延迟低\n\n## 参数说明\n- **点云数据目录**：`~/centerpoint_data`\n- **QAT目录**：从`hobot_centerpoint`包中链接\n- **Launch文件**：`hobot_centerpoint/hobot_centerpoint.launch.py`\n- **可视化地址**：http://{host}:8000（WebSocket视频流）\n\n## 注意事项\n- 首次使用前需要下载点云文件（安装时自动完成）\n- 确保已安装`hobot_centerpoint` ROS2包\n- 点云文件较大，下载可能需要一些时间"
+        "label": "CenterPoint 3D检测",
+        "disabled": false,
+        "info": ""
     },
     {
-        "id": "comment_prepare_section",
-        "type": "comment",
-        "z": "centerpoint_tab",
-        "name": "1️⃣ 准备环境（首次使用）",
-        "info": "安装时会自动下载点云文件并创建符号链接",
-        "x": 200,
-        "y": 40,
-        "wires": []
-    },
-    {
-        "id": "comment_start_section",
-        "type": "comment",
-        "z": "centerpoint_tab",
-        "name": "2️⃣ 启动检测服务",
-        "info": "启动CenterPoint激光雷达物体检测",
-        "x": 200,
-        "y": 80,
-        "wires": []
-    },
-    {
-        "id": "inject_start",
-        "type": "inject",
-        "z": "centerpoint_tab",
-        "name": "启动CenterPoint检测",
-        "props": [
-            {"p": "payload"},
-            {"p": "topic", "vt": "str"}
+        "id": "d84a85f562c882d4",
+        "type": "group",
+        "z": "99d991848a0eb804",
+        "name": "目标检测 (LiDAR)",
+        "style": {
+            "fill": "#e3f3d3",
+            "fill-opacity": "0.6",
+            "label": true
+        },
+        "nodes": [
+            "be18aef63fca6337",
+            "bc3aeaa4569b5c9e",
+            "3abe15921e8b0e97",
+            "93edcd8a42d72116",
+            "dc2d1181ea528614",
+            "989dba54e5cde30b"
         ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "start_detection",
-        "payload": "start",
-        "payloadType": "str",
-        "x": 140,
-        "y": 120,
-        "wires": [["exec_start_centerpoint"]]
+        "x": 114,
+        "y": 171.5,
+        "w": 1052,
+        "h": 169.5
     },
     {
-        "id": "exec_start_centerpoint",
-        "type": "exec",
-        "z": "centerpoint_tab",
-        "name": "CenterPoint启动器",
-        "command": "cd /tmp && source /opt/tros/humble/setup.bash && if [ -L qat ]; then rm qat; fi && ln -s `ros2 pkg prefix hobot_centerpoint`/lib/hobot_centerpoint/qat/ qat && ln -sf ~/centerpoint_data centerpoint_data && echo \"=== 启动CenterPoint激光雷达物体检测 ===\" && ros2 launch hobot_centerpoint hobot_centerpoint.launch.py",
-        "addpay": false,
-        "append": "",
-        "useSpawn": false,
-        "timer": "120",
-        "oldrc": false,
-        "x": 380,
-        "y": 120,
-        "wires": [["debug_output"], ["debug_error"], []]
+        "id": "702cf508b838b36a",
+        "type": "group",
+        "z": "99d991848a0eb804",
+        "name": "结果可视化",
+        "style": {
+            "fill": "#d1e7f5",
+            "fill-opacity": "0.6",
+            "label": true
+        },
+        "nodes": [
+            "1a5facce3dfa0d0f",
+            "ef39f48ca588fad3",
+            "6924838803f3c001",
+            "ea70f79d1b5d778f",
+            "43f29dae302dccc2"
+        ],
+        "x": 114,
+        "y": 399,
+        "w": 612,
+        "h": 129.5
     },
     {
-        "id": "comment_browser_section",
-        "type": "comment",
-        "z": "centerpoint_tab",
-        "name": "3️⃣ 查看检测结果",
-        "info": "在浏览器中查看渲染后的图片和算法结果",
-        "x": 200,
-        "y": 160,
-        "wires": []
+        "id": "87be978d8fd68f39",
+        "type": "group",
+        "z": "99d991848a0eb804",
+        "name": "环境准备 & 说明",
+        "style": {
+            "fill": "#fff9c4",
+            "fill-opacity": "0.6",
+            "label": true
+        },
+        "nodes": [
+            "71cb36b5c17bfa02",
+            "030b00dbeabc9087",
+            "abd878cb7ccfea7f",
+            "611a3825ac2ab8ff",
+            "490c196281046628",
+            "aab69055a636db13",
+            "3728a172a02adb46"
+        ],
+        "x": 94,
+        "y": 39,
+        "w": 1012,
+        "h": 122
     },
     {
-        "id": "inject_browser",
+        "id": "be18aef63fca6337",
         "type": "inject",
-        "z": "centerpoint_tab",
-        "name": "打开可视化页面",
+        "z": "99d991848a0eb804",
+        "g": "d84a85f562c882d4",
+        "name": "启动 CenterPoint",
         "props": [
-            {"p": "payload"},
-            {"p": "topic", "vt": "str"}
+            {
+                "p": "payload"
+            }
         ],
         "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "http://{host}:8000",
-        "payloadType": "str",
-        "x": 140,
-        "y": 200,
-        "wires": [["openurl_browser"]]
+        "payload": "",
+        "payloadType": "date",
+        "x": 250,
+        "y": 220,
+        "wires": [
+            [
+                "989dba54e5cde30b"
+            ]
+        ]
     },
     {
-        "id": "openurl_browser",
-        "type": "rdk-tools openurl",
-        "z": "centerpoint_tab",
-        "name": "",
-        "x": 380,
-        "y": 200,
-        "wires": []
+        "id": "989dba54e5cde30b",
+        "type": "exec",
+        "z": "99d991848a0eb804",
+        "g": "d84a85f562c882d4",
+        "command": "source /opt/tros/humble/setup.bash && cp -r /opt/tros/humble/lib/hobot_centerpoint/config/ . 2>/dev/null || true && rm -rf qat && ln -s $(ros2 pkg prefix hobot_centerpoint)/lib/hobot_centerpoint/qat/ qat && ln -sf ~/centerpoint_data centerpoint_data",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "",
+        "oldrc": false,
+        "name": "环境初始化 (配置/链接)",
+        "x": 480,
+        "y": 220,
+        "wires": [
+            [
+                "bc3aeaa4569b5c9e",
+                "6924838803f3c001"
+            ],
+            [],
+            []
+        ]
     },
     {
-        "id": "comment_stop_section",
-        "type": "comment",
-        "z": "centerpoint_tab",
-        "name": "4️⃣ 停止服务",
-        "info": "停止所有检测相关服务",
-        "x": 200,
-        "y": 240,
-        "wires": []
+        "id": "bc3aeaa4569b5c9e",
+        "type": "change",
+        "z": "99d991848a0eb804",
+        "g": "d84a85f562c882d4",
+        "name": "配置流参数",
+        "rules": [
+            {
+                "t": "set",
+                "p": "launch",
+                "pt": "msg",
+                "to": "hobot_centerpoint hobot_centerpoint.launch.py",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 710,
+        "y": 220,
+        "wires": [
+            [
+                "3abe15921e8b0e97"
+            ]
+        ]
     },
     {
-        "id": "inject_stop",
+        "id": "3abe15921e8b0e97",
+        "type": "rdk-tools checkexecute",
+        "z": "99d991848a0eb804",
+        "g": "d84a85f562c882d4",
+        "name": "执行算法",
+        "x": 900,
+        "y": 260,
+        "wires": [
+            [
+                "dc2d1181ea528614"
+            ],
+            [
+                "dc2d1181ea528614"
+            ]
+        ]
+    },
+    {
+        "id": "93edcd8a42d72116",
         "type": "inject",
-        "z": "centerpoint_tab",
-        "name": "停止所有服务",
+        "z": "99d991848a0eb804",
+        "g": "d84a85f562c882d4",
+        "name": "关闭服务",
         "props": [
-            {"p": "payload"},
-            {"p": "topic", "vt": "str"}
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            }
         ],
         "repeat": "",
         "crontab": "",
         "once": false,
-        "topic": "stop",
-        "payload": "stop",
-        "payloadType": "str",
-        "x": 140,
-        "y": 280,
-        "wires": [["exec_stop_all"]]
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 220,
+        "y": 300,
+        "wires": [
+            [
+                "3abe15921e8b0e97"
+            ]
+        ]
     },
     {
-        "id": "exec_stop_all",
-        "type": "exec",
-        "z": "centerpoint_tab",
-        "name": "停止所有服务",
-        "command": "sudo pkill -9 -f hobot_usb_cam; sudo pkill -9 -f hobot_centerpoint; sudo pkill -9 -f hobot_codec_republish; sudo pkill -9 -f websocket; sudo pkill -9 -f python3; sudo pkill -9 -f 'ros2 launch'; sudo pkill -9 -f 'ros2 run'; sleep 2; sudo rm -rf /dev/shm/*; ros2 daemon stop 2>/dev/null; sleep 1; echo '✓ 服务已彻底停止，资源已释放'",
-        "addpay": false,
-        "append": "",
-        "useSpawn": false,
-        "timer": "10",
-        "oldrc": false,
-        "x": 380,
-        "y": 280,
-        "wires": [["debug_stop_info"], [], []]
-    },
-    {
-        "id": "debug_output",
+        "id": "dc2d1181ea528614",
         "type": "debug",
-        "z": "centerpoint_tab",
-        "name": "检测输出",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 650,
-        "y": 100,
-        "wires": []
-    },
-    {
-        "id": "debug_error",
-        "type": "debug",
-        "z": "centerpoint_tab",
-        "name": "错误信息",
+        "z": "99d991848a0eb804",
+        "g": "d84a85f562c882d4",
+        "name": "系统日志",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -173,26 +216,261 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 650,
-        "y": 140,
+        "x": 1060,
+        "y": 260,
         "wires": []
     },
     {
-        "id": "debug_stop_info",
-        "type": "debug",
-        "z": "centerpoint_tab",
-        "name": "停止服务状态",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 640,
-        "y": 280,
+        "id": "1a5facce3dfa0d0f",
+        "type": "inject",
+        "z": "99d991848a0eb804",
+        "g": "702cf508b838b36a",
+        "name": "打开浏览器",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 220,
+        "y": 440,
+        "wires": [
+            [
+                "ef39f48ca588fad3"
+            ]
+        ]
+    },
+    {
+        "id": "ef39f48ca588fad3",
+        "type": "rdk-tools openurl",
+        "z": "99d991848a0eb804",
+        "g": "702cf508b838b36a",
+        "name": "",
+        "x": 400,
+        "y": 440,
         "wires": []
+    },
+    {
+        "id": "6924838803f3c001",
+        "type": "delay",
+        "z": "99d991848a0eb804",
+        "g": "702cf508b838b36a",
+        "name": "等待加载(5s)",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 240,
+        "y": 480,
+        "wires": [
+            [
+                "ea70f79d1b5d778f"
+            ]
+        ]
+    },
+    {
+        "id": "ea70f79d1b5d778f",
+        "type": "change",
+        "z": "99d991848a0eb804",
+        "g": "702cf508b838b36a",
+        "name": "设定视频流",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "ws://{host}:8000",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 430,
+        "y": 480,
+        "wires": [
+            [
+                "43f29dae302dccc2"
+            ]
+        ]
+    },
+    {
+        "id": "43f29dae302dccc2",
+        "type": "rdk-tools videows",
+        "z": "99d991848a0eb804",
+        "g": "702cf508b838b36a",
+        "name": "Web预览",
+        "fps": "10",
+        "width": "480",
+        "active": true,
+        "x": 620,
+        "y": 480,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "71cb36b5c17bfa02",
+        "type": "inject",
+        "z": "99d991848a0eb804",
+        "g": "87be978d8fd68f39",
+        "name": "检查更新",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 220,
+        "y": 120,
+        "wires": [
+            [
+                "030b00dbeabc9087"
+            ]
+        ]
+    },
+    {
+        "id": "030b00dbeabc9087",
+        "type": "rdk-tools smartupdate",
+        "z": "99d991848a0eb804",
+        "g": "87be978d8fd68f39",
+        "name": "",
+        "x": 380,
+        "y": 120,
+        "wires": [
+            [
+                "abd878cb7ccfea7f"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "abd878cb7ccfea7f",
+        "type": "change",
+        "z": "99d991848a0eb804",
+        "g": "87be978d8fd68f39",
+        "name": "提示内容",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "环境检查完成",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 540,
+        "y": 120,
+        "wires": [
+            [
+                "611a3825ac2ab8ff"
+            ]
+        ]
+    },
+    {
+        "id": "611a3825ac2ab8ff",
+        "type": "rdk-tools texttoaudio",
+        "z": "99d991848a0eb804",
+        "g": "87be978d8fd68f39",
+        "name": "",
+        "x": 670,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "490c196281046628",
+        "type": "inject",
+        "z": "99d991848a0eb804",
+        "g": "87be978d8fd68f39",
+        "name": "📖 首次使用必读 (下载数据集)",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/driver/hobot_centerpoint",
+        "payloadType": "str",
+        "x": 260,
+        "y": 80,
+        "wires": [
+            [
+                "aab69055a636db13"
+            ]
+        ]
+    },
+    {
+        "id": "aab69055a636db13",
+        "type": "rdk-tools openurl",
+        "z": "99d991848a0eb804",
+        "g": "87be978d8fd68f39",
+        "name": "",
+        "x": 520,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "3728a172a02adb46",
+        "type": "comment",
+        "z": "99d991848a0eb804",
+        "g": "87be978d8fd68f39",
+        "name": "⚠️ 注意：运行前请先点击左侧按钮，按官方文档手动下载数据集！",
+        "info": "需要手动下载 centerpoint_data.tar.gz 并解压到 ~/centerpoint_data",
+        "x": 840,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "90c53444c23c4551",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-rdk-tools": "0.0.27"
+        }
     }
 ]
-

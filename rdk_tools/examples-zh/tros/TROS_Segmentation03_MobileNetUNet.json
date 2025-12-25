@@ -8,6 +8,15 @@
         "env": []
     },
     {
+        "id": "global_config_mobilenet_unet",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-rdk-camera": "0.0.17",
+            "node-red-contrib-image-tools": "2.1.1"
+        }
+    },
+    {
         "id": "comment_photo_section",
         "type": "comment",
         "z": "mobilenet_unet_tab",
@@ -178,13 +187,13 @@
         "id": "exec_start_segmentation",
         "type": "exec",
         "z": "mobilenet_unet_tab",
-        "name": "启动分割",
         "command": "",
         "addpay": true,
         "append": "",
         "useSpawn": true,
         "timer": "0",
         "oldrc": false,
+        "name": "启动分割",
         "x": 950,
         "y": 100,
         "wires": [
@@ -231,256 +240,6 @@
         "wires": []
     },
     {
-        "id": "comment_video_section",
-        "type": "comment",
-        "z": "mobilenet_unet_tab",
-        "name": "🎥 USB视频流分割流程",
-        "info": "启动USB摄像头实时视频流，进行连续分割",
-        "x": 150,
-        "y": 200,
-        "wires": []
-    },
-    {
-        "id": "inject_usb_video",
-        "type": "inject",
-        "z": "mobilenet_unet_tab",
-        "name": "🎥 USB摄像头视频流",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "usb_video",
-        "payload": "start",
-        "payloadType": "str",
-        "x": 140,
-        "y": 260,
-        "wires": [
-            [
-                "exec_usb_video"
-            ]
-        ]
-    },
-    {
-        "id": "exec_usb_video",
-        "type": "exec",
-        "z": "mobilenet_unet_tab",
-        "name": "USB视频流启动器",
-        "command": "source /opt/tros/humble/setup.bash && export CAM_TYPE=usb && ros2 launch dnn_node_example dnn_node_example.launch.py dnn_example_dump_render_img:=0 dnn_example_config_file:=config/mobilenet_unet_workconfig.json dnn_example_image_width:=640 dnn_example_image_height:=480",
-        "addpay": false,
-        "append": "",
-        "useSpawn": true,
-        "timer": "120",
-        "oldrc": false,
-        "x": 380,
-        "y": 260,
-        "wires": [
-            [
-                "debug_usb_video_output"
-            ],
-            [
-                "debug_usb_video_error"
-            ],
-            []
-        ]
-    },
-    {
-        "id": "debug_usb_video_output",
-        "type": "debug",
-        "z": "mobilenet_unet_tab",
-        "name": "USB视频流输出",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 650,
-        "y": 240,
-        "wires": []
-    },
-    {
-        "id": "debug_usb_video_error",
-        "type": "debug",
-        "z": "mobilenet_unet_tab",
-        "name": "USB视频流错误",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 650,
-        "y": 280,
-        "wires": []
-    },
-    {
-        "id": "comment_mipi_video_section",
-        "type": "comment",
-        "z": "mobilenet_unet_tab",
-        "name": "📹 MIPI视频流分割流程",
-        "info": "启动MIPI摄像头实时视频流，进行连续分割",
-        "x": 150,
-        "y": 320,
-        "wires": []
-    },
-    {
-        "id": "inject_mipi_video",
-        "type": "inject",
-        "z": "mobilenet_unet_tab",
-        "name": "📹 MIPI摄像头视频流",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "mipi_video",
-        "payload": "start",
-        "payloadType": "str",
-        "x": 140,
-        "y": 380,
-        "wires": [
-            [
-                "exec_mipi_video"
-            ]
-        ]
-    },
-    {
-        "id": "exec_mipi_video",
-        "type": "exec",
-        "z": "mobilenet_unet_tab",
-        "name": "MIPI视频流启动器",
-        "command": "source /opt/tros/humble/setup.bash && export CAM_TYPE=mipi && ros2 launch dnn_node_example dnn_node_example.launch.py dnn_example_dump_render_img:=1 dnn_example_config_file:=config/mobilenet_unet_workconfig.json dnn_example_image_width:=1920 dnn_example_image_height:=1080",
-        "addpay": false,
-        "append": "",
-        "useSpawn": true,
-        "timer": "120",
-        "oldrc": false,
-        "x": 380,
-        "y": 380,
-        "wires": [
-            [
-                "debug_mipi_video_output"
-            ],
-            [
-                "debug_mipi_video_error"
-            ],
-            []
-        ]
-    },
-    {
-        "id": "debug_mipi_video_output",
-        "type": "debug",
-        "z": "mobilenet_unet_tab",
-        "name": "MIPI视频流输出",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 650,
-        "y": 360,
-        "wires": []
-    },
-    {
-        "id": "debug_mipi_video_error",
-        "type": "debug",
-        "z": "mobilenet_unet_tab",
-        "name": "MIPI视频流错误",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 650,
-        "y": 400,
-        "wires": []
-    },
-    {
-        "id": "comment_browser_section",
-        "type": "comment",
-        "z": "mobilenet_unet_tab",
-        "name": "2️⃣ 查看检测结果",
-        "info": "在浏览器中查看实时检测画面",
-        "x": 200,
-        "y": 440,
-        "wires": []
-    },
-    {
-        "id": "inject_browser",
-        "type": "inject",
-        "z": "mobilenet_unet_tab",
-        "name": "打开可视化页面",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "http://{host}:8000",
-        "payloadType": "str",
-        "x": 140,
-        "y": 480,
-        "wires": [
-            [
-                "openurl_browser"
-            ]
-        ]
-    },
-    {
-        "id": "openurl_browser",
-        "type": "rdk-tools openurl",
-        "z": "mobilenet_unet_tab",
-        "name": "",
-        "x": 380,
-        "y": 480,
-        "wires": []
-    },
-    {
-        "id": "comment_display_section",
-        "type": "comment",
-        "z": "mobilenet_unet_tab",
-        "name": "🖼️ 拍照分割结果展示",
-        "info": "自动读取最新的分割结果并显示在Node-RED编辑器中",
-        "x": 150,
-        "y": 540,
-        "wires": []
-    },
-    {
         "id": "inject_refresh_display",
         "type": "inject",
         "z": "mobilenet_unet_tab",
@@ -496,8 +255,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "str",
-        "x": 140,
-        "y": 600,
+        "x": 110,
+        "y": 240,
         "wires": [
             [
                 "exec_find_latest"
@@ -508,15 +267,15 @@
         "id": "exec_find_latest",
         "type": "exec",
         "z": "mobilenet_unet_tab",
-        "name": "查找最新结果",
         "command": "cd /tmp/mobilenet_unet && ls -t render_*.jpg render_*.jpeg 2>/dev/null | head -1",
         "addpay": false,
         "append": "",
         "useSpawn": false,
         "timer": "",
         "oldrc": false,
-        "x": 350,
-        "y": 600,
+        "name": "查找最新结果",
+        "x": 320,
+        "y": 240,
         "wires": [
             [
                 "function_check_file"
@@ -529,15 +288,15 @@
         "id": "exec_list_dir",
         "type": "exec",
         "z": "mobilenet_unet_tab",
-        "name": "列出目录内容（调试）",
         "command": "cd /tmp/mobilenet_unet && echo \"当前目录: $(pwd)\" && echo \"目录内容:\" && ls -lh 2>&1",
         "addpay": false,
         "append": "",
         "useSpawn": false,
         "timer": "",
         "oldrc": false,
-        "x": 350,
-        "y": 640,
+        "name": "列出目录内容（调试）",
+        "x": 320,
+        "y": 280,
         "wires": [
             [
                 "debug_find_result"
@@ -557,8 +316,8 @@
         "tostatus": false,
         "complete": "payload",
         "targetType": "msg",
-        "x": 550,
-        "y": 620,
+        "x": 520,
+        "y": 260,
         "wires": []
     },
     {
@@ -577,8 +336,8 @@
                 "module": "path"
             }
         ],
-        "x": 550,
-        "y": 600,
+        "x": 520,
+        "y": 240,
         "wires": [
             [
                 "debug_file_path",
@@ -597,8 +356,8 @@
         "tostatus": false,
         "complete": "true",
         "targetType": "full",
-        "x": 750,
-        "y": 620,
+        "x": 720,
+        "y": 260,
         "wires": []
     },
     {
@@ -612,8 +371,8 @@
         "sendError": false,
         "encoding": "none",
         "allProps": false,
-        "x": 750,
-        "y": 600,
+        "x": 720,
+        "y": 240,
         "wires": [
             [
                 "image_viewer_result"
@@ -629,8 +388,8 @@
         "data": "payload",
         "dataType": "msg",
         "active": true,
-        "x": 950,
-        "y": 600,
+        "x": 920,
+        "y": 240,
         "wires": [
             []
         ]
@@ -641,15 +400,15 @@
         "z": "mobilenet_unet_tab",
         "name": "🎮 控制功能",
         "info": "停止分割服务",
-        "x": 150,
-        "y": 680,
+        "x": 120,
+        "y": 320,
         "wires": []
     },
     {
         "id": "inject_stop",
         "type": "inject",
         "z": "mobilenet_unet_tab",
-        "name": "停止分割服务",
+        "name": "停止服务",
         "props": [
             {
                 "p": "payload"
@@ -658,11 +417,12 @@
         "repeat": "",
         "crontab": "",
         "once": false,
+        "onceDelay": "",
         "topic": "",
         "payload": "stop",
         "payloadType": "str",
-        "x": 140,
-        "y": 740,
+        "x": 100,
+        "y": 380,
         "wires": [
             [
                 "exec_stop_all"
@@ -673,15 +433,16 @@
         "id": "exec_stop_all",
         "type": "exec",
         "z": "mobilenet_unet_tab",
-        "name": "停止服务",
-        "command": "sudo pkill -9 -f hobot_usb_cam; sudo pkill -9 -f dnn_node_example; sudo pkill -9 -f hobot_codec_republish; sudo pkill -9 -f websocket; sudo pkill -9 -f python3; sudo pkill -9 -f 'ros2 launch'; sudo pkill -9 -f 'ros2 run'; sleep 2; sudo rm -rf /dev/shm/*; ros2 daemon stop 2>/dev/null; sleep 1; echo '✓ 服务已彻底停止，资源已释放'",
+        "command": "sudo pkill -2 -f ros; sleep 3;",
         "addpay": false,
         "append": "",
-        "useSpawn": false,
+        "useSpawn": "false",
         "timer": "10",
+        "winHide": false,
         "oldrc": false,
-        "x": 350,
-        "y": 740,
+        "name": "停止服务",
+        "x": 320,
+        "y": 380,
         "wires": [
             [
                 "debug_stop_info"
@@ -703,8 +464,8 @@
         "targetType": "msg",
         "statusVal": "payload",
         "statusType": "auto",
-        "x": 550,
-        "y": 740,
+        "x": 520,
+        "y": 380,
         "wires": []
     },
     {
@@ -735,14 +496,5 @@
                 "file_read_image"
             ]
         ]
-    },
-    {
-        "id": "global_config_mobilenet_unet",
-        "type": "global-config",
-        "env": [],
-        "modules": {
-            "node-red-node-rdk-camera": "0.0.17",
-            "node-red-contrib-image-tools": "2.1.1"
-        }
     }
 ]
