@@ -1,0 +1,302 @@
+[
+    {
+        "id": "03658e7a419b11ad",
+        "type": "tab",
+        "label": "Random3DLight",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7a1eaf3df51d0393",
+        "type": "rdk-3d 3dlight",
+        "z": "03658e7a419b11ad",
+        "name": "",
+        "x": 560,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "52148b08cc982b0a",
+        "type": "inject",
+        "z": "03658e7a419b11ad",
+        "name": "点击",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 90,
+        "y": 120,
+        "wires": [
+            [
+                "be425a6d6db92834"
+            ]
+        ]
+    },
+    {
+        "id": "be425a6d6db92834",
+        "type": "change",
+        "z": "03658e7a419b11ad",
+        "name": "转化时间戳",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "$round(msg.payload%1000/200)",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 130,
+        "y": 200,
+        "wires": [
+            [
+                "90f89e60da81182d"
+            ]
+        ]
+    },
+    {
+        "id": "90f89e60da81182d",
+        "type": "switch",
+        "z": "03658e7a419b11ad",
+        "name": "分支",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "3",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "4",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "5",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 6,
+        "x": 250,
+        "y": 100,
+        "wires": [
+            [
+                "8b0dd326293bdbc6"
+            ],
+            [
+                "db467daed02e3f4e"
+            ],
+            [
+                "361b1a19d384fdbd"
+            ],
+            [
+                "12e071348f755bf8"
+            ],
+            [
+                "529257dea329f973"
+            ],
+            [
+                "8aaa9b79a3712dc8"
+            ]
+        ]
+    },
+    {
+        "id": "8b0dd326293bdbc6",
+        "type": "change",
+        "z": "03658e7a419b11ad",
+        "name": "红色",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "red",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 40,
+        "wires": [
+            [
+                "7a1eaf3df51d0393"
+            ]
+        ]
+    },
+    {
+        "id": "db467daed02e3f4e",
+        "type": "change",
+        "z": "03658e7a419b11ad",
+        "name": "绿色",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "green",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 80,
+        "wires": [
+            [
+                "7a1eaf3df51d0393"
+            ]
+        ]
+    },
+    {
+        "id": "12e071348f755bf8",
+        "type": "change",
+        "z": "03658e7a419b11ad",
+        "name": "黄色",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "yellow",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 160,
+        "wires": [
+            [
+                "7a1eaf3df51d0393"
+            ]
+        ]
+    },
+    {
+        "id": "361b1a19d384fdbd",
+        "type": "change",
+        "z": "03658e7a419b11ad",
+        "name": "蓝色",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "blue",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 120,
+        "wires": [
+            [
+                "7a1eaf3df51d0393"
+            ]
+        ]
+    },
+    {
+        "id": "529257dea329f973",
+        "type": "change",
+        "z": "03658e7a419b11ad",
+        "name": "品红",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "magenta",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 200,
+        "wires": [
+            [
+                "7a1eaf3df51d0393"
+            ]
+        ]
+    },
+    {
+        "id": "8aaa9b79a3712dc8",
+        "type": "change",
+        "z": "03658e7a419b11ad",
+        "name": "青色",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "cyan",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 240,
+        "wires": [
+            [
+                "7a1eaf3df51d0393"
+            ]
+        ]
+    }
+]

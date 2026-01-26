@@ -1,6 +1,6 @@
 {
     "name": "node-red-node-rdk-3dsim",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "配合RDK硬件使用的3D可视化功能包",
     "license": "Apache-2.0",
     "main": "none",
@@ -26,7 +26,8 @@
       "version": ">=3.1.3",
       "nodes": {
         "rdk-3drobot": "src/rdk-3drobot/rdk-3drobot.js",
-        "rdk-3dlight": "src/rdk-3dlight/rdk-3dlight.js"
+        "rdk-3dlight": "src/rdk-3dlight/rdk-3dlight.js",
+        "rdk-3dcar": "src/rdk-3dcar/rdk-3dcar.js"
       }
     },
     "author": "WYP",
