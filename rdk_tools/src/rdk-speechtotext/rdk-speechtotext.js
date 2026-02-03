@@ -14,6 +14,23 @@ else{
     console.log('libvosk.so exists')
 }
 
+
+const modelPath = path.join(__dirname, "./models/vosk-model-small-cn-0.22");
+if(!fs.existsSync(modelPath)){
+    const zipPath = path.join(__dirname, "./zips/vosk-model-small-cn-0.22.zip");
+    const modelDir = path.join(__dirname, "./models");
+    const AdmZip = require('adm-zip');
+
+    try {
+        const zip = new AdmZip(zipPath);
+        zip.extractAllTo(modelDir, true);
+    }
+    catch(e) {
+        console.log('An error occurred while extracting zip file!')
+    }
+
+}
+
 module.exports = function(RED) {
     var playaudionodeid;
 
