@@ -2,7 +2,7 @@
     {
         "id": "bev_pro_final_tab",
         "type": "tab",
-        "label": "BEV感知",
+        "label": "TROS BodyDetection",
         "disabled": false,
         "info": ""
     },
@@ -17,17 +17,14 @@
             "label": true
         },
         "nodes": [
-            "inject_start_bev_final",
             "change_bev_config_final",
             "node_execute_bev_final",
-            "inject_stop_bev_final",
-            "debug_bev_log_final",
             "exec_init_bev_final"
         ],
-        "x": 114,
-        "y": 171.5,
-        "w": 1052,
-        "h": 169.5
+        "x": 394,
+        "y": 291.5,
+        "w": 552,
+        "h": 97
     },
     {
         "id": "group_viz_bev_final",
@@ -40,15 +37,13 @@
             "label": true
         },
         "nodes": [
-            "inject_browser_bev_final",
-            "open_browser_bev_final",
             "delay_preview_bev_final",
             "set_ws_url_bev_final",
             "video_preview_bev_final"
         ],
-        "x": 114,
-        "y": 399,
-        "w": 612,
+        "x": 394,
+        "y": 439,
+        "w": 372,
         "h": 129.5
     },
     {
@@ -62,75 +57,19 @@
             "label": true
         },
         "nodes": [
-            "inject_update_bev_final",
-            "smart_update_bev_final",
-            "change_notify_bev_final",
             "audio_notify_bev_final",
-            "inject_doc_link",
-            "open_doc_link",
-            "comment_data_tip"
+            "smart_update_bev_final",
+            "change_notify_bev_final"
         ],
-        "x": 94,
-        "y": 39,
-        "w": 992,
-        "h": 122
-    },
-    {
-        "id": "inject_doc_link",
-        "type": "inject",
-        "z": "bev_pro_final_tab",
-        "g": "group_env_bev_final",
-        "name": "📖 首次使用必读 (下载数据集)",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/perception/bev",
-        "payloadType": "str",
-        "x": 260,
-        "y": 80,
-        "wires": [
-            [
-                "open_doc_link"
-            ]
-        ]
-    },
-    {
-        "id": "open_doc_link",
-        "type": "rdk-tools openurl",
-        "z": "bev_pro_final_tab",
-        "g": "group_env_bev_final",
-        "name": "",
-        "x": 520,
-        "y": 80,
-        "wires": []
-    },
-    {
-        "id": "comment_data_tip",
-        "type": "comment",
-        "z": "bev_pro_final_tab",
-        "g": "group_env_bev_final",
-        "name": "⚠️ 注意：运行前请先点击左侧按钮，按官方文档手动下载数据集！",
-        "info": "需要下载 nuscenes_bev_val.tar.gz 并解压到板端指定目录。",
-        "x": 820,
-        "y": 80,
-        "wires": []
+        "x": 394,
+        "y": 159,
+        "w": 552,
+        "h": 82
     },
     {
         "id": "inject_start_bev_final",
         "type": "inject",
         "z": "bev_pro_final_tab",
-        "g": "group_bev_ctrl_final",
         "name": "启动 BEV 算法",
         "props": [
             {
@@ -144,8 +83,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 240,
-        "y": 220,
+        "x": 280,
+        "y": 320,
         "wires": [
             [
                 "exec_init_bev_final"
@@ -160,12 +99,13 @@
         "command": "source /opt/tros/humble/setup.bash && rm -rf qat nuscenes_bev_val && ln -s $(ros2 pkg prefix hobot_bev)/lib/hobot_bev/qat/ qat && ln -sf ~/hobot_bev_data/nuscenes_bev_val nuscenes_bev_val",
         "addpay": false,
         "append": "",
-        "useSpawn": false,
+        "useSpawn": "false",
         "timer": "",
+        "winHide": false,
         "oldrc": false,
-        "name": "初始化环境 (链接数据)",
-        "x": 480,
-        "y": 220,
+        "name": "初始化环境",
+        "x": 490,
+        "y": 340,
         "wires": [
             [
                 "change_bev_config_final",
@@ -202,8 +142,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 710,
-        "y": 220,
+        "x": 670,
+        "y": 340,
         "wires": [
             [
                 "node_execute_bev_final"
@@ -215,15 +155,15 @@
         "type": "rdk-tools checkexecute",
         "z": "bev_pro_final_tab",
         "g": "group_bev_ctrl_final",
-        "name": "执行算法",
-        "x": 900,
-        "y": 260,
+        "name": "",
+        "x": 850,
+        "y": 340,
         "wires": [
             [
-                "debug_bev_log_final"
+                "cc5dd0d798dc6428"
             ],
             [
-                "debug_bev_log_final"
+                "6060ba20131dbb91"
             ]
         ]
     },
@@ -231,8 +171,7 @@
         "id": "inject_stop_bev_final",
         "type": "inject",
         "z": "bev_pro_final_tab",
-        "g": "group_bev_ctrl_final",
-        "name": "关闭服务",
+        "name": "关闭",
         "props": [
             {
                 "p": "kill",
@@ -245,8 +184,8 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 220,
-        "y": 300,
+        "x": 250,
+        "y": 360,
         "wires": [
             [
                 "node_execute_bev_final"
@@ -254,28 +193,9 @@
         ]
     },
     {
-        "id": "debug_bev_log_final",
-        "type": "debug",
-        "z": "bev_pro_final_tab",
-        "g": "group_bev_ctrl_final",
-        "name": "系统日志",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1060,
-        "y": 260,
-        "wires": []
-    },
-    {
         "id": "inject_browser_bev_final",
         "type": "inject",
         "z": "bev_pro_final_tab",
-        "g": "group_viz_bev_final",
         "name": "打开浏览器",
         "props": [
             {
@@ -293,8 +213,8 @@
         "topic": "",
         "payload": "http://{host}:8000",
         "payloadType": "str",
-        "x": 220,
-        "y": 440,
+        "x": 240,
+        "y": 600,
         "wires": [
             [
                 "open_browser_bev_final"
@@ -305,10 +225,9 @@
         "id": "open_browser_bev_final",
         "type": "rdk-tools openurl",
         "z": "bev_pro_final_tab",
-        "g": "group_viz_bev_final",
         "name": "",
-        "x": 400,
-        "y": 440,
+        "x": 420,
+        "y": 600,
         "wires": []
     },
     {
@@ -316,9 +235,9 @@
         "type": "delay",
         "z": "bev_pro_final_tab",
         "g": "group_viz_bev_final",
-        "name": "等待加载(8s)",
+        "name": "延迟5秒",
         "pauseType": "delay",
-        "timeout": "8",
+        "timeout": "5",
         "timeoutUnits": "seconds",
         "rate": "1",
         "nbRateUnits": "1",
@@ -329,7 +248,7 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 240,
+        "x": 480,
         "y": 480,
         "wires": [
             [
@@ -357,8 +276,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 430,
-        "y": 480,
+        "x": 490,
+        "y": 520,
         "wires": [
             [
                 "video_preview_bev_final"
@@ -374,19 +293,80 @@
         "fps": "10",
         "width": "480",
         "active": true,
-        "x": 620,
-        "y": 480,
+        "x": 660,
+        "y": 520,
         "wires": [
-            [],
-            [],
+            [
+                "e0f244b9b748332b"
+            ],
+            [
+                "35c740c6421cb176"
+            ],
             []
         ]
+    },
+    {
+        "id": "audio_notify_bev_final",
+        "type": "rdk-tools texttoaudio",
+        "z": "bev_pro_final_tab",
+        "g": "group_env_bev_final",
+        "name": "",
+        "x": 850,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "45d4d69e47688ced",
+        "type": "comment",
+        "z": "bev_pro_final_tab",
+        "name": "名称：TROS应用 目标检测",
+        "info": "",
+        "x": 250,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "40b2c37e897f1c42",
+        "type": "inject",
+        "z": "bev_pro_final_tab",
+        "name": "了解更多",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/body/mono2d_body_detection",
+        "payloadType": "str",
+        "x": 480,
+        "y": 40,
+        "wires": [
+            [
+                "5aa95791392357b3"
+            ]
+        ]
+    },
+    {
+        "id": "5aa95791392357b3",
+        "type": "rdk-tools openurl",
+        "z": "bev_pro_final_tab",
+        "name": "",
+        "x": 740,
+        "y": 40,
+        "wires": []
     },
     {
         "id": "inject_update_bev_final",
         "type": "inject",
         "z": "bev_pro_final_tab",
-        "g": "group_env_bev_final",
         "name": "检查更新",
         "props": [
             {
@@ -404,8 +384,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 220,
-        "y": 120,
+        "x": 260,
+        "y": 200,
         "wires": [
             [
                 "smart_update_bev_final"
@@ -418,8 +398,8 @@
         "z": "bev_pro_final_tab",
         "g": "group_env_bev_final",
         "name": "",
-        "x": 380,
-        "y": 120,
+        "x": 480,
+        "y": 200,
         "wires": [
             [
                 "change_notify_bev_final"
@@ -432,7 +412,7 @@
         "type": "change",
         "z": "bev_pro_final_tab",
         "g": "group_env_bev_final",
-        "name": "提示内容",
+        "name": "更新提示",
         "rules": [
             {
                 "t": "set",
@@ -447,8 +427,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 540,
-        "y": 120,
+        "x": 660,
+        "y": 200,
         "wires": [
             [
                 "audio_notify_bev_final"
@@ -456,17 +436,123 @@
         ]
     },
     {
-        "id": "audio_notify_bev_final",
-        "type": "rdk-tools texttoaudio",
+        "id": "inject_doc_link",
+        "type": "inject",
         "z": "bev_pro_final_tab",
-        "g": "group_env_bev_final",
+        "name": "首次使用必读 (下载数据集)",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/perception/bev",
+        "payloadType": "str",
+        "x": 530,
+        "y": 80,
+        "wires": [
+            [
+                "open_doc_link"
+            ]
+        ]
+    },
+    {
+        "id": "open_doc_link",
+        "type": "rdk-tools openurl",
+        "z": "bev_pro_final_tab",
         "name": "",
-        "x": 670,
+        "x": 740,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "comment_data_tip",
+        "type": "comment",
+        "z": "bev_pro_final_tab",
+        "name": "⚠️ 注意：运行前请先点击上方按钮，按官方文档手动下载数据集！",
+        "info": "需要下载 nuscenes_bev_val.tar.gz 并解压到板端指定目录。",
+        "x": 380,
         "y": 120,
         "wires": []
     },
     {
-        "id": "d76b334752b6cfa9",
+        "id": "6060ba20131dbb91",
+        "type": "debug",
+        "z": "bev_pro_final_tab",
+        "name": "错误执行提示",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1060,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "cc5dd0d798dc6428",
+        "type": "debug",
+        "z": "bev_pro_final_tab",
+        "name": "正确执行提示",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1060,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "e0f244b9b748332b",
+        "type": "debug",
+        "z": "bev_pro_final_tab",
+        "name": "算法结果输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "35c740c6421cb176",
+        "type": "debug",
+        "z": "bev_pro_final_tab",
+        "name": "性能信息输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "7eca6ca0dd22e9a2",
         "type": "global-config",
         "env": [],
         "modules": {

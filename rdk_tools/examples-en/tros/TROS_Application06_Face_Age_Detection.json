@@ -1,41 +1,83 @@
 [
     {
-        "id": "face_age_detection_tab",
+        "id": "face_age_v2_tab",
         "type": "tab",
-        "label": "Face Age Detection",
-        "info": "# Face Age Detection Application\n\n**Function Description**: Face age detection based on `mono2d_body_detection`, supporting real-time detection via MIPI and USB cameras.\n\n**Reference**: This example follows the configuration style of \"Body Detection and Tracking (YOLO Pose)\".\n\n## 🎯 Quick Start\n\n### Usage Steps\n1. **Select Camera Type**: Choose MIPI or USB camera based on your hardware.\n2. **Start Detection Service**: Click the corresponding start button.\n3. **View Video Stream**: Click \"Open Visualization Page\" to view real-time detection results in the browser.\n4. **Stop Services**: Click \"Stop All Services\" when finished.\n\n## Supported Platforms\n- RDK X3 / X5 / S100\n- TROS Humble\n\n## Core Features\n- Body Detection\n- Face Detection\n- Age Recognition\n\n## Core Communication Config\n\n### WebSocket Video Stream\n- **Stream URL**: `http://{host}:8000`\n- **Image Topic**: `/image` (JPEG encoded image stream)\n- **Result Topic**: Configured by the launch file\n- **Performance**: Real-time detection, low latency\n\n## Parameters\n- **Config File**: Copied from `/opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/`\n- **Launch File**: `face_age_detection/body_det_face_age_det.launch.py`\n- **Visualization URL**: http://{host}:8000 (WebSocket Stream)\n\n## 📝 Manual Execution Commands (Reference)\n\n### Using MIPI Camera\n```bash\n# Configure tros.b environment\nsource /opt/tros/humble/setup.bash\n\n# Set TROS_DISTRO variable (Important!)\nexport TROS_DISTRO=humble\n\n# Copy config files from installation path\ncp -r /opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/ .\n\n# Configure MIPI Camera\nexport CAM_TYPE=mipi\n\n# Start launch file\nros2 launch face_age_detection body_det_face_age_det.launch.py\n```\n\n### Using USB Camera\n```bash\n# Configure tros.b environment\nsource /opt/tros/humble/setup.bash\n\n# Set TROS_DISTRO variable (Important!)\nexport TROS_DISTRO=humble\n\n# Copy config files from installation path\ncp -r /opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/ .\n\n# Configure USB Camera\nexport CAM_TYPE=usb\n\n# Start launch file\nros2 launch face_age_detection body_det_face_age_det.launch.py\n```\n\n**⚠️ Notice**: You must set `export TROS_DISTRO=humble` before using the `${TROS_DISTRO}` variable, otherwise the command will fail!"
+        "label": "TROS Face_Age Detection (Application)",
+        "disabled": false,
+        "info": ""
     },
     {
-        "id": "comment_camera_section",
-        "type": "comment",
-        "z": "face_age_detection_tab",
-        "name": "1️⃣ Select Camera Type",
-        "info": "Choose the corresponding detection method based on your hardware",
-        "x": 200,
-        "y": 40,
-        "wires": []
+        "id": "group_control_age",
+        "type": "group",
+        "z": "face_age_v2_tab",
+        "name": "核心控制和运行",
+        "style": {
+            "fill": "#e3f3d3",
+            "fill-opacity": "0.6",
+            "label": true
+        },
+        "nodes": [
+            "change_config_age",
+            "node_execute_age",
+            "exec_init_config_age"
+        ],
+        "x": 334,
+        "y": 211.5,
+        "w": 572,
+        "h": 97
     },
     {
-        "id": "comment_mipi_section",
-        "type": "comment",
-        "z": "face_age_detection_tab",
-        "name": "📷 MIPI Camera Detection",
-        "info": "Real-time face age detection using MIPI camera",
-        "x": 180,
-        "y": 80,
-        "wires": []
+        "id": "group_viz_age",
+        "type": "group",
+        "z": "face_age_v2_tab",
+        "name": "结果可视化",
+        "style": {
+            "fill": "#d1e7f5",
+            "fill-opacity": "0.6",
+            "label": true
+        },
+        "nodes": [
+            "delay_preview_age",
+            "set_ws_url_age",
+            "video_preview_age"
+        ],
+        "x": 334,
+        "y": 359,
+        "w": 392,
+        "h": 129.5
     },
     {
-        "id": "inject_mipi_start",
+        "id": "group_update_age",
+        "type": "group",
+        "z": "face_age_v2_tab",
+        "name": "软件包智能更新",
+        "style": {
+            "fill": "#fff9c4",
+            "fill-opacity": "0.6",
+            "label": true
+        },
+        "nodes": [
+            "smart_update_age",
+            "change_update_msg_age",
+            "audio_notify_age"
+        ],
+        "x": 334,
+        "y": 79,
+        "w": 572,
+        "h": 82
+    },
+    {
+        "id": "inject_usb_age",
         "type": "inject",
-        "z": "face_age_detection_tab",
-        "name": "Start MIPI Detection",
+        "z": "face_age_v2_tab",
+        "name": "启动 (USB摄像头)",
         "props": [
             {
                 "p": "payload"
             },
             {
-                "p": "topic",
+                "p": "camera",
+                "v": "usb",
                 "vt": "str"
             }
         ],
@@ -43,61 +85,29 @@
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "topic": "mipi_detection",
-        "payload": "start",
-        "payloadType": "str",
-        "x": 160,
-        "y": 120,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 190,
+        "y": 240,
         "wires": [
             [
-                "exec_mipi_detection"
+                "exec_init_config_age"
             ]
         ]
     },
     {
-        "id": "exec_mipi_detection",
-        "type": "exec",
-        "z": "face_age_detection_tab",
-        "name": "MIPI Launcher",
-        "command": "cd /tmp && source /opt/tros/humble/setup.bash && TROS_DISTRO=humble && cp -r /opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/ . 2>/dev/null || true && export CAM_TYPE=mipi && echo \"=== Start MIPI Camera Face Age Detection ===\" && ros2 launch face_age_detection body_det_face_age_det.launch.py",
-        "addpay": false,
-        "append": "",
-        "useSpawn": false,
-        "timer": "120",
-        "oldrc": false,
-        "x": 400,
-        "y": 120,
-        "wires": [
-            [
-                "debug_mipi_output"
-            ],
-            [
-                "debug_mipi_error"
-            ],
-            []
-        ]
-    },
-    {
-        "id": "comment_usb_section",
-        "type": "comment",
-        "z": "face_age_detection_tab",
-        "name": "📷 USB Camera Detection",
-        "info": "Real-time face age detection using USB camera",
-        "x": 180,
-        "y": 160,
-        "wires": []
-    },
-    {
-        "id": "inject_usb_start",
+        "id": "inject_mipi_age",
         "type": "inject",
-        "z": "face_age_detection_tab",
-        "name": "Start USB Detection",
+        "z": "face_age_v2_tab",
+        "name": "启动 (MIPI摄像头)",
         "props": [
             {
                 "p": "payload"
             },
             {
-                "p": "topic",
+                "p": "camera",
+                "v": "mipi",
                 "vt": "str"
             }
         ],
@@ -105,55 +115,163 @@
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "topic": "usb_detection",
-        "payload": "start",
-        "payloadType": "str",
-        "x": 160,
-        "y": 200,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 190,
+        "y": 280,
         "wires": [
             [
-                "exec_usb_detection"
+                "exec_init_config_age"
             ]
         ]
     },
     {
-        "id": "exec_usb_detection",
+        "id": "exec_init_config_age",
         "type": "exec",
-        "z": "face_age_detection_tab",
-        "name": "USB Launcher",
-        "command": "cd /tmp && source /opt/tros/humble/setup.bash && TROS_DISTRO=humble && cp -r /opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/ . 2>/dev/null || true && export CAM_TYPE=usb && echo \"=== Start USB Camera Face Age Detection ===\" && ros2 launch face_age_detection body_det_face_age_det.launch.py",
+        "z": "face_age_v2_tab",
+        "g": "group_control_age",
+        "command": "cp -r /opt/tros/humble/lib/mono2d_body_detection/config/ . || true",
         "addpay": false,
         "append": "",
         "useSpawn": false,
-        "timer": "120",
+        "timer": "",
         "oldrc": false,
-        "x": 400,
-        "y": 200,
+        "name": "初始化配置 (CP)",
+        "x": 440,
+        "y": 260,
         "wires": [
             [
-                "debug_usb_output"
+                "change_config_age",
+                "delay_preview_age"
             ],
-            [
-                "debug_usb_error"
-            ],
+            [],
             []
         ]
     },
     {
-        "id": "comment_browser_section",
-        "type": "comment",
-        "z": "face_age_detection_tab",
-        "name": "2️⃣ View Results",
-        "info": "View real-time detection results in the browser",
-        "x": 180,
+        "id": "change_config_age",
+        "type": "change",
+        "z": "face_age_v2_tab",
+        "g": "group_control_age",
+        "name": "配置运行参数",
+        "rules": [
+            {
+                "t": "set",
+                "p": "launch",
+                "pt": "msg",
+                "to": "face_age_detection body_det_face_age_det.launch.py",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "insert",
+                "pt": "msg",
+                "to": "$join(['export CAM_TYPE=', msg.camera])",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 640,
+        "y": 260,
+        "wires": [
+            [
+                "node_execute_age"
+            ]
+        ]
+    },
+    {
+        "id": "node_execute_age",
+        "type": "rdk-tools checkexecute",
+        "z": "face_age_v2_tab",
+        "g": "group_control_age",
+        "name": "检查并执行",
+        "x": 810,
+        "y": 260,
+        "wires": [
+            [
+                "debug_success_age"
+            ],
+            [
+                "debug_error_age"
+            ]
+        ]
+    },
+    {
+        "id": "inject_stop_age",
+        "type": "inject",
+        "z": "face_age_v2_tab",
+        "name": "关闭",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 320,
+        "wires": [
+            [
+                "node_execute_age"
+            ]
+        ]
+    },
+    {
+        "id": "debug_success_age",
+        "type": "debug",
+        "z": "face_age_v2_tab",
+        "name": "正确执行提示",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1040,
         "y": 240,
         "wires": []
     },
     {
-        "id": "inject_browser",
+        "id": "debug_error_age",
+        "type": "debug",
+        "z": "face_age_v2_tab",
+        "name": "错误执行提示",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1040,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "inject_browser_age",
         "type": "inject",
-        "z": "face_age_detection_tab",
-        "name": "Open Visualization Page",
+        "z": "face_age_v2_tab",
+        "name": "打开浏览器",
         "props": [
             {
                 "p": "payload"
@@ -170,38 +288,28 @@
         "topic": "",
         "payload": "http://{host}:8000",
         "payloadType": "str",
-        "x": 170,
-        "y": 280,
+        "x": 140,
+        "y": 520,
         "wires": [
             [
-                "openurl_browser"
+                "open_browser_age"
             ]
         ]
     },
     {
-        "id": "openurl_browser",
+        "id": "open_browser_age",
         "type": "rdk-tools openurl",
-        "z": "face_age_detection_tab",
+        "z": "face_age_v2_tab",
         "name": "",
-        "x": 400,
-        "y": 280,
+        "x": 320,
+        "y": 520,
         "wires": []
     },
     {
-        "id": "comment_stop_section",
-        "type": "comment",
-        "z": "face_age_detection_tab",
-        "name": "3️⃣ Stop Services",
-        "info": "Stop all detection related services",
-        "x": 180,
-        "y": 320,
-        "wires": []
-    },
-    {
-        "id": "inject_stop",
+        "id": "inject_update_age",
         "type": "inject",
-        "z": "face_age_detection_tab",
-        "name": "Stop All Services",
+        "z": "face_age_v2_tab",
+        "name": "检查更新",
         "props": [
             {
                 "p": "payload"
@@ -214,61 +322,153 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "topic": "stop",
-        "payload": "stop",
-        "payloadType": "str",
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
         "x": 160,
-        "y": 360,
+        "y": 120,
         "wires": [
             [
-                "exec_stop_all"
+                "smart_update_age"
             ]
         ]
     },
     {
-        "id": "exec_stop_all",
-        "type": "exec",
-        "z": "face_age_detection_tab",
-        "name": "Stop All Services",
-        "command": "sudo pkill -9 -f hobot_usb_cam; sudo pkill -9 -f face_age_detection; sudo pkill -9 -f mono2d_body_detection; sudo pkill -9 -f hobot_codec_republish; sudo pkill -9 -f websocket; sudo pkill -9 -f python3; sudo pkill -9 -f 'ros2 launch'; sudo pkill -9 -f 'ros2 run'; sleep 2; sudo rm -rf /dev/shm/*; ros2 daemon stop 2>/dev/null; sleep 1; echo '✓ Services stopped completely, resources released'",
-        "addpay": false,
-        "append": "",
-        "useSpawn": false,
-        "timer": "10",
-        "oldrc": false,
-        "x": 400,
-        "y": 360,
+        "id": "smart_update_age",
+        "type": "rdk-tools smartupdate",
+        "z": "face_age_v2_tab",
+        "g": "group_update_age",
+        "name": "",
+        "x": 420,
+        "y": 120,
         "wires": [
             [
-                "debug_stop_info"
+                "change_update_msg_age"
             ],
-            [],
             []
         ]
     },
     {
-        "id": "debug_mipi_output",
-        "type": "debug",
-        "z": "face_age_detection_tab",
-        "name": "MIPI Detection Output",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 650,
-        "y": 100,
+        "id": "change_update_msg_age",
+        "type": "change",
+        "z": "face_age_v2_tab",
+        "g": "group_update_age",
+        "name": "更新提示",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "环境检查完成",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 620,
+        "y": 120,
+        "wires": [
+            [
+                "audio_notify_age"
+            ]
+        ]
+    },
+    {
+        "id": "audio_notify_age",
+        "type": "rdk-tools texttoaudio",
+        "z": "face_age_v2_tab",
+        "g": "group_update_age",
+        "name": "",
+        "x": 810,
+        "y": 120,
         "wires": []
     },
     {
-        "id": "debug_mipi_error",
-        "type": "debug",
-        "z": "face_age_detection_tab",
-        "name": "MIPI Error Info",
+        "id": "delay_preview_age",
+        "type": "delay",
+        "z": "face_age_v2_tab",
+        "g": "group_viz_age",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 420,
+        "y": 400,
+        "wires": [
+            [
+                "set_ws_url_age"
+            ]
+        ]
+    },
+    {
+        "id": "set_ws_url_age",
+        "type": "change",
+        "z": "face_age_v2_tab",
+        "g": "group_viz_age",
+        "name": "设定视频流",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "ws://{host}:8000",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 430,
+        "y": 440,
+        "wires": [
+            [
+                "video_preview_age"
+            ]
+        ]
+    },
+    {
+        "id": "video_preview_age",
+        "type": "rdk-tools videows",
+        "z": "face_age_v2_tab",
+        "g": "group_viz_age",
+        "name": "视频预览",
+        "fps": "10",
+        "width": "480",
         "active": true,
+        "x": 620,
+        "y": 440,
+        "wires": [
+            [
+                "d5abaef56093f17f",
+                "567daff124eae24f"
+            ],
+            [
+                "873053a0c7496f11"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "d5abaef56093f17f",
+        "type": "debug",
+        "z": "face_age_v2_tab",
+        "name": "算法结果输出",
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -276,59 +476,181 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 650,
-        "y": 140,
+        "x": 840,
+        "y": 400,
         "wires": []
     },
     {
-        "id": "debug_usb_output",
-        "type": "debug",
-        "z": "face_age_detection_tab",
-        "name": "USB Detection Output",
+        "id": "567daff124eae24f",
+        "type": "switch",
+        "z": "face_age_v2_tab",
+        "name": "过滤出\"年龄\"",
+        "property": "attributes.attributes[0].value",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nnull"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 430,
+        "y": 580,
+        "wires": [
+            [
+                "375b65ada805c773"
+            ]
+        ]
+    },
+    {
+        "id": "119a27fbd303de97",
+        "type": "rdk-tools output",
+        "z": "face_age_v2_tab",
+        "name": "",
         "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 650,
-        "y": 180,
+        "x": 420,
+        "y": 700,
         "wires": []
     },
     {
-        "id": "debug_usb_error",
-        "type": "debug",
-        "z": "face_age_detection_tab",
-        "name": "USB Error Info",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 650,
-        "y": 220,
+        "id": "375b65ada805c773",
+        "type": "change",
+        "z": "face_age_v2_tab",
+        "name": "提取不同年龄",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "attributes.attributes[0].value",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 620,
+        "wires": [
+            [
+                "7e1e7f3ce8de6171"
+            ]
+        ]
+    },
+    {
+        "id": "08d1aafd35ef27d8",
+        "type": "comment",
+        "z": "face_age_v2_tab",
+        "name": "名称：TROS应用 人脸年龄检测",
+        "info": "",
+        "x": 170,
+        "y": 40,
         "wires": []
     },
     {
-        "id": "debug_stop_info",
-        "type": "debug",
-        "z": "face_age_detection_tab",
-        "name": "Stop Service Status",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 640,
+        "id": "8934fbd6897de129",
+        "type": "inject",
+        "z": "face_age_v2_tab",
+        "name": "了解更多",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/body/mono_face_age_detection",
+        "payloadType": "str",
+        "x": 420,
+        "y": 40,
+        "wires": [
+            [
+                "298a991a875b6e5e"
+            ]
+        ]
+    },
+    {
+        "id": "298a991a875b6e5e",
+        "type": "rdk-tools openurl",
+        "z": "face_age_v2_tab",
+        "name": "",
+        "x": 580,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "8a247db0228e2575",
+        "type": "comment",
+        "z": "face_age_v2_tab",
+        "name": "注意：选择对应的摄像头类型",
+        "info": "",
+        "x": 180,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "6c810924b18baae2",
+        "type": "comment",
+        "z": "face_age_v2_tab",
+        "name": "注意：使用结束后请主动关闭",
+        "info": "",
+        "x": 180,
         "y": 360,
         "wires": []
+    },
+    {
+        "id": "873053a0c7496f11",
+        "type": "debug",
+        "z": "face_age_v2_tab",
+        "name": "性能信息输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "7e1e7f3ce8de6171",
+        "type": "function",
+        "z": "face_age_v2_tab",
+        "name": "保留年龄整数部分",
+        "func": "msg.payload = parseFloat(msg.payload).toFixed(0);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 660,
+        "wires": [
+            [
+                "119a27fbd303de97"
+            ]
+        ]
+    },
+    {
+        "id": "1f053f6e05a86856",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-rdk-tools": "0.0.27"
+        }
     }
 ]

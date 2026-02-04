@@ -2,7 +2,7 @@
     {
         "id": "face_age_v2_tab",
         "type": "tab",
-        "label": "人脸年龄检测",
+        "label": "TROS Face_Age Detection (Application)",
         "disabled": false,
         "info": ""
     },
@@ -10,26 +10,21 @@
         "id": "group_control_age",
         "type": "group",
         "z": "face_age_v2_tab",
-        "name": "核心控制",
+        "name": "核心控制和运行",
         "style": {
             "fill": "#e3f3d3",
             "fill-opacity": "0.6",
             "label": true
         },
         "nodes": [
-            "inject_usb_age",
-            "inject_mipi_age",
             "change_config_age",
             "node_execute_age",
-            "inject_stop_age",
-            "debug_success_age",
-            "debug_error_age",
             "exec_init_config_age"
         ],
-        "x": 114,
-        "y": 159,
-        "w": 1012,
-        "h": 182
+        "x": 334,
+        "y": 211.5,
+        "w": 572,
+        "h": 97
     },
     {
         "id": "group_viz_age",
@@ -42,43 +37,39 @@
             "label": true
         },
         "nodes": [
-            "inject_browser_age",
-            "open_browser_age",
             "delay_preview_age",
             "set_ws_url_age",
             "video_preview_age"
         ],
-        "x": 114,
-        "y": 399,
-        "w": 412,
-        "h": 169.5
+        "x": 334,
+        "y": 359,
+        "w": 392,
+        "h": 129.5
     },
     {
         "id": "group_update_age",
         "type": "group",
         "z": "face_age_v2_tab",
-        "name": "环境准备",
+        "name": "软件包智能更新",
         "style": {
             "fill": "#fff9c4",
             "fill-opacity": "0.6",
             "label": true
         },
         "nodes": [
-            "inject_update_age",
             "smart_update_age",
             "change_update_msg_age",
             "audio_notify_age"
         ],
-        "x": 114,
-        "y": 39,
-        "w": 652,
+        "x": 334,
+        "y": 79,
+        "w": 572,
         "h": 82
     },
     {
         "id": "inject_usb_age",
         "type": "inject",
         "z": "face_age_v2_tab",
-        "g": "group_control_age",
         "name": "启动 (USB摄像头)",
         "props": [
             {
@@ -97,8 +88,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 250,
-        "y": 200,
+        "x": 190,
+        "y": 240,
         "wires": [
             [
                 "exec_init_config_age"
@@ -109,7 +100,6 @@
         "id": "inject_mipi_age",
         "type": "inject",
         "z": "face_age_v2_tab",
-        "g": "group_control_age",
         "name": "启动 (MIPI摄像头)",
         "props": [
             {
@@ -128,8 +118,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 250,
-        "y": 240,
+        "x": 190,
+        "y": 280,
         "wires": [
             [
                 "exec_init_config_age"
@@ -148,8 +138,8 @@
         "timer": "",
         "oldrc": false,
         "name": "初始化配置 (CP)",
-        "x": 460,
-        "y": 220,
+        "x": 440,
+        "y": 260,
         "wires": [
             [
                 "change_config_age",
@@ -193,8 +183,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 700,
-        "y": 220,
+        "x": 640,
+        "y": 260,
         "wires": [
             [
                 "node_execute_age"
@@ -206,8 +196,8 @@
         "type": "rdk-tools checkexecute",
         "z": "face_age_v2_tab",
         "g": "group_control_age",
-        "name": "执行检测",
-        "x": 880,
+        "name": "检查并执行",
+        "x": 810,
         "y": 260,
         "wires": [
             [
@@ -222,8 +212,7 @@
         "id": "inject_stop_age",
         "type": "inject",
         "z": "face_age_v2_tab",
-        "g": "group_control_age",
-        "name": "关闭服务",
+        "name": "关闭",
         "props": [
             {
                 "p": "kill",
@@ -236,8 +225,8 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 220,
-        "y": 300,
+        "x": 150,
+        "y": 320,
         "wires": [
             [
                 "node_execute_age"
@@ -248,9 +237,8 @@
         "id": "debug_success_age",
         "type": "debug",
         "z": "face_age_v2_tab",
-        "g": "group_control_age",
-        "name": "运行日志",
-        "active": true,
+        "name": "正确执行提示",
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -258,7 +246,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1020,
+        "x": 1040,
         "y": 240,
         "wires": []
     },
@@ -266,9 +254,8 @@
         "id": "debug_error_age",
         "type": "debug",
         "z": "face_age_v2_tab",
-        "g": "group_control_age",
-        "name": "错误警告",
-        "active": true,
+        "name": "错误执行提示",
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -276,7 +263,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1020,
+        "x": 1040,
         "y": 280,
         "wires": []
     },
@@ -284,7 +271,6 @@
         "id": "inject_browser_age",
         "type": "inject",
         "z": "face_age_v2_tab",
-        "g": "group_viz_age",
         "name": "打开浏览器",
         "props": [
             {
@@ -302,8 +288,8 @@
         "topic": "",
         "payload": "http://{host}:8000",
         "payloadType": "str",
-        "x": 220,
-        "y": 440,
+        "x": 140,
+        "y": 520,
         "wires": [
             [
                 "open_browser_age"
@@ -314,17 +300,15 @@
         "id": "open_browser_age",
         "type": "rdk-tools openurl",
         "z": "face_age_v2_tab",
-        "g": "group_viz_age",
         "name": "",
-        "x": 400,
-        "y": 440,
+        "x": 320,
+        "y": 520,
         "wires": []
     },
     {
         "id": "inject_update_age",
         "type": "inject",
         "z": "face_age_v2_tab",
-        "g": "group_update_age",
         "name": "检查更新",
         "props": [
             {
@@ -342,8 +326,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 220,
-        "y": 80,
+        "x": 160,
+        "y": 120,
         "wires": [
             [
                 "smart_update_age"
@@ -356,8 +340,8 @@
         "z": "face_age_v2_tab",
         "g": "group_update_age",
         "name": "",
-        "x": 380,
-        "y": 80,
+        "x": 420,
+        "y": 120,
         "wires": [
             [
                 "change_update_msg_age"
@@ -370,7 +354,7 @@
         "type": "change",
         "z": "face_age_v2_tab",
         "g": "group_update_age",
-        "name": "提示内容",
+        "name": "更新提示",
         "rules": [
             {
                 "t": "set",
@@ -385,8 +369,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 540,
-        "y": 80,
+        "x": 620,
+        "y": 120,
         "wires": [
             [
                 "audio_notify_age"
@@ -399,8 +383,8 @@
         "z": "face_age_v2_tab",
         "g": "group_update_age",
         "name": "",
-        "x": 670,
-        "y": 80,
+        "x": 810,
+        "y": 120,
         "wires": []
     },
     {
@@ -421,8 +405,8 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 240,
-        "y": 480,
+        "x": 420,
+        "y": 400,
         "wires": [
             [
                 "set_ws_url_age"
@@ -449,8 +433,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 390,
-        "y": 480,
+        "x": 430,
+        "y": 440,
         "wires": [
             [
                 "video_preview_age"
@@ -462,20 +446,207 @@
         "type": "rdk-tools videows",
         "z": "face_age_v2_tab",
         "g": "group_viz_age",
-        "name": "Web预览",
+        "name": "视频预览",
         "fps": "10",
         "width": "480",
         "active": true,
-        "x": 420,
-        "y": 520,
+        "x": 620,
+        "y": 440,
         "wires": [
-            [],
-            [],
+            [
+                "d5abaef56093f17f",
+                "567daff124eae24f"
+            ],
+            [
+                "873053a0c7496f11"
+            ],
             []
         ]
     },
     {
-        "id": "c2c93d3252e80935",
+        "id": "d5abaef56093f17f",
+        "type": "debug",
+        "z": "face_age_v2_tab",
+        "name": "算法结果输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "567daff124eae24f",
+        "type": "switch",
+        "z": "face_age_v2_tab",
+        "name": "过滤出\"年龄\"",
+        "property": "attributes.attributes[0].value",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nnull"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 430,
+        "y": 580,
+        "wires": [
+            [
+                "375b65ada805c773"
+            ]
+        ]
+    },
+    {
+        "id": "119a27fbd303de97",
+        "type": "rdk-tools output",
+        "z": "face_age_v2_tab",
+        "name": "",
+        "active": true,
+        "x": 420,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "375b65ada805c773",
+        "type": "change",
+        "z": "face_age_v2_tab",
+        "name": "提取不同年龄",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "attributes.attributes[0].value",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 620,
+        "wires": [
+            [
+                "7e1e7f3ce8de6171"
+            ]
+        ]
+    },
+    {
+        "id": "08d1aafd35ef27d8",
+        "type": "comment",
+        "z": "face_age_v2_tab",
+        "name": "名称：TROS应用 人脸年龄检测",
+        "info": "",
+        "x": 170,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "8934fbd6897de129",
+        "type": "inject",
+        "z": "face_age_v2_tab",
+        "name": "了解更多",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/body/mono_face_age_detection",
+        "payloadType": "str",
+        "x": 420,
+        "y": 40,
+        "wires": [
+            [
+                "298a991a875b6e5e"
+            ]
+        ]
+    },
+    {
+        "id": "298a991a875b6e5e",
+        "type": "rdk-tools openurl",
+        "z": "face_age_v2_tab",
+        "name": "",
+        "x": 580,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "8a247db0228e2575",
+        "type": "comment",
+        "z": "face_age_v2_tab",
+        "name": "注意：选择对应的摄像头类型",
+        "info": "",
+        "x": 180,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "6c810924b18baae2",
+        "type": "comment",
+        "z": "face_age_v2_tab",
+        "name": "注意：使用结束后请主动关闭",
+        "info": "",
+        "x": 180,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "873053a0c7496f11",
+        "type": "debug",
+        "z": "face_age_v2_tab",
+        "name": "性能信息输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "7e1e7f3ce8de6171",
+        "type": "function",
+        "z": "face_age_v2_tab",
+        "name": "保留年龄整数部分",
+        "func": "msg.payload = parseFloat(msg.payload).toFixed(0);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 660,
+        "wires": [
+            [
+                "119a27fbd303de97"
+            ]
+        ]
+    },
+    {
+        "id": "1f053f6e05a86856",
         "type": "global-config",
         "env": [],
         "modules": {
