@@ -2,18 +2,77 @@
     {
         "id": "e45465d60ad5784b",
         "type": "tab",
-        "label": "DOSOD 目标检测",
+        "label": "TROS DOSOD_Enhanced_Flow",
         "disabled": false,
-        "info": "# DOSOD 目标检测\n\n使用系统预装的 int8 模型，检测 COCO 数据集的 80 类常见物体。\n\n## 使用方法\n1. 调整置信度阈值（可选）\n2. 点击启动检测（MIPI 或 USB）\n3. 等待约3秒，下方会自动出现实时画面"
+        "info": ""
+    },
+    {
+        "id": "6dcf78fdef152658",
+        "type": "group",
+        "z": "e45465d60ad5784b",
+        "name": "软件包智能更新",
+        "style": {
+            "fill": "#fff9c4",
+            "fill-opacity": "0.6",
+            "label": true
+        },
+        "nodes": [
+            "475a549bfd32c91c",
+            "c1be4324e8c9f342",
+            "ed256c81e28a5bc7"
+        ],
+        "x": 314,
+        "y": 139,
+        "w": 592,
+        "h": 82
+    },
+    {
+        "id": "4a2d934ee2cfb3a5",
+        "type": "group",
+        "z": "e45465d60ad5784b",
+        "name": "核心控制",
+        "style": {
+            "fill": "#e3f3d3",
+            "label": true
+        },
+        "nodes": [
+            "d1d5a87f4ddb093a",
+            "1b66e017b9d2ea95",
+            "826637042f8738a4"
+        ],
+        "x": 314,
+        "y": 251.5,
+        "w": 592,
+        "h": 97
+    },
+    {
+        "id": "7359118404bde21c",
+        "type": "group",
+        "z": "e45465d60ad5784b",
+        "name": "结果可视化",
+        "style": {
+            "fill": "#d1e7f5",
+            "label": true,
+            "fill-opacity": "0.6"
+        },
+        "nodes": [
+            "debe9c056ff08b19",
+            "3159b9091be34062",
+            "c46045500b899924"
+        ],
+        "x": 314,
+        "y": 379,
+        "w": 392,
+        "h": 129.5
     },
     {
         "id": "28451cc0318a1787",
         "type": "comment",
         "z": "e45465d60ad5784b",
-        "name": "⚙️ 置信度阈值（可选）",
+        "name": "置信度阈值（可选）",
         "info": "默认值：0.4\n- 值越小，检测到的物体越多（可能包含误检）\n- 值越大，只显示高置信度物体（可能漏检）\n推荐范围：0.2 ~ 0.5",
-        "x": 150,
-        "y": 40,
+        "x": 130,
+        "y": 100,
         "wires": []
     },
     {
@@ -32,8 +91,8 @@
         "topic": "",
         "payload": "0.4",
         "payloadType": "str",
-        "x": 120,
-        "y": 80,
+        "x": 400,
+        "y": 100,
         "wires": [
             [
                 "e6a123f79261d136"
@@ -52,8 +111,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 320,
-        "y": 80,
+        "x": 610,
+        "y": 100,
         "wires": [
             [
                 "296b526603add8de"
@@ -73,41 +132,32 @@
         "targetType": "msg",
         "statusVal": "payload",
         "statusType": "auto",
-        "x": 520,
-        "y": 80,
-        "wires": []
-    },
-    {
-        "id": "3e9c287ed9aa73e8",
-        "type": "comment",
-        "z": "e45465d60ad5784b",
-        "name": "📷 启动检测",
-        "info": "",
-        "x": 150,
-        "y": 140,
+        "x": 810,
+        "y": 100,
         "wires": []
     },
     {
         "id": "ca61637eab1a42a0",
         "type": "inject",
         "z": "e45465d60ad5784b",
-        "name": "📹 MIPI摄像头",
+        "name": "启动 (MIPI摄像头)",
         "props": [
             {
-                "p": "payload"
+                "p": "camera",
+                "v": "mipi",
+                "vt": "str"
             }
         ],
         "repeat": "",
         "crontab": "",
         "once": false,
+        "onceDelay": "",
         "topic": "",
-        "payload": "mipi",
-        "payloadType": "str",
-        "x": 120,
-        "y": 180,
+        "x": 190,
+        "y": 320,
         "wires": [
             [
-                "ac42be3f7f2ab318"
+                "d1d5a87f4ddb093a"
             ]
         ]
     },
@@ -115,43 +165,24 @@
         "id": "e686f0fe1763d568",
         "type": "inject",
         "z": "e45465d60ad5784b",
-        "name": "🎥 USB摄像头",
+        "name": "启动 (USB摄像头)",
         "props": [
             {
-                "p": "payload"
+                "p": "camera",
+                "v": "usb",
+                "vt": "str"
             }
         ],
         "repeat": "",
         "crontab": "",
         "once": false,
+        "onceDelay": "",
         "topic": "",
-        "payload": "usb",
-        "payloadType": "str",
-        "x": 120,
-        "y": 220,
+        "x": 190,
+        "y": 280,
         "wires": [
             [
-                "ac42be3f7f2ab318"
-            ]
-        ]
-    },
-    {
-        "id": "ac42be3f7f2ab318",
-        "type": "function",
-        "z": "e45465d60ad5784b",
-        "name": "构建启动命令",
-        "func": "var mode = msg.payload || 'usb';\nvar score = global.get('dosod_score_threshold') || 0.4;\n\n// 构建命令：bash start_dosod.sh <mode> <score>\nmsg.payload = mode + ' ' + score;\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 320,
-        "y": 200,
-        "wires": [
-            [
-                "d1d5a87f4ddb093a",
-                "fc185c7a034c07e1"
+                "d1d5a87f4ddb093a"
             ]
         ]
     },
@@ -159,94 +190,31 @@
         "id": "d1d5a87f4ddb093a",
         "type": "exec",
         "z": "e45465d60ad5784b",
-        "command": "stdbuf -oL -eL bash /home/sunrise/.dosod_config/start_dosod.sh",
-        "addpay": true,
+        "g": "4a2d934ee2cfb3a5",
+        "command": "cp -r /opt/tros/humble/lib/hobot_dosod/config/ . || true",
+        "addpay": "payload",
         "append": "",
-        "useSpawn": true,
+        "useSpawn": "false",
         "timer": "0",
+        "winHide": false,
         "oldrc": false,
-        "name": "启动检测",
-        "x": 520,
-        "y": 200,
+        "name": "初始化配置 (CP)",
+        "x": 420,
+        "y": 300,
         "wires": [
             [
-                "21814c11fd392d7f"
+                "1b66e017b9d2ea95",
+                "c46045500b899924"
             ],
-            [
-                "2f767a7ea1c1c927"
-            ],
+            [],
             []
-        ]
-    },
-    {
-        "id": "21814c11fd392d7f",
-        "type": "debug",
-        "z": "e45465d60ad5784b",
-        "name": "启动输出",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "x": 720,
-        "y": 180,
-        "wires": []
-    },
-    {
-        "id": "2f767a7ea1c1c927",
-        "type": "debug",
-        "z": "e45465d60ad5784b",
-        "name": "启动错误",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "x": 720,
-        "y": 220,
-        "wires": []
-    },
-    {
-        "id": "23c2db776831f7f9",
-        "type": "comment",
-        "z": "e45465d60ad5784b",
-        "name": "👁️ 实时结果",
-        "info": "",
-        "x": 150,
-        "y": 280,
-        "wires": []
-    },
-    {
-        "id": "fc185c7a034c07e1",
-        "type": "delay",
-        "z": "e45465d60ad5784b",
-        "name": "等待启动(3s)",
-        "pauseType": "delay",
-        "timeout": "3",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "allowrate": false,
-        "outputs": 1,
-        "x": 310,
-        "y": 320,
-        "wires": [
-            [
-                "debe9c056ff08b19"
-            ]
         ]
     },
     {
         "id": "debe9c056ff08b19",
         "type": "change",
         "z": "e45465d60ad5784b",
+        "g": "7359118404bde21c",
         "name": "设定预览流",
         "rules": [
             {
@@ -262,8 +230,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 510,
-        "y": 320,
+        "x": 410,
+        "y": 460,
         "wires": [
             [
                 "3159b9091be34062"
@@ -274,26 +242,258 @@
         "id": "3159b9091be34062",
         "type": "rdk-tools videows",
         "z": "e45465d60ad5784b",
-        "name": "实时预览",
+        "g": "7359118404bde21c",
+        "name": "视频预览",
         "fps": "2",
         "width": "640",
         "active": true,
-        "x": 680,
-        "y": 320,
+        "x": 600,
+        "y": 460,
         "wires": [
-            [],
-            [],
+            [
+                "27367bc6c231668c",
+                "e457b92451b452f5"
+            ],
+            [
+                "0106db68b060ddb7"
+            ],
             []
         ]
     },
     {
-        "id": "cd85a113e21f7a91",
+        "id": "dca0ef969632fc34",
+        "type": "comment",
+        "z": "e45465d60ad5784b",
+        "name": "名称：TROS应用 DOSOD目标检测",
+        "info": "",
+        "x": 180,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "59a7cea96de1cc92",
         "type": "inject",
         "z": "e45465d60ad5784b",
-        "name": "打开浏览器可视化",
+        "name": "了解更多",
         "props": [
             {
                 "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/rdk_s/Robot_development/boxs/detection/hobot_dosod",
+        "payloadType": "str",
+        "x": 440,
+        "y": 40,
+        "wires": [
+            [
+                "5b9307019418b8d4"
+            ]
+        ]
+    },
+    {
+        "id": "5b9307019418b8d4",
+        "type": "rdk-tools openurl",
+        "z": "e45465d60ad5784b",
+        "name": "",
+        "x": 640,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "cb7e1f5d6306f961",
+        "type": "inject",
+        "z": "e45465d60ad5784b",
+        "name": "检查更新",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 180,
+        "wires": [
+            [
+                "475a549bfd32c91c"
+            ]
+        ]
+    },
+    {
+        "id": "475a549bfd32c91c",
+        "type": "rdk-tools smartupdate",
+        "z": "e45465d60ad5784b",
+        "g": "6dcf78fdef152658",
+        "name": "",
+        "x": 400,
+        "y": 180,
+        "wires": [
+            [
+                "c1be4324e8c9f342"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "c1be4324e8c9f342",
+        "type": "change",
+        "z": "e45465d60ad5784b",
+        "g": "6dcf78fdef152658",
+        "name": "更新提示",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "环境检查完成",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 600,
+        "y": 180,
+        "wires": [
+            [
+                "ed256c81e28a5bc7"
+            ]
+        ]
+    },
+    {
+        "id": "ed256c81e28a5bc7",
+        "type": "rdk-tools texttoaudio",
+        "z": "e45465d60ad5784b",
+        "g": "6dcf78fdef152658",
+        "name": "",
+        "x": 810,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "84fd9f27efd7d7d4",
+        "type": "debug",
+        "z": "e45465d60ad5784b",
+        "name": "正确执行提示",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "285d994b440febca",
+        "type": "debug",
+        "z": "e45465d60ad5784b",
+        "name": "错误执行提示",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "c46045500b899924",
+        "type": "delay",
+        "z": "e45465d60ad5784b",
+        "g": "7359118404bde21c",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 400,
+        "y": 420,
+        "wires": [
+            [
+                "debe9c056ff08b19"
+            ]
+        ]
+    },
+    {
+        "id": "27367bc6c231668c",
+        "type": "debug",
+        "z": "e45465d60ad5784b",
+        "name": "算法结果输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "0106db68b060ddb7",
+        "type": "debug",
+        "z": "e45465d60ad5784b",
+        "name": "性能信息输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "6f98b3899ee2944d",
+        "type": "inject",
+        "z": "e45465d60ad5784b",
+        "name": "关闭",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
             }
         ],
         "repeat": "",
@@ -301,119 +501,150 @@
         "once": false,
         "onceDelay": "",
         "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 130,
-        "y": 360,
-        "wires": [
-            [
-                "dfc8896a01df5150"
-            ]
-        ]
-    },
-    {
-        "id": "dfc8896a01df5150",
-        "type": "function",
-        "z": "e45465d60ad5784b",
-        "name": "获取URL",
-        "func": "msg.payload = 'http://{host}:8000';\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 300,
-        "y": 360,
-        "wires": [
-            [
-                "631d917f2e3b1ff1"
-            ]
-        ]
-    },
-    {
-        "id": "631d917f2e3b1ff1",
-        "type": "rdk-tools openurl",
-        "z": "e45465d60ad5784b",
-        "name": "打开浏览器",
-        "x": 480,
-        "y": 360,
-        "wires": []
-    },
-    {
-        "id": "84d7e6646669ef1f",
-        "type": "comment",
-        "z": "e45465d60ad5784b",
-        "name": "⏹️ 停止服务",
-        "info": "",
         "x": 150,
-        "y": 420,
-        "wires": []
+        "y": 360,
+        "wires": [
+            [
+                "826637042f8738a4"
+            ]
+        ]
     },
     {
-        "id": "6f98b3899ee2944d",
+        "id": "9db3a9c87e3b5097",
         "type": "inject",
         "z": "e45465d60ad5784b",
-        "name": "停止所有服务",
+        "name": "打开浏览器",
         "props": [
             {
                 "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
             }
         ],
         "repeat": "",
         "crontab": "",
         "once": false,
+        "onceDelay": 0.1,
         "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 120,
-        "y": 460,
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 160,
+        "y": 540,
         "wires": [
             [
-                "bef0afad0e43f123"
+                "074bcfa3d96cb7d8"
             ]
         ]
     },
     {
-        "id": "bef0afad0e43f123",
-        "type": "exec",
+        "id": "074bcfa3d96cb7d8",
+        "type": "rdk-tools openurl",
         "z": "e45465d60ad5784b",
-        "command": "sudo pkill -2 -f ros; sleep 3;",
-        "addpay": false,
-        "append": "",
-        "useSpawn": "false",
-        "timer": "10",
-        "winHide": false,
-        "oldrc": false,
-        "name": "停止服务",
-        "x": 320,
-        "y": 460,
-        "wires": [
-            [
-                "a80f394630fbe914"
-            ],
-            [],
-            []
-        ]
-    },
-    {
-        "id": "a80f394630fbe914",
-        "type": "debug",
-        "z": "e45465d60ad5784b",
-        "name": "停止状态",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 520,
-        "y": 460,
+        "name": "",
+        "x": 340,
+        "y": 540,
         "wires": []
     },
     {
-        "id": "c741f9e03e021b4e",
+        "id": "1b66e017b9d2ea95",
+        "type": "change",
+        "z": "e45465d60ad5784b",
+        "g": "4a2d934ee2cfb3a5",
+        "name": "配置运行参数",
+        "rules": [
+            {
+                "t": "set",
+                "p": "launch",
+                "pt": "msg",
+                "to": "hobot_dosod dosod.launch.py",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "insert",
+                "pt": "msg",
+                "to": "$join(['export CAM_TYPE=', msg.camera])",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 620,
+        "y": 300,
+        "wires": [
+            [
+                "826637042f8738a4"
+            ]
+        ]
+    },
+    {
+        "id": "826637042f8738a4",
+        "type": "rdk-tools checkexecute",
+        "z": "e45465d60ad5784b",
+        "g": "4a2d934ee2cfb3a5",
+        "name": "检查并执行",
+        "x": 810,
+        "y": 300,
+        "wires": [
+            [
+                "84fd9f27efd7d7d4"
+            ],
+            [
+                "285d994b440febca"
+            ]
+        ]
+    },
+    {
+        "id": "e457b92451b452f5",
+        "type": "change",
+        "z": "e45465d60ad5784b",
+        "name": "提取类型",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "attributes.type",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 400,
+        "y": 600,
+        "wires": [
+            [
+                "cb819ba51812603b"
+            ]
+        ]
+    },
+    {
+        "id": "cb819ba51812603b",
+        "type": "rdk-tools output",
+        "z": "e45465d60ad5784b",
+        "name": "",
+        "active": true,
+        "x": 400,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "24292575aebb5c29",
         "type": "global-config",
         "env": [],
         "modules": {

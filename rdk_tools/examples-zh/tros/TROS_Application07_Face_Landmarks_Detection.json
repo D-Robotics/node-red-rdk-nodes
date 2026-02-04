@@ -2,7 +2,7 @@
     {
         "id": "6ea85a80b169f687",
         "type": "tab",
-        "label": "人脸关键点检测",
+        "label": "TROS Face_Landmarks Detection",
         "disabled": false,
         "info": ""
     },
@@ -17,19 +17,14 @@
             "label": true
         },
         "nodes": [
-            "3731a1f8f7281d7f",
-            "1f6982eb9a54a0db",
             "6e44e1a8d909ed22",
             "7aed82efb2e2d4db",
-            "c7c7fc671434fba5",
-            "fed6b0f5ca9a60bb",
-            "befd2e978fcda92e",
             "41f244d3e7bf3127"
         ],
-        "x": 114,
-        "y": 159,
-        "w": 1012,
-        "h": 182
+        "x": 314,
+        "y": 211.5,
+        "w": 572,
+        "h": 97
     },
     {
         "id": "e841fd2932a7bbec",
@@ -42,43 +37,39 @@
             "label": true
         },
         "nodes": [
-            "0172d60d9df794a6",
-            "5374197b79637a1e",
             "f1815e43a82e8725",
             "e4a3607b7fb792ef",
             "91fdc5151d26fc1a"
         ],
-        "x": 114,
-        "y": 399,
-        "w": 412,
-        "h": 169.5
+        "x": 314,
+        "y": 359,
+        "w": 392,
+        "h": 129.5
     },
     {
         "id": "13453ea772ef0ca7",
         "type": "group",
         "z": "6ea85a80b169f687",
-        "name": "环境准备",
+        "name": "软件包智能更新",
         "style": {
             "fill": "#fff9c4",
             "fill-opacity": "0.6",
             "label": true
         },
         "nodes": [
-            "ebabe08cd88b71cf",
             "91f713dbb505fade",
             "db8f56176febe28a",
             "178723005092c00f"
         ],
-        "x": 114,
-        "y": 39,
-        "w": 652,
+        "x": 314,
+        "y": 79,
+        "w": 572,
         "h": 82
     },
     {
         "id": "3731a1f8f7281d7f",
         "type": "inject",
         "z": "6ea85a80b169f687",
-        "g": "7823ddb4fee194ed",
         "name": "启动 (USB摄像头)",
         "props": [
             {
@@ -97,8 +88,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 250,
-        "y": 200,
+        "x": 170,
+        "y": 240,
         "wires": [
             [
                 "41f244d3e7bf3127"
@@ -109,7 +100,6 @@
         "id": "1f6982eb9a54a0db",
         "type": "inject",
         "z": "6ea85a80b169f687",
-        "g": "7823ddb4fee194ed",
         "name": "启动 (MIPI摄像头)",
         "props": [
             {
@@ -128,8 +118,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 250,
-        "y": 240,
+        "x": 170,
+        "y": 280,
         "wires": [
             [
                 "41f244d3e7bf3127"
@@ -144,12 +134,13 @@
         "command": "cp -r /opt/tros/humble/lib/mono2d_body_detection/config/ . || true",
         "addpay": false,
         "append": "",
-        "useSpawn": false,
+        "useSpawn": "false",
         "timer": "",
+        "winHide": false,
         "oldrc": false,
-        "name": "初始化配置(拷贝文件)",
-        "x": 480,
-        "y": 220,
+        "name": "初始化配置 (CP)",
+        "x": 420,
+        "y": 260,
         "wires": [
             [
                 "6e44e1a8d909ed22",
@@ -193,8 +184,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 700,
-        "y": 220,
+        "x": 620,
+        "y": 260,
         "wires": [
             [
                 "7aed82efb2e2d4db"
@@ -206,15 +197,15 @@
         "type": "rdk-tools checkexecute",
         "z": "6ea85a80b169f687",
         "g": "7823ddb4fee194ed",
-        "name": "执行检测",
-        "x": 880,
+        "name": "检查并执行",
+        "x": 790,
         "y": 260,
         "wires": [
             [
-                "fed6b0f5ca9a60bb"
+                "d9a51ca73362d78d"
             ],
             [
-                "befd2e978fcda92e"
+                "b5180c53185e48a7"
             ]
         ]
     },
@@ -222,8 +213,7 @@
         "id": "c7c7fc671434fba5",
         "type": "inject",
         "z": "6ea85a80b169f687",
-        "g": "7823ddb4fee194ed",
-        "name": "关闭服务",
+        "name": "关闭",
         "props": [
             {
                 "p": "kill",
@@ -236,8 +226,8 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 220,
-        "y": 300,
+        "x": 130,
+        "y": 320,
         "wires": [
             [
                 "7aed82efb2e2d4db"
@@ -245,46 +235,9 @@
         ]
     },
     {
-        "id": "fed6b0f5ca9a60bb",
-        "type": "debug",
-        "z": "6ea85a80b169f687",
-        "g": "7823ddb4fee194ed",
-        "name": "运行日志",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1020,
-        "y": 240,
-        "wires": []
-    },
-    {
-        "id": "befd2e978fcda92e",
-        "type": "debug",
-        "z": "6ea85a80b169f687",
-        "g": "7823ddb4fee194ed",
-        "name": "错误警告",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1020,
-        "y": 280,
-        "wires": []
-    },
-    {
         "id": "0172d60d9df794a6",
         "type": "inject",
         "z": "6ea85a80b169f687",
-        "g": "e841fd2932a7bbec",
         "name": "打开浏览器",
         "props": [
             {
@@ -302,8 +255,8 @@
         "topic": "",
         "payload": "http://{host}:8000",
         "payloadType": "str",
-        "x": 220,
-        "y": 440,
+        "x": 100,
+        "y": 520,
         "wires": [
             [
                 "5374197b79637a1e"
@@ -314,17 +267,15 @@
         "id": "5374197b79637a1e",
         "type": "rdk-tools openurl",
         "z": "6ea85a80b169f687",
-        "g": "e841fd2932a7bbec",
         "name": "",
-        "x": 400,
-        "y": 440,
+        "x": 300,
+        "y": 520,
         "wires": []
     },
     {
         "id": "ebabe08cd88b71cf",
         "type": "inject",
         "z": "6ea85a80b169f687",
-        "g": "13453ea772ef0ca7",
         "name": "检查更新",
         "props": [
             {
@@ -342,8 +293,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 220,
-        "y": 80,
+        "x": 140,
+        "y": 120,
         "wires": [
             [
                 "91f713dbb505fade"
@@ -356,8 +307,8 @@
         "z": "6ea85a80b169f687",
         "g": "13453ea772ef0ca7",
         "name": "",
-        "x": 380,
-        "y": 80,
+        "x": 400,
+        "y": 120,
         "wires": [
             [
                 "db8f56176febe28a"
@@ -370,7 +321,7 @@
         "type": "change",
         "z": "6ea85a80b169f687",
         "g": "13453ea772ef0ca7",
-        "name": "提示内容",
+        "name": "更新提示",
         "rules": [
             {
                 "t": "set",
@@ -385,8 +336,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 540,
-        "y": 80,
+        "x": 600,
+        "y": 120,
         "wires": [
             [
                 "178723005092c00f"
@@ -399,8 +350,8 @@
         "z": "6ea85a80b169f687",
         "g": "13453ea772ef0ca7",
         "name": "",
-        "x": 670,
-        "y": 80,
+        "x": 790,
+        "y": 120,
         "wires": []
     },
     {
@@ -421,8 +372,8 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 240,
-        "y": 480,
+        "x": 400,
+        "y": 400,
         "wires": [
             [
                 "e4a3607b7fb792ef"
@@ -449,8 +400,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 390,
-        "y": 480,
+        "x": 410,
+        "y": 440,
         "wires": [
             [
                 "91fdc5151d26fc1a"
@@ -462,20 +413,160 @@
         "type": "rdk-tools videows",
         "z": "6ea85a80b169f687",
         "g": "e841fd2932a7bbec",
-        "name": "Web预览",
+        "name": "视频预览",
         "fps": "10",
         "width": "480",
         "active": true,
-        "x": 420,
-        "y": 520,
+        "x": 600,
+        "y": 440,
         "wires": [
-            [],
-            [],
+            [
+                "2eaee21a57a403e9"
+            ],
+            [
+                "6b72c09fc3be9bde"
+            ],
             []
         ]
     },
     {
-        "id": "c061b1658ac4e344",
+        "id": "782da00e4723a8ce",
+        "type": "comment",
+        "z": "6ea85a80b169f687",
+        "name": "名称：TROS应用 人脸关键点检测",
+        "info": "",
+        "x": 160,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "29ae73a5ea0373a0",
+        "type": "inject",
+        "z": "6ea85a80b169f687",
+        "name": "了解更多",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/body/mono_face_landmarks_detection",
+        "payloadType": "str",
+        "x": 400,
+        "y": 40,
+        "wires": [
+            [
+                "998fd47bb858fa87"
+            ]
+        ]
+    },
+    {
+        "id": "998fd47bb858fa87",
+        "type": "rdk-tools openurl",
+        "z": "6ea85a80b169f687",
+        "name": "",
+        "x": 560,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "2f8daf85fad2541c",
+        "type": "comment",
+        "z": "6ea85a80b169f687",
+        "name": "注意：选择对应的摄像头类型",
+        "info": "",
+        "x": 140,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "8634338d71ddc810",
+        "type": "comment",
+        "z": "6ea85a80b169f687",
+        "name": "注意：使用结束后请主动关闭",
+        "info": "",
+        "x": 140,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "d9a51ca73362d78d",
+        "type": "debug",
+        "z": "6ea85a80b169f687",
+        "name": "正确执行提示",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "b5180c53185e48a7",
+        "type": "debug",
+        "z": "6ea85a80b169f687",
+        "name": "错误执行提示",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "2eaee21a57a403e9",
+        "type": "debug",
+        "z": "6ea85a80b169f687",
+        "name": "算法结果输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 800,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "6b72c09fc3be9bde",
+        "type": "debug",
+        "z": "6ea85a80b169f687",
+        "name": "性能信息输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 800,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "c4ba5ec994e1b11f",
         "type": "global-config",
         "env": [],
         "modules": {
