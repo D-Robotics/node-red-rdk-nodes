@@ -2,7 +2,7 @@
     {
         "id": "23061a35c7794c08",
         "type": "tab",
-        "label": "TROS Gesture Detection (Application)",
+        "label": "RDKSim Gesture Robot",
         "disabled": false,
         "info": "",
         "env": []
@@ -31,7 +31,7 @@
         "id": "4cc5cc61baa74e3f",
         "type": "group",
         "z": "23061a35c7794c08",
-        "name": "检测及运行Gesture节点",
+        "name": "核心控制和运行",
         "style": {
             "fill": "#e3f3d3",
             "fill-opacity": "0.5",
@@ -41,8 +41,8 @@
             "c464500550671c5c",
             "6228b606fd287f3a"
         ],
-        "x": 354,
-        "y": 199,
+        "x": 334,
+        "y": 219,
         "w": 412,
         "h": 82
     },
@@ -50,7 +50,7 @@
         "id": "9d27a41302ec1764",
         "type": "group",
         "z": "23061a35c7794c08",
-        "name": "Gesture结果展示",
+        "name": "结果可视化",
         "style": {
             "fill": "#bfdbef",
             "fill-opacity": "0.47",
@@ -61,18 +61,18 @@
             "fb707f9ff205afa3",
             "2b8daf8d30f55998"
         ],
-        "x": 134,
-        "y": 319,
-        "w": 372,
+        "x": 334,
+        "y": 359,
+        "w": 412,
         "h": 122
     },
     {
         "id": "1b8d2e66c36cc3ed",
         "type": "comment",
         "z": "23061a35c7794c08",
-        "name": "名称：TROS应用 手势识别",
+        "name": "名称：手势识别机器人",
         "info": "",
-        "x": 170,
+        "x": 160,
         "y": 40,
         "wires": []
     },
@@ -97,7 +97,7 @@
         "topic": "",
         "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/function/hand_gesture_detection",
         "payloadType": "str",
-        "x": 400,
+        "x": 420,
         "y": 40,
         "wires": [
             [
@@ -110,7 +110,7 @@
         "type": "rdk-tools openurl",
         "z": "23061a35c7794c08",
         "name": "",
-        "x": 560,
+        "x": 580,
         "y": 40,
         "wires": []
     },
@@ -120,7 +120,7 @@
         "z": "23061a35c7794c08",
         "name": "注意：选择对应的摄像头类型",
         "info": "",
-        "x": 220,
+        "x": 180,
         "y": 200,
         "wires": []
     },
@@ -147,7 +147,7 @@
         "payload": "iso",
         "payloadType": "date",
         "x": 190,
-        "y": 120,
+        "y": 240,
         "wires": [
             [
                 "c464500550671c5c",
@@ -177,7 +177,7 @@
         "payload": "iso",
         "payloadType": "date",
         "x": 190,
-        "y": 160,
+        "y": 280,
         "wires": [
             [
                 "c464500550671c5c",
@@ -203,7 +203,7 @@
         "onceDelay": 0.1,
         "topic": "",
         "x": 150,
-        "y": 240,
+        "y": 320,
         "wires": [
             [
                 "6228b606fd287f3a"
@@ -216,8 +216,8 @@
         "z": "23061a35c7794c08",
         "name": "注意：使用结束后请主动关闭",
         "info": "",
-        "x": 220,
-        "y": 280,
+        "x": 180,
+        "y": 360,
         "wires": []
     },
     {
@@ -307,8 +307,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 470,
-        "y": 240,
+        "x": 450,
+        "y": 260,
         "wires": [
             [
                 "6228b606fd287f3a"
@@ -321,8 +321,8 @@
         "z": "23061a35c7794c08",
         "g": "4cc5cc61baa74e3f",
         "name": "",
-        "x": 670,
-        "y": 240,
+        "x": 650,
+        "y": 260,
         "wires": [
             [
                 "ea8ecd01f9e7f53e"
@@ -346,7 +346,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 860,
-        "y": 220,
+        "y": 240,
         "wires": []
     },
     {
@@ -363,7 +363,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 860,
-        "y": 260,
+        "y": 280,
         "wires": []
     },
     {
@@ -379,8 +379,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 660,
-        "y": 360,
+        "x": 860,
+        "y": 380,
         "wires": []
     },
     {
@@ -396,8 +396,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 660,
-        "y": 400,
+        "x": 860,
+        "y": 420,
         "wires": []
     },
     {
@@ -418,8 +418,8 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 220,
-        "y": 360,
+        "x": 420,
+        "y": 400,
         "wires": [
             [
                 "fb707f9ff205afa3"
@@ -431,7 +431,7 @@
         "type": "change",
         "z": "23061a35c7794c08",
         "g": "9d27a41302ec1764",
-        "name": "设定链接",
+        "name": "设定视频流",
         "rules": [
             {
                 "t": "set",
@@ -446,8 +446,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 220,
-        "y": 400,
+        "x": 430,
+        "y": 440,
         "wires": [
             [
                 "2b8daf8d30f55998"
@@ -459,12 +459,12 @@
         "type": "rdk-tools videows",
         "z": "23061a35c7794c08",
         "g": "9d27a41302ec1764",
-        "name": "",
+        "name": "视频预览",
         "fps": "3",
         "width": 640,
         "active": true,
-        "x": 400,
-        "y": 380,
+        "x": 640,
+        "y": 420,
         "wires": [
             [
                 "60efbddf407e4957",
@@ -498,7 +498,7 @@
         "payload": "",
         "payloadType": "date",
         "x": 160,
-        "y": 80,
+        "y": 120,
         "wires": [
             [
                 "a8530c32a57a5217"
@@ -509,7 +509,7 @@
         "id": "b0f032ffad30d858",
         "type": "inject",
         "z": "23061a35c7794c08",
-        "name": "打开可视化页面",
+        "name": "打开浏览器",
         "props": [
             {
                 "p": "payload"
@@ -526,8 +526,8 @@
         "topic": "",
         "payload": "http://{host}:8000",
         "payloadType": "str",
-        "x": 620,
-        "y": 320,
+        "x": 160,
+        "y": 520,
         "wires": [
             [
                 "ee39686c51cc2a15"
@@ -539,8 +539,8 @@
         "type": "rdk-tools openurl",
         "z": "23061a35c7794c08",
         "name": "",
-        "x": 820,
-        "y": 320,
+        "x": 380,
+        "y": 520,
         "wires": []
     },
     {
@@ -561,7 +561,7 @@
         "repair": false,
         "outputs": 1,
         "x": 210,
-        "y": 500,
+        "y": 620,
         "wires": [
             [
                 "b995328e76d1cb7b"
@@ -586,7 +586,7 @@
         "repair": false,
         "outputs": 1,
         "x": 210,
-        "y": 540,
+        "y": 660,
         "wires": [
             [
                 "bfa0e71e690abbfd"
@@ -611,7 +611,7 @@
         "repair": false,
         "outputs": 1,
         "x": 220,
-        "y": 580,
+        "y": 700,
         "wires": [
             [
                 "9b79a74ba29e2d43"
@@ -638,7 +638,7 @@
         "to": "",
         "reg": false,
         "x": 220,
-        "y": 620,
+        "y": 740,
         "wires": [
             [
                 "4053517b20413f65",
@@ -693,8 +693,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 7,
-        "x": 400,
-        "y": 940,
+        "x": 320,
+        "y": 1040,
         "wires": [
             [
                 "cb2c0bb1df5fd1e0",
@@ -702,15 +702,19 @@
             ],
             [
                 "cb2c0bb1df5fd1e0",
-                "ca4a98ded27aa53b"
+                "7bb35101ce065aa8"
             ],
-            [],
+            [
+                "ca4a98ded27aa53b",
+                "cb2c0bb1df5fd1e0"
+            ],
             [
                 "cb2c0bb1df5fd1e0",
                 "cb0252536c8039b9"
             ],
             [
-                "cb2c0bb1df5fd1e0"
+                "cb2c0bb1df5fd1e0",
+                "aa87788c70688291"
             ],
             [
                 "cb2c0bb1df5fd1e0",
@@ -718,7 +722,7 @@
             ],
             [
                 "cb2c0bb1df5fd1e0",
-                "aa87788c70688291"
+                "d33fe5373d1a599f"
             ]
         ]
     },
@@ -728,8 +732,8 @@
         "z": "23061a35c7794c08",
         "name": "手势1: 胜利",
         "info": "",
-        "x": 210,
-        "y": 840,
+        "x": 130,
+        "y": 940,
         "wires": []
     },
     {
@@ -738,8 +742,8 @@
         "z": "23061a35c7794c08",
         "name": "手势2: 手掌",
         "info": "",
-        "x": 210,
-        "y": 880,
+        "x": 130,
+        "y": 980,
         "wires": []
     },
     {
@@ -748,8 +752,8 @@
         "z": "23061a35c7794c08",
         "name": "手势3: 好极了",
         "info": "",
-        "x": 210,
-        "y": 920,
+        "x": 130,
+        "y": 1020,
         "wires": []
     },
     {
@@ -758,8 +762,8 @@
         "z": "23061a35c7794c08",
         "name": "手势4: 大拇指向上",
         "info": "",
-        "x": 230,
-        "y": 960,
+        "x": 150,
+        "y": 1060,
         "wires": []
     },
     {
@@ -768,8 +772,8 @@
         "z": "23061a35c7794c08",
         "name": "手势5: 大拇指向左",
         "info": "",
-        "x": 230,
-        "y": 1000,
+        "x": 150,
+        "y": 1100,
         "wires": []
     },
     {
@@ -778,8 +782,8 @@
         "z": "23061a35c7794c08",
         "name": "手势6: 大拇指向右",
         "info": "",
-        "x": 230,
-        "y": 1040,
+        "x": 150,
+        "y": 1140,
         "wires": []
     },
     {
@@ -788,8 +792,8 @@
         "z": "23061a35c7794c08",
         "name": "手势7: OK",
         "info": "",
-        "x": 200,
-        "y": 1080,
+        "x": 120,
+        "y": 1180,
         "wires": []
     },
     {
@@ -804,8 +808,8 @@
         "septopics": true,
         "property": "payload",
         "topi": "topic",
-        "x": 580,
-        "y": 1040,
+        "x": 500,
+        "y": 1140,
         "wires": [
             [
                 "e8a01324d3085fd6"
@@ -817,8 +821,8 @@
         "type": "rdk-tools texttoaudio",
         "z": "23061a35c7794c08",
         "name": "",
-        "x": 590,
-        "y": 1080,
+        "x": 490,
+        "y": 1180,
         "wires": []
     },
     {
@@ -828,7 +832,7 @@
         "name": "",
         "active": true,
         "x": 210,
-        "y": 660,
+        "y": 780,
         "wires": []
     },
     {
@@ -843,8 +847,8 @@
         "septopics": true,
         "property": "payload",
         "topi": "topic",
-        "x": 400,
-        "y": 860,
+        "x": 320,
+        "y": 960,
         "wires": [
             [
                 "ba6479e7065685e0"
@@ -870,8 +874,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 750,
-        "y": 860,
+        "x": 670,
+        "y": 960,
         "wires": [
             [
                 "11e72ef330c4c8b2"
@@ -897,8 +901,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 750,
-        "y": 900,
+        "x": 670,
+        "y": 1000,
         "wires": [
             [
                 "11e72ef330c4c8b2"
@@ -924,8 +928,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 750,
-        "y": 940,
+        "x": 670,
+        "y": 1040,
         "wires": [
             [
                 "11e72ef330c4c8b2"
@@ -951,8 +955,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 750,
-        "y": 980,
+        "x": 670,
+        "y": 1080,
         "wires": [
             [
                 "11e72ef330c4c8b2"
@@ -978,8 +982,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 750,
-        "y": 1020,
+        "x": 670,
+        "y": 1120,
         "wires": [
             [
                 "11e72ef330c4c8b2"
@@ -1005,8 +1009,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 750,
-        "y": 1060,
+        "x": 670,
+        "y": 1160,
         "wires": [
             [
                 "11e72ef330c4c8b2"
@@ -1032,8 +1036,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 750,
-        "y": 1100,
+        "x": 670,
+        "y": 1200,
         "wires": [
             [
                 "11e72ef330c4c8b2"
@@ -1045,8 +1049,17 @@
         "type": "rdk-3d 3drobot",
         "z": "23061a35c7794c08",
         "name": "",
-        "x": 1120,
-        "y": 380,
+        "x": 880,
+        "y": 960,
         "wires": []
+    },
+    {
+        "id": "2c4e0c8b354c8e5c",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-rdk-tools": "0.0.27",
+            "node-red-node-rdk-3dsim": "0.0.3"
+        }
     }
 ]

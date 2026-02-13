@@ -60,6 +60,9 @@ function RenderFrame(canvas) {
     if (smartMsgData.length) {
       smartMsgData.forEach(item => {
         if (item) {
+          if (item.segmentation.length) {
+            this.segmentation(item.segmentation);
+          }
           if (item.boxes.length) {
             this.renderFrameBoxes(item.boxes, item.fall.fallShow);
             if (item.attributes && item.attributes.box) {
@@ -71,9 +74,6 @@ function RenderFrame(canvas) {
           }
           if (item.points.length) {
             this.renderFramePoints(item.points);
-          }
-          if (item.segmentation.length) {
-            this.segmentation(item.segmentation);
           }
         }
       })
@@ -173,7 +173,8 @@ function RenderFrame(canvas) {
       top = top - len * 40
     }
 
-    this.smartCanvas1.drawAttributes(attributes, box.p1.x, box.p1.y);
+    let centerX = (box.p1.x + box.p2.x) / 2;
+    this.smartCanvas1.drawAttributes(attributes, centerX, box.p1.y);
     // console.log('class name: ', attributes)
     // let html = this.createTemplateAttributesHtml(attributes, id, className, top + 'px', left + 'px');
     // return html

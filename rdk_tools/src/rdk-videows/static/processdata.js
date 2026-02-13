@@ -221,6 +221,7 @@ function sendMessage() {
 function transformData(buffer, AwesomeMessage) {
   messageShowSelect.boxes = true;
   messageShowSelect.floatMatrixsMatting = true;
+  messageShowSelect.floatMatrixs = true;
   messageShowSelect.scoreShow = true;
   messageShowSelect.handBox = true;
   messageShowSelect.body = true;
@@ -413,8 +414,12 @@ function transformData(buffer, AwesomeMessage) {
                 let floatdata = []
                 item['floatMatrixs_'][0]['arrays_'].map(values => {
                   values['value_'].map(index => {
-                    let colors = color[Math.trunc(index)]
-                    floatdata.push(colors[0], colors[1], colors[2], 155)
+                    if (index > 0) {
+                      let colors = color[Math.trunc(index)]
+                      floatdata.push(colors[0], colors[1], colors[2], 155)
+                    } else {
+                      floatdata.push(0, 0, 0, 0)
+                    }
                   })
                 })
                 obj.segmentation.push({
