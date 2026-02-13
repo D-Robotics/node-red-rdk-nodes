@@ -1,16 +1,16 @@
 [
     {
-        "id": "23061a35c7794c08",
+        "id": "ebc530f442100d39",
         "type": "tab",
-        "label": "RDKSim Gesture Robot",
+        "label": "RDKSim Body Detection Car",
         "disabled": false,
         "info": "",
         "env": []
     },
     {
-        "id": "27893025aa91c2a2",
+        "id": "46004ab409d088bc",
         "type": "group",
-        "z": "23061a35c7794c08",
+        "z": "ebc530f442100d39",
         "name": "软件包智能更新",
         "style": {
             "fill": "#ffffbf",
@@ -18,9 +18,9 @@
             "label": true
         },
         "nodes": [
-            "a8530c32a57a5217",
-            "d1e5c91f4aca552c",
-            "309bf26deb0d8c8a"
+            "d9c9df8dd8448df0",
+            "561682ff65d38d33",
+            "1fc8ec23ae9f57fe"
         ],
         "x": 334,
         "y": 79,
@@ -28,9 +28,9 @@
         "h": 82
     },
     {
-        "id": "4cc5cc61baa74e3f",
+        "id": "7a93aceee3725e36",
         "type": "group",
-        "z": "23061a35c7794c08",
+        "z": "ebc530f442100d39",
         "name": "核心控制和运行",
         "style": {
             "fill": "#e3f3d3",
@@ -38,18 +38,18 @@
             "label": true
         },
         "nodes": [
-            "c464500550671c5c",
-            "6228b606fd287f3a"
+            "f47ecfa3e9526f84",
+            "bf4a6316be3251dd"
         ],
         "x": 334,
-        "y": 219,
-        "w": 412,
+        "y": 199,
+        "w": 432,
         "h": 82
     },
     {
-        "id": "9d27a41302ec1764",
+        "id": "1e18c8b6c5ed2575",
         "type": "group",
-        "z": "23061a35c7794c08",
+        "z": "ebc530f442100d39",
         "name": "结果可视化",
         "style": {
             "fill": "#bfdbef",
@@ -57,29 +57,29 @@
             "label": true
         },
         "nodes": [
-            "e1a1a817ada793be",
-            "fb707f9ff205afa3",
-            "2b8daf8d30f55998"
+            "046afce708038e27",
+            "e44549be611818d5",
+            "9a43c084de18f5c5"
         ],
         "x": 334,
-        "y": 359,
-        "w": 412,
-        "h": 122
+        "y": 319,
+        "w": 372,
+        "h": 129.5
     },
     {
-        "id": "1b8d2e66c36cc3ed",
+        "id": "672f95bfe5d0a75a",
         "type": "comment",
-        "z": "23061a35c7794c08",
-        "name": "名称：手势识别机器人",
+        "z": "ebc530f442100d39",
+        "name": "名称：人体跟踪小车",
         "info": "",
-        "x": 160,
+        "x": 140,
         "y": 40,
         "wires": []
     },
     {
-        "id": "1a270d021221098f",
+        "id": "ce6aec122b0dffab",
         "type": "inject",
-        "z": "23061a35c7794c08",
+        "z": "ebc530f442100d39",
         "name": "了解更多",
         "props": [
             {
@@ -95,39 +95,39 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/function/hand_gesture_detection",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/function/mono2d_body_detection",
         "payloadType": "str",
         "x": 420,
         "y": 40,
         "wires": [
             [
-                "46588d76b50e4888"
+                "ad108dc53fa5fa49"
             ]
         ]
     },
     {
-        "id": "46588d76b50e4888",
+        "id": "ad108dc53fa5fa49",
         "type": "rdk-tools openurl",
-        "z": "23061a35c7794c08",
+        "z": "ebc530f442100d39",
         "name": "",
-        "x": 580,
+        "x": 600,
         "y": 40,
         "wires": []
     },
     {
-        "id": "19a9321d64871010",
+        "id": "2c92622858318eb6",
         "type": "comment",
-        "z": "23061a35c7794c08",
+        "z": "ebc530f442100d39",
         "name": "注意：选择对应的摄像头类型",
         "info": "",
         "x": 180,
-        "y": 200,
+        "y": 180,
         "wires": []
     },
     {
-        "id": "1198a93a76be4d25",
+        "id": "e58122874e2cf2dd",
         "type": "inject",
-        "z": "23061a35c7794c08",
+        "z": "ebc530f442100d39",
         "name": "启动（USB摄像头）",
         "props": [
             {
@@ -147,18 +147,18 @@
         "payload": "iso",
         "payloadType": "date",
         "x": 190,
-        "y": 240,
+        "y": 220,
         "wires": [
             [
-                "c464500550671c5c",
-                "e1a1a817ada793be"
+                "f47ecfa3e9526f84",
+                "046afce708038e27"
             ]
         ]
     },
     {
-        "id": "4853b2c410708c58",
+        "id": "260cf43dad4391eb",
         "type": "inject",
-        "z": "23061a35c7794c08",
+        "z": "ebc530f442100d39",
         "name": "启动（MIPI摄像头）",
         "props": [
             {
@@ -177,18 +177,18 @@
         "payload": "iso",
         "payloadType": "date",
         "x": 190,
-        "y": 280,
+        "y": 260,
         "wires": [
             [
-                "c464500550671c5c",
-                "e1a1a817ada793be"
+                "f47ecfa3e9526f84",
+                "046afce708038e27"
             ]
         ]
     },
     {
-        "id": "cc126a6dbd098ac5",
+        "id": "9b580414acbc4c60",
         "type": "inject",
-        "z": "23061a35c7794c08",
+        "z": "ebc530f442100d39",
         "name": "关闭",
         "props": [
             {
@@ -203,43 +203,43 @@
         "onceDelay": 0.1,
         "topic": "",
         "x": 150,
-        "y": 320,
+        "y": 300,
         "wires": [
             [
-                "6228b606fd287f3a"
+                "bf4a6316be3251dd"
             ]
         ]
     },
     {
-        "id": "cbd3b3e43506b099",
+        "id": "764bdb71d6b42d42",
         "type": "comment",
-        "z": "23061a35c7794c08",
+        "z": "ebc530f442100d39",
         "name": "注意：使用结束后请主动关闭",
         "info": "",
         "x": 180,
-        "y": 360,
+        "y": 340,
         "wires": []
     },
     {
-        "id": "a8530c32a57a5217",
+        "id": "d9c9df8dd8448df0",
         "type": "rdk-tools smartupdate",
-        "z": "23061a35c7794c08",
-        "g": "27893025aa91c2a2",
+        "z": "ebc530f442100d39",
+        "g": "46004ab409d088bc",
         "name": "",
         "x": 420,
         "y": 120,
         "wires": [
             [
-                "d1e5c91f4aca552c"
+                "561682ff65d38d33"
             ],
             []
         ]
     },
     {
-        "id": "d1e5c91f4aca552c",
+        "id": "561682ff65d38d33",
         "type": "change",
-        "z": "23061a35c7794c08",
-        "g": "27893025aa91c2a2",
+        "z": "ebc530f442100d39",
+        "g": "46004ab409d088bc",
         "name": "更新提示",
         "rules": [
             {
@@ -259,26 +259,26 @@
         "y": 120,
         "wires": [
             [
-                "309bf26deb0d8c8a"
+                "1fc8ec23ae9f57fe"
             ]
         ]
     },
     {
-        "id": "309bf26deb0d8c8a",
+        "id": "1fc8ec23ae9f57fe",
         "type": "rdk-tools texttoaudio",
-        "z": "23061a35c7794c08",
-        "g": "27893025aa91c2a2",
+        "z": "ebc530f442100d39",
+        "g": "46004ab409d088bc",
         "name": "",
         "x": 810,
         "y": 120,
         "wires": []
     },
     {
-        "id": "c464500550671c5c",
+        "id": "f47ecfa3e9526f84",
         "type": "change",
-        "z": "23061a35c7794c08",
-        "g": "4cc5cc61baa74e3f",
-        "name": "设定Gesture节点",
+        "z": "ebc530f442100d39",
+        "g": "7a93aceee3725e36",
+        "name": "配置运行参数",
         "rules": [
             {
                 "t": "set",
@@ -291,14 +291,14 @@
                 "t": "set",
                 "p": "launch",
                 "pt": "msg",
-                "to": "hand_gesture_detection hand_gesture_detection.launch.py",
+                "to": "mono2d_body_detection mono2d_body_detection.launch.py",
                 "tot": "str"
             },
             {
                 "t": "set",
                 "p": "insert",
                 "pt": "msg",
-                "to": "$join(['export CAM_TYPE=', msg.camera, ' && cp -r /opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/ .', ' && cp -r /opt/tros/${TROS_DISTRO}/lib/hand_lmk_detection/config/ .', ' && cp -r /opt/tros/${TROS_DISTRO}/lib/hand_gesture_detection/config/ .'])",
+                "to": "$join(['export CAM_TYPE=', msg.camera, ' && cp -r /opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/ .'])",
                 "tot": "jsonata"
             }
         ],
@@ -307,35 +307,35 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 450,
-        "y": 260,
+        "x": 440,
+        "y": 240,
         "wires": [
             [
-                "6228b606fd287f3a"
+                "bf4a6316be3251dd"
             ]
         ]
     },
     {
-        "id": "6228b606fd287f3a",
+        "id": "bf4a6316be3251dd",
         "type": "rdk-tools checkexecute",
-        "z": "23061a35c7794c08",
-        "g": "4cc5cc61baa74e3f",
+        "z": "ebc530f442100d39",
+        "g": "7a93aceee3725e36",
         "name": "",
-        "x": 650,
-        "y": 260,
+        "x": 670,
+        "y": 240,
         "wires": [
             [
-                "ea8ecd01f9e7f53e"
+                "cb17ef686981abfd"
             ],
             [
-                "030b65f1eacd0294"
+                "18d6321f60a9f1a1"
             ]
         ]
     },
     {
-        "id": "ea8ecd01f9e7f53e",
+        "id": "cb17ef686981abfd",
         "type": "debug",
-        "z": "23061a35c7794c08",
+        "z": "ebc530f442100d39",
         "name": "正确执行提示",
         "active": true,
         "tosidebar": true,
@@ -345,14 +345,14 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 860,
-        "y": 240,
+        "x": 900,
+        "y": 220,
         "wires": []
     },
     {
-        "id": "030b65f1eacd0294",
+        "id": "18d6321f60a9f1a1",
         "type": "debug",
-        "z": "23061a35c7794c08",
+        "z": "ebc530f442100d39",
         "name": "错误执行提示",
         "active": true,
         "tosidebar": true,
@@ -362,14 +362,14 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 860,
-        "y": 280,
+        "x": 900,
+        "y": 260,
         "wires": []
     },
     {
-        "id": "60efbddf407e4957",
+        "id": "b950ec38b51bb5c2",
         "type": "debug",
-        "z": "23061a35c7794c08",
+        "z": "ebc530f442100d39",
         "name": "算法结果输出",
         "active": false,
         "tosidebar": true,
@@ -379,14 +379,14 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 860,
-        "y": 380,
+        "x": 820,
+        "y": 360,
         "wires": []
     },
     {
-        "id": "32fe93b91909de2f",
+        "id": "74803f66fed46b3f",
         "type": "debug",
-        "z": "23061a35c7794c08",
+        "z": "ebc530f442100d39",
         "name": "性能信息输出",
         "active": false,
         "tosidebar": true,
@@ -396,18 +396,18 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 860,
-        "y": 420,
+        "x": 820,
+        "y": 400,
         "wires": []
     },
     {
-        "id": "e1a1a817ada793be",
+        "id": "046afce708038e27",
         "type": "delay",
-        "z": "23061a35c7794c08",
-        "g": "9d27a41302ec1764",
+        "z": "ebc530f442100d39",
+        "g": "1e18c8b6c5ed2575",
         "name": "",
         "pauseType": "delay",
-        "timeout": "12",
+        "timeout": "10",
         "timeoutUnits": "seconds",
         "rate": "1",
         "nbRateUnits": "1",
@@ -419,18 +419,18 @@
         "allowrate": false,
         "outputs": 1,
         "x": 420,
-        "y": 400,
+        "y": 360,
         "wires": [
             [
-                "fb707f9ff205afa3"
+                "e44549be611818d5"
             ]
         ]
     },
     {
-        "id": "fb707f9ff205afa3",
+        "id": "e44549be611818d5",
         "type": "change",
-        "z": "23061a35c7794c08",
-        "g": "9d27a41302ec1764",
+        "z": "ebc530f442100d39",
+        "g": "1e18c8b6c5ed2575",
         "name": "设定视频流",
         "rules": [
             {
@@ -447,40 +447,41 @@
         "to": "",
         "reg": false,
         "x": 430,
-        "y": 440,
+        "y": 400,
         "wires": [
             [
-                "2b8daf8d30f55998"
+                "9a43c084de18f5c5"
             ]
         ]
     },
     {
-        "id": "2b8daf8d30f55998",
+        "id": "9a43c084de18f5c5",
         "type": "rdk-tools videows",
-        "z": "23061a35c7794c08",
-        "g": "9d27a41302ec1764",
+        "z": "ebc530f442100d39",
+        "g": "1e18c8b6c5ed2575",
         "name": "视频预览",
-        "fps": "3",
+        "fps": "15",
         "width": 640,
         "active": true,
-        "x": 640,
-        "y": 420,
+        "x": 600,
+        "y": 400,
         "wires": [
             [
-                "60efbddf407e4957",
-                "e450a64144d61776"
+                "b950ec38b51bb5c2",
+                "f9266aef60257d37",
+                "3070303c65e74806"
             ],
             [
-                "32fe93b91909de2f"
+                "74803f66fed46b3f"
             ],
             []
         ]
     },
     {
-        "id": "ea0d6f0dedb07b54",
+        "id": "bcd85829230a9ae2",
         "type": "inject",
-        "z": "23061a35c7794c08",
-        "name": "更新软件包",
+        "z": "ebc530f442100d39",
+        "name": "检查更新",
         "props": [
             {
                 "p": "payload"
@@ -501,14 +502,14 @@
         "y": 120,
         "wires": [
             [
-                "a8530c32a57a5217"
+                "d9c9df8dd8448df0"
             ]
         ]
     },
     {
-        "id": "b0f032ffad30d858",
+        "id": "7333296a960a957e",
         "type": "inject",
-        "z": "23061a35c7794c08",
+        "z": "ebc530f442100d39",
         "name": "打开浏览器",
         "props": [
             {
@@ -527,108 +528,33 @@
         "payload": "http://{host}:8000",
         "payloadType": "str",
         "x": 160,
-        "y": 520,
+        "y": 480,
         "wires": [
             [
-                "ee39686c51cc2a15"
+                "629eeb683d3dad98"
             ]
         ]
     },
     {
-        "id": "ee39686c51cc2a15",
+        "id": "629eeb683d3dad98",
         "type": "rdk-tools openurl",
-        "z": "23061a35c7794c08",
+        "z": "ebc530f442100d39",
         "name": "",
         "x": 380,
-        "y": 520,
+        "y": 480,
         "wires": []
     },
     {
-        "id": "e450a64144d61776",
-        "type": "switch",
-        "z": "23061a35c7794c08",
-        "name": "过滤出“手”",
-        "property": "attributes.type",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "eq",
-                "v": "hand",
-                "vt": "str"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 1,
-        "x": 210,
-        "y": 620,
-        "wires": [
-            [
-                "b995328e76d1cb7b"
-            ]
-        ]
-    },
-    {
-        "id": "b995328e76d1cb7b",
-        "type": "switch",
-        "z": "23061a35c7794c08",
-        "name": "过滤出手势",
-        "property": "attributes.attributes.length",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "gt",
-                "v": "0",
-                "vt": "num"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 1,
-        "x": 210,
-        "y": 660,
-        "wires": [
-            [
-                "bfa0e71e690abbfd"
-            ]
-        ]
-    },
-    {
-        "id": "bfa0e71e690abbfd",
-        "type": "switch",
-        "z": "23061a35c7794c08",
-        "name": "过滤手势类别",
-        "property": "attributes.attributes[0].type",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "eq",
-                "v": "gesture",
-                "vt": "str"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 1,
-        "x": 220,
-        "y": 700,
-        "wires": [
-            [
-                "9b79a74ba29e2d43"
-            ]
-        ]
-    },
-    {
-        "id": "9b79a74ba29e2d43",
+        "id": "f9266aef60257d37",
         "type": "change",
-        "z": "23061a35c7794c08",
-        "name": "提取手势类别",
+        "z": "ebc530f442100d39",
+        "name": "提取类型",
         "rules": [
             {
                 "t": "set",
                 "p": "payload",
                 "pt": "msg",
-                "to": "attributes.attributes[0].value",
+                "to": "attributes.type",
                 "tot": "msg"
             }
         ],
@@ -637,235 +563,212 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 220,
-        "y": 740,
+        "x": 420,
+        "y": 540,
         "wires": [
             [
-                "4053517b20413f65",
-                "dd6ea0473601d8e7"
+                "7c0e1e09a3a5936e"
             ]
         ]
     },
     {
-        "id": "ba6479e7065685e0",
+        "id": "7c0e1e09a3a5936e",
+        "type": "rdk-tools output",
+        "z": "ebc530f442100d39",
+        "name": "",
+        "active": true,
+        "x": 420,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "3070303c65e74806",
         "type": "switch",
-        "z": "23061a35c7794c08",
-        "name": "分离手势",
-        "property": "payload",
+        "z": "ebc530f442100d39",
+        "name": "过滤类别",
+        "property": "attributes.type",
         "propertyType": "msg",
         "rules": [
             {
                 "t": "eq",
-                "v": "Victory",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "Palm",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "Awesome",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "Thumb Up",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "ThumbLeft",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "ThumbRight",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "Okay",
+                "v": "body",
                 "vt": "str"
             }
         ],
         "checkall": "true",
         "repair": false,
-        "outputs": 7,
-        "x": 320,
-        "y": 1040,
+        "outputs": 1,
+        "x": 160,
+        "y": 680,
         "wires": [
             [
-                "cb2c0bb1df5fd1e0",
-                "a95e864d75fd4a82"
-            ],
-            [
-                "cb2c0bb1df5fd1e0",
-                "7bb35101ce065aa8"
-            ],
-            [
-                "ca4a98ded27aa53b",
-                "cb2c0bb1df5fd1e0"
-            ],
-            [
-                "cb2c0bb1df5fd1e0",
-                "cb0252536c8039b9"
-            ],
-            [
-                "cb2c0bb1df5fd1e0",
-                "aa87788c70688291"
-            ],
-            [
-                "cb2c0bb1df5fd1e0",
-                "59a59cbdd0477ec7"
-            ],
-            [
-                "cb2c0bb1df5fd1e0",
-                "d33fe5373d1a599f"
+                "afbd1115276325db"
             ]
         ]
     },
     {
-        "id": "7ed4d4537326d029",
-        "type": "comment",
-        "z": "23061a35c7794c08",
-        "name": "手势1: 胜利",
-        "info": "",
-        "x": 130,
-        "y": 940,
-        "wires": []
-    },
-    {
-        "id": "dbb90d76801b7b52",
-        "type": "comment",
-        "z": "23061a35c7794c08",
-        "name": "手势2: 手掌",
-        "info": "",
-        "x": 130,
-        "y": 980,
-        "wires": []
-    },
-    {
-        "id": "11c49ffaf20ccf1f",
-        "type": "comment",
-        "z": "23061a35c7794c08",
-        "name": "手势3: 好极了",
-        "info": "",
-        "x": 130,
-        "y": 1020,
-        "wires": []
-    },
-    {
-        "id": "53a0f0c654467dcf",
-        "type": "comment",
-        "z": "23061a35c7794c08",
-        "name": "手势4: 大拇指向上",
-        "info": "",
-        "x": 150,
-        "y": 1060,
-        "wires": []
-    },
-    {
-        "id": "a665e92bd257d9db",
-        "type": "comment",
-        "z": "23061a35c7794c08",
-        "name": "手势5: 大拇指向左",
-        "info": "",
-        "x": 150,
-        "y": 1100,
-        "wires": []
-    },
-    {
-        "id": "16f35d8b04b808d8",
-        "type": "comment",
-        "z": "23061a35c7794c08",
-        "name": "手势6: 大拇指向右",
-        "info": "",
-        "x": 150,
-        "y": 1140,
-        "wires": []
-    },
-    {
-        "id": "2fda307060acde4b",
-        "type": "comment",
-        "z": "23061a35c7794c08",
-        "name": "手势7: OK",
-        "info": "",
-        "x": 120,
-        "y": 1180,
-        "wires": []
-    },
-    {
-        "id": "cb2c0bb1df5fd1e0",
-        "type": "rbe",
-        "z": "23061a35c7794c08",
-        "name": "过滤相同手势",
-        "func": "rbe",
-        "gap": "",
-        "start": "",
-        "inout": "out",
-        "septopics": true,
-        "property": "payload",
-        "topi": "topic",
-        "x": 500,
-        "y": 1140,
-        "wires": [
-            [
-                "e8a01324d3085fd6"
-            ]
-        ]
-    },
-    {
-        "id": "e8a01324d3085fd6",
-        "type": "rdk-tools texttoaudio",
-        "z": "23061a35c7794c08",
-        "name": "",
-        "x": 490,
-        "y": 1180,
-        "wires": []
-    },
-    {
-        "id": "4053517b20413f65",
-        "type": "rdk-tools output",
-        "z": "23061a35c7794c08",
-        "name": "",
-        "active": true,
-        "x": 210,
-        "y": 780,
-        "wires": []
-    },
-    {
-        "id": "dd6ea0473601d8e7",
-        "type": "rbe",
-        "z": "23061a35c7794c08",
-        "name": "过滤相同手势",
-        "func": "rbe",
-        "gap": "",
-        "start": "",
-        "inout": "out",
-        "septopics": true,
-        "property": "payload",
-        "topi": "topic",
-        "x": 320,
-        "y": 960,
-        "wires": [
-            [
-                "ba6479e7065685e0"
-            ]
-        ]
-    },
-    {
-        "id": "a95e864d75fd4a82",
+        "id": "afbd1115276325db",
         "type": "change",
-        "z": "23061a35c7794c08",
-        "name": "走路",
+        "z": "ebc530f442100d39",
+        "name": "计算box面积",
         "rules": [
             {
                 "t": "set",
                 "p": "payload",
                 "pt": "msg",
-                "to": "Walking",
+                "to": "(msg.attributes.box.p2.x - msg.attributes.box.p1.x)*(msg.attributes.box.p2.y - msg.attributes.box.p1.y)",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 170,
+        "y": 720,
+        "wires": [
+            [
+                "7ddb3853b953e2cb",
+                "938c2152e6a5cca8"
+            ]
+        ]
+    },
+    {
+        "id": "7ddb3853b953e2cb",
+        "type": "debug",
+        "z": "ebc530f442100d39",
+        "name": "输出",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 150,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "938c2152e6a5cca8",
+        "type": "switch",
+        "z": "ebc530f442100d39",
+        "name": "判断大小",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "lt",
+                "v": "100000",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 140,
+        "y": 960,
+        "wires": [
+            [
+                "9ee14b1972a3b3a8",
+                "73f729ac2f43b26d"
+            ],
+            [
+                "97a2506bfb80ca0c",
+                "6737071973f5fc50"
+            ]
+        ]
+    },
+    {
+        "id": "9ee14b1972a3b3a8",
+        "type": "change",
+        "z": "ebc530f442100d39",
+        "name": "设置为0",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "0",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 300,
+        "y": 900,
+        "wires": [
+            [
+                "9da758f5d5c779a6"
+            ]
+        ]
+    },
+    {
+        "id": "97a2506bfb80ca0c",
+        "type": "change",
+        "z": "ebc530f442100d39",
+        "name": "设置为1",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "1",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 300,
+        "y": 940,
+        "wires": [
+            [
+                "d9893710401d98df"
+            ]
+        ]
+    },
+    {
+        "id": "9fc960294712c1b8",
+        "type": "rbe",
+        "z": "ebc530f442100d39",
+        "name": "过滤相同输出",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 480,
+        "y": 1060,
+        "wires": [
+            [
+                "46e530f30f7dea9e"
+            ]
+        ]
+    },
+    {
+        "id": "73f729ac2f43b26d",
+        "type": "change",
+        "z": "ebc530f442100d39",
+        "name": "输出关闭",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "前进",
                 "tot": "str"
             }
         ],
@@ -874,25 +777,97 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 670,
-        "y": 960,
+        "x": 300,
+        "y": 1040,
         "wires": [
             [
-                "11e72ef330c4c8b2"
+                "9fc960294712c1b8"
             ]
         ]
     },
     {
-        "id": "7bb35101ce065aa8",
+        "id": "6737071973f5fc50",
         "type": "change",
-        "z": "23061a35c7794c08",
+        "z": "ebc530f442100d39",
+        "name": "输出开启",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "停止",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 300,
+        "y": 1080,
+        "wires": [
+            [
+                "9fc960294712c1b8"
+            ]
+        ]
+    },
+    {
+        "id": "46e530f30f7dea9e",
+        "type": "rdk-tools texttoaudio",
+        "z": "ebc530f442100d39",
+        "name": "",
+        "x": 470,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "30779909a1509a50",
+        "type": "rdk-3d 3dcar",
+        "z": "ebc530f442100d39",
+        "name": "",
+        "x": 650,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "9da758f5d5c779a6",
+        "type": "change",
+        "z": "ebc530f442100d39",
+        "name": "前进",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Drive",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 450,
+        "y": 900,
+        "wires": [
+            [
+                "30779909a1509a50"
+            ]
+        ]
+    },
+    {
+        "id": "d9893710401d98df",
+        "type": "change",
+        "z": "ebc530f442100d39",
         "name": "停止",
         "rules": [
             {
                 "t": "set",
                 "p": "payload",
                 "pt": "msg",
-                "to": "Idle",
+                "to": "Stop",
                 "tot": "str"
             }
         ],
@@ -901,160 +876,16 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 670,
-        "y": 1000,
+        "x": 450,
+        "y": 940,
         "wires": [
             [
-                "11e72ef330c4c8b2"
+                "30779909a1509a50"
             ]
         ]
     },
     {
-        "id": "ca4a98ded27aa53b",
-        "type": "change",
-        "z": "23061a35c7794c08",
-        "name": "跑步",
-        "rules": [
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "Running",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 670,
-        "y": 1040,
-        "wires": [
-            [
-                "11e72ef330c4c8b2"
-            ]
-        ]
-    },
-    {
-        "id": "cb0252536c8039b9",
-        "type": "change",
-        "z": "23061a35c7794c08",
-        "name": "跳舞",
-        "rules": [
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "Dance",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 670,
-        "y": 1080,
-        "wires": [
-            [
-                "11e72ef330c4c8b2"
-            ]
-        ]
-    },
-    {
-        "id": "aa87788c70688291",
-        "type": "change",
-        "z": "23061a35c7794c08",
-        "name": "装死",
-        "rules": [
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "Death",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 670,
-        "y": 1120,
-        "wires": [
-            [
-                "11e72ef330c4c8b2"
-            ]
-        ]
-    },
-    {
-        "id": "59a59cbdd0477ec7",
-        "type": "change",
-        "z": "23061a35c7794c08",
-        "name": "坐下",
-        "rules": [
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "Sitting",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 670,
-        "y": 1160,
-        "wires": [
-            [
-                "11e72ef330c4c8b2"
-            ]
-        ]
-    },
-    {
-        "id": "d33fe5373d1a599f",
-        "type": "change",
-        "z": "23061a35c7794c08",
-        "name": "站立",
-        "rules": [
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "Standing",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 670,
-        "y": 1200,
-        "wires": [
-            [
-                "11e72ef330c4c8b2"
-            ]
-        ]
-    },
-    {
-        "id": "11e72ef330c4c8b2",
-        "type": "rdk-3d 3drobot",
-        "z": "23061a35c7794c08",
-        "name": "",
-        "x": 880,
-        "y": 960,
-        "wires": []
-    },
-    {
-        "id": "2c4e0c8b354c8e5c",
+        "id": "aadf124c3fb50dec",
         "type": "global-config",
         "env": [],
         "modules": {

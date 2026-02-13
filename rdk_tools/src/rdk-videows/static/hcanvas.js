@@ -93,17 +93,19 @@ function HCanvas(canvas, width, height) {
     }
   ) {
     var ctx = this.context;
-    var canvas = this.canvas;
-    canvas.width = w;
-    canvas.height = h;
-    var imgData = ctx.getImageData(x, y, w, h);
+    var tempCanvas = document.createElement('canvas');
+    tempCanvas.width = w;
+    tempCanvas.height = h;
+    var tempCtx = tempCanvas.getContext('2d');
+    var imgData = tempCtx.createImageData(w, h);
     for (var i = 0; i < data.length; i += 4) {
       imgData.data[i] = data[i];
       imgData.data[i + 1] = data[i + 1];
       imgData.data[i + 2] = data[i + 2];
       imgData.data[i + 3] = data[i + 3];
     }
-    ctx.putImageData(imgData, x, y);
+    tempCtx.putImageData(imgData, 0, 0);
+    ctx.drawImage(tempCanvas, x, y, w, h, 0, 0, this.canvas.width, this.canvas.height);
   };
   
   HCanvas.prototype.clear = function () {
@@ -450,25 +452,35 @@ function HCanvas(canvas, width, height) {
   
   HCanvas.prototype.drawAttributes = function (attributes, x, y) {
     var context = this.context;
-    var fontstring = 40 + 'px Arial';
-    context.beginPath();
+    var fontstring = 24 + 'px Arial';
     context.font = fontstring;
     context.textAlign = 'center';
     context.fillStyle = 'rgba(255, 255, 255, .8)';
-  
+
     var text = attributes['type'];
+    var lineHeight = 28;
+    var currentY = y;
+
     if (attributes.attributes.length) {
       attributes.attributes.map(val => {
-        if(val.type === 'gesture'){
-          text = val.value
+        var attrText = '';
+        if (val.type === 'gesture') {
+          attrText = val.value;
+        } else if (val.value) {
+          var displayValue = val.value;
+          if (val.type === 'age') {
+            displayValue = Math.floor(parseFloat(val.value));
+          }
+          attrText = `${val.type}: ${displayValue}`;
+        }
+        if (attrText) {
+          context.fillText(attrText, x, currentY);
+          currentY += lineHeight;
         }
       });
+    } else {
+      context.fillText(text, x, currentY);
     }
-    context.fillText(text, x, y);
-    context.closePath();
-    context.stroke();
-
-    
   };
   
   HCanvas.prototype.drawHeadBox = function (p1, p2) {
