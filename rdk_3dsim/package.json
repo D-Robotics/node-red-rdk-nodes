@@ -1,6 +1,6 @@
 {
     "name": "node-red-node-rdk-3dsim",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "配合RDK硬件使用的3D可视化功能包",
     "license": "Apache-2.0",
     "main": "none",
