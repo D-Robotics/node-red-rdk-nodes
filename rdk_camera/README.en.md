@@ -1,6 +1,6 @@
 # node-red-node-rdk-camera
-    This module is exclusive for the RDK hardware.
-    RDK X3 supports mipi camera and usb camera. This rdk-camera module also supports the two types of camera.
+This module is exclusive for the RDK hardware.
+RDK X3 supports mipi camera and usb camera. This rdk-camera module also supports the two types of camera.
 
 ## Install
 There are two ways to install this module. The first one is using palette to manage module. The second one is installing manually using npm.

@@ -1,0 +1,215 @@
+<script type="text/x-red" data-template-name="rdk-3d 3dlight">
+    <div class="form-row node-input-name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="rdk-3dlight.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]rdk-3dlight.names.3dlight" style="width: 296px;">
+    </div>
+</script>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@latest/build/three.module.min.js';
+
+(function(){
+    const width = 640;
+    const height = 480;
+    const colorNames = ['red', 'green', 'blue', 'yellow', 'magenta', 'cyan', 'white'];
+    const colors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff, 0xffffff];
+
+    let flag = true;
+    let nodeID = '';
+    let $boxframe = undefined;
+    let offscreenCanvas = undefined;
+
+    let scene = undefined;
+    let camera = undefined;
+    let renderer = undefined;
+    let pointLight, pointLight2;
+    let model = undefined;
+    let animations = undefined;
+    let clock = undefined;
+
+    const createFrameImage = (id) => {
+        $boxframe = document.getElementById('boxframe-' + id);
+        if(!$boxframe){
+            const $container = document.getElementById(id);
+            if (!$container) { return };
+
+            const bubble = document.createElementNS("http://www.w3.org/2000/svg", 'polyline');
+            bubble.setAttribute('id', 'bubble-' + id);
+            bubble.setAttribute('style', 'fill:transparent');
+            bubble.setAttribute('stroke', '#999999');
+            $container.insertBefore(bubble, $container.lastChild.nextSibling);
+
+            const img = document.createElementNS("http://www.w3.org/2000/svg", 'image');
+            img.setAttribute('id', 'boxframe-' + id);
+            img.setAttribute('x', '1');
+            img.setAttribute('y', '47');
+
+            $container.insertBefore(img, $container.lastChild.nextSibling);
+            $boxframe = img;
+        }
+    }
+
+    const createOffscreenCanvas = () => {
+        if(!offscreenCanvas){
+            offscreenCanvas = document.createElement('canvas');
+            offscreenCanvas.width = width;
+            offscreenCanvas.height = height;
+        }
+
+        camera = new THREE.PerspectiveCamera( 45, width / height, 1, 1000 );
+        camera.position.set( 0, 10, 40 );
+
+        scene = new THREE.Scene();
+        scene.add( new THREE.AmbientLight( 0x111122, 3 ) );
+
+        function generateTexture() {
+            const canvas = document.createElement( 'canvas' );
+            canvas.width = 2;
+            canvas.height = 2;
+
+            const context = canvas.getContext( '2d' );
+            context.fillStyle = 'white';
+            context.fillRect( 0, 1, 2, 1 );
+
+            return canvas;
+        }
+
+        function createLight( color ) {
+            const intensity = 200;
+
+            const light = new THREE.PointLight( color, intensity, 20 );
+            light.castShadow = true;
+            light.shadow.bias = - 0.005; // reduces self-shadowing on double-sided objects
+
+            let geometry = new THREE.SphereGeometry( 0.3, 12, 6 );
+            let material = new THREE.MeshBasicMaterial( { color: color } );
+            material.color.multiplyScalar( intensity );
+            let sphere = new THREE.Mesh( geometry, material );
+            light.add( sphere );
+
+            const texture = new THREE.CanvasTexture( generateTexture() );
+            texture.magFilter = THREE.NearestFilter;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.repeat.set( 1, 4.5 );
+
+            geometry = new THREE.SphereGeometry( 2, 32, 8 );
+            material = new THREE.MeshPhongMaterial( {
+                side: THREE.DoubleSide,
+                alphaMap: texture,
+                alphaTest: 0.5
+            } );
+
+            sphere = new THREE.Mesh( geometry, material );
+            sphere.castShadow = true;
+            sphere.receiveShadow = true;
+            light.add( sphere );
+
+            return light;
+
+        }
+
+        pointLight = createLight( 0xffffff );
+        scene.add( pointLight );
+
+        pointLight2 = createLight( 0xffffff );
+        scene.add( pointLight2 );
+        //
+
+        const geometry = new THREE.BoxGeometry( 30, 30, 30 );
+
+        const material = new THREE.MeshPhongMaterial( {
+            color: 0xa0adaf,
+            shininess: 10,
+            specular: 0x111111,
+            side: THREE.BackSide
+        } );
+
+        const mesh = new THREE.Mesh( geometry, material );
+        mesh.position.y = 10;
+        mesh.receiveShadow = true;
+        scene.add( mesh );
+
+        renderer = new THREE.WebGLRenderer( { 
+            canvas: offscreenCanvas,
+            antialias: true 
+        } );
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.BasicShadowMap;
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        flag = !flag;
+        if(!flag){
+            return;
+        }
+
+        let time = performance.now() * 0.001;
+
+        pointLight.position.x = Math.sin( time * 0.6 ) * 9;
+        pointLight.position.y = Math.sin( time * 0.7 ) * 9 + 6;
+        pointLight.position.z = Math.sin( time * 0.8 ) * 9;
+
+        pointLight.rotation.x = time;
+        pointLight.rotation.z = time;
+
+        time += 10000;
+
+        pointLight2.position.x = Math.sin( time * 0.6 ) * 9;
+        pointLight2.position.y = Math.sin( time * 0.7 ) * 9 + 6;
+        pointLight2.position.z = Math.sin( time * 0.8 ) * 9;
+
+        pointLight2.rotation.x = time;
+        pointLight2.rotation.z = time;
+
+        renderer.render( scene, camera );
+
+        if($boxframe){
+            offscreenCanvas.setAttribute('width', width);
+            offscreenCanvas.setAttribute('height', height);
+            $boxframe.setAttribute('href', offscreenCanvas.toDataURL('image/png'));
+        }
+    }
+
+    RED.comms.subscribe("switchlight", function(topic, color){
+        const idx = colorNames.findIndex((name) => {
+            return name === color.toLowerCase();
+        })
+        let colorValue = '0xffffff';
+        if(idx >= 0){
+            colorValue = colors[idx];
+        }
+        pointLight.color.set(colorValue);
+        pointLight2.color.set(colorValue);
+    });
+
+    RED.nodes.registerType("rdk-3d 3dlight",{
+        category: "RDK 3D Sim",
+        color: "#ff3019",
+        defaults: {
+            name: {value:""}
+        },
+        inputs:1,
+        outputs:0,
+        align: 'right',
+        icon: "light.svg",
+        paletteLabel: function() {
+            return this._("rdk-3dlight.names.3dlight");
+        },
+        oneditprepare: function() {},
+        label: function() {
+            if(nodeID === '' || !$boxframe){
+                nodeID = this.id;
+                createFrameImage(nodeID);
+                if($boxframe){
+                    createOffscreenCanvas();
+                    animate();
+                }
+            }
+            return this.name || this._("rdk-3dlight.names.3dlight");
+        }
+    });
+})()
+
+</script>    

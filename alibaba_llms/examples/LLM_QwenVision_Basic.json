@@ -1,0 +1,297 @@
+[
+    {
+        "id": "a47ac616208e7558",
+        "type": "tab",
+        "label": "LLMQwenVisionBasic",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "866082d8afda88e9",
+        "type": "comment",
+        "z": "a47ac616208e7558",
+        "name": "使用前请先申请API Key",
+        "info": "",
+        "x": 140,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "70365cf3f8ed104f",
+        "type": "comment",
+        "z": "a47ac616208e7558",
+        "name": "第一步：先拍摄一张图片",
+        "info": "",
+        "x": 150,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "b21096aef81d3a1e",
+        "type": "comment",
+        "z": "a47ac616208e7558",
+        "name": "第二步：针对图片内容提问",
+        "info": "",
+        "x": 150,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "fbe5a25bef70828c",
+        "type": "inject",
+        "z": "a47ac616208e7558",
+        "name": "拍照",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 200,
+        "wires": [
+            [
+                "dad25e9827d28605"
+            ]
+        ]
+    },
+    {
+        "id": "dad25e9827d28605",
+        "type": "rdk-camera takephoto",
+        "z": "a47ac616208e7558",
+        "cameratype": "1",
+        "filemode": "2",
+        "filename": "",
+        "filedefpath": "1",
+        "filepath": "",
+        "fileformat": "jpeg",
+        "resolution": "2",
+        "rotation": "0",
+        "fliph": "0",
+        "flipv": "0",
+        "brightness": "50",
+        "contrast": "0",
+        "sharpness": "0",
+        "quality": "80",
+        "imageeffect": "none",
+        "exposuremode": "auto",
+        "iso": "0",
+        "agcwait": "1.0",
+        "led": "0",
+        "awb": "auto",
+        "name": "",
+        "x": 310,
+        "y": 200,
+        "wires": [
+            [
+                "9fcae3501e5b56fc"
+            ]
+        ]
+    },
+    {
+        "id": "9fcae3501e5b56fc",
+        "type": "jimp-image",
+        "z": "a47ac616208e7558",
+        "name": "",
+        "data": "payload",
+        "dataType": "msg",
+        "ret": "b64",
+        "parameter1": "",
+        "parameter1Type": "msg",
+        "parameter2": "",
+        "parameter2Type": "msg",
+        "parameter3": "",
+        "parameter3Type": "msg",
+        "parameter4": "",
+        "parameter4Type": "msg",
+        "parameter5": "",
+        "parameter5Type": "msg",
+        "parameter6": "",
+        "parameter6Type": "msg",
+        "parameter7": "",
+        "parameter7Type": "msg",
+        "parameter8": "",
+        "parameter8Type": "msg",
+        "sendProperty": "image",
+        "sendPropertyType": "msg",
+        "parameterCount": 0,
+        "jimpFunction": "none",
+        "selectedJimpFunction": {
+            "name": "none",
+            "fn": "none",
+            "description": "Just loads the image.",
+            "parameters": []
+        },
+        "x": 550,
+        "y": 160,
+        "wires": [
+            [
+                "3b110e68d84eeed8",
+                "ebcd5e710e66acf2"
+            ]
+        ]
+    },
+    {
+        "id": "3b110e68d84eeed8",
+        "type": "image viewer",
+        "z": "a47ac616208e7558",
+        "name": "",
+        "width": "320",
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 590,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ebcd5e710e66acf2",
+        "type": "alibaba-llms QwenVision",
+        "z": "a47ac616208e7558",
+        "name": "",
+        "apikey": "",
+        "x": 400,
+        "y": 300,
+        "wires": [
+            [
+                "519b8232500f6321",
+                "7c6fda303e123f6e"
+            ]
+        ]
+    },
+    {
+        "id": "519b8232500f6321",
+        "type": "debug",
+        "z": "a47ac616208e7558",
+        "name": "输出",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 430,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "7c6fda303e123f6e",
+        "type": "rdk-tools texttoaudio",
+        "z": "a47ac616208e7558",
+        "name": "",
+        "x": 450,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "2820d28aae0bdd4b",
+        "type": "inject",
+        "z": "a47ac616208e7558",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "图片中是否有手机",
+        "payloadType": "str",
+        "x": 170,
+        "y": 360,
+        "wires": [
+            [
+                "ebcd5e710e66acf2"
+            ]
+        ]
+    },
+    {
+        "id": "33c17cd16ed3c804",
+        "type": "inject",
+        "z": "a47ac616208e7558",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "图片中有什么",
+        "payloadType": "str",
+        "x": 150,
+        "y": 420,
+        "wires": [
+            [
+                "ebcd5e710e66acf2"
+            ]
+        ]
+    },
+    {
+        "id": "3c8fccefadacd691",
+        "type": "inject",
+        "z": "a47ac616208e7558",
+        "name": "如何申请API Key",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://help.aliyun.com/zh/model-studio/get-api-key",
+        "payloadType": "str",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "79edc002a801cfeb"
+            ]
+        ]
+    },
+    {
+        "id": "79edc002a801cfeb",
+        "type": "rdk-tools openurl",
+        "z": "a47ac616208e7558",
+        "name": "",
+        "x": 400,
+        "y": 80,
+        "wires": []
+    }
+]

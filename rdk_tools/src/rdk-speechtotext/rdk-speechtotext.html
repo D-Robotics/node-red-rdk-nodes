@@ -1,0 +1,176 @@
+<script type="text/x-red" data-template-name="rdk-tools speechtotext">
+    <div class="form-row node-input-name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="rdk-speechtotext.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]rdk-speechtotext.names.speechtotext" style="width: 296px;">
+    </div>
+</script>
+
+<script type="text/javascript">
+(function() {
+    function encodeWAV(audioBuffer) {
+        const numChannels = audioBuffer.numberOfChannels;
+        const sampleRate = audioBuffer.sampleRate;
+        const format = 1; // PCM
+        const bitsPerSample = 16;
+        const samples = audioBuffer.length;
+        const blockAlign = numChannels * bitsPerSample / 8;
+        const byteRate = sampleRate * blockAlign;
+        const dataSize = samples * blockAlign;
+        const buffer = new ArrayBuffer(44 + dataSize);
+        const view = new DataView(buffer);
+
+        // Write WAV header
+        let offset = 0;
+        function writeString(str) {
+            for (let i = 0; i < str.length; i++) {
+            view.setUint8(offset++, str.charCodeAt(i));
+            }
+        }
+
+        writeString("RIFF");
+        view.setUint32(offset, 36 + dataSize, true); offset += 4;
+        writeString("WAVE");
+        writeString("fmt ");
+        view.setUint32(offset, 16, true); offset += 4; // Subchunk1Size
+        view.setUint16(offset, format, true); offset += 2; // Audio format
+        view.setUint16(offset, numChannels, true); offset += 2;
+        view.setUint32(offset, sampleRate, true); offset += 4;
+        view.setUint32(offset, byteRate, true); offset += 4;
+        view.setUint16(offset, blockAlign, true); offset += 2;
+        view.setUint16(offset, bitsPerSample, true); offset += 2;
+        writeString("data");
+        view.setUint32(offset, dataSize, true); offset += 4;
+
+        // Write PCM samples
+        for (let i = 0; i < samples; i++) {
+            for (let channel = 0; channel < numChannels; channel++) {
+            let sample = audioBuffer.getChannelData(channel)[i];
+            sample = Math.max(-1, Math.min(1, sample));
+            view.setInt16(offset, sample * 0x7FFF, true);
+            offset += 2;
+            }
+        }
+
+        return buffer;
+    }
+
+    async function convertWebMBlobToWav16kHz(webmBlob) {
+        // 1. Blob -> ArrayBuffer
+        const arrayBuffer = await webmBlob.arrayBuffer();
+
+        // 2. 解码为 AudioBuffer
+        const audioContext = new AudioContext();
+        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+        // 3. 重采样到 16kHz
+        const targetSampleRate = 16000;
+        const numberOfChannels = audioBuffer.numberOfChannels;
+        const durationInSeconds = audioBuffer.duration;
+
+        const offlineContext = new OfflineAudioContext(
+            numberOfChannels,
+            targetSampleRate * durationInSeconds,
+            targetSampleRate
+        );
+
+        const source = offlineContext.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(offlineContext.destination);
+        source.start(0);
+
+        const renderedBuffer = await offlineContext.startRendering();
+
+        // 4. 转换为 WAV 格式
+        const wavBuffer = encodeWAV(renderedBuffer);
+
+        // 5. 返回为 Blob（或可直接上传）
+        return new Blob([wavBuffer], { type: 'audio/wav' });
+    }
+
+    async function objectUrlToBlob(objectUrl) {
+        try {
+            // 1. 发起请求获取 Blob
+            const response = await fetch(objectUrl);
+            
+            // 2. 检查响应状态
+            if (!response.ok) {
+            throw new Error(`请求失败，状态码: ${response.status}`);
+            }
+            
+            // 3. 获取 Blob 对象
+            const blob = await response.blob();
+            
+            // 4. 验证 Blob 有效性
+            if (!(blob instanceof Blob)) {
+            throw new Error('获取的 Blob 无效');
+            }
+            
+            console.log('转换成功，Blob 类型:', blob.type);
+            return blob;
+            
+        } catch (error) {
+            console.error('转换失败:', error);
+            throw error; // 或返回 null/undefined
+        }
+    }
+
+    function downloadWavBlob(blob, filename = 'recording.wav') {
+        // 1. 创建Object URL
+        const url = URL.createObjectURL(blob);
+        
+        // 2. 创建隐藏的<a>标签
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = filename;  // 设置下载文件名
+        
+        // 3. 添加到DOM并触发点击
+        document.body.appendChild(a);
+        a.click();
+        
+        // 4. 清理
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);  // 释放内存
+        }, 100);
+    }
+
+
+    RED.comms.subscribe("speechtotext", async function(t, objectUrl){
+        const webmBlob = await objectUrlToBlob(objectUrl);
+
+        const wavBlob = await convertWebMBlobToWav16kHz(webmBlob);
+        console.log('wav: ', wavBlob);
+
+        // downloadWavBlob(wavBlob, "testwav.wav")
+        fetch("/speechtotext/wav/upload", {
+            method: "POST",
+            body: wavBlob,
+            headers: {
+                "Content-Type": "audio/wav"
+            }
+        }).then(res => res.text()).then(console.log);
+    });
+        
+    RED.nodes.registerType("rdk-tools speechtotext",{
+        category: "RDK Tools",
+        color: "#FF804A",
+        defaults: {
+            name: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        align: 'right',
+        icon: "stt.svg",
+        paletteLabel: function() {
+            return this._("rdk-speechtotext.names.speechtotext");
+        },
+        oneditprepare: function() {},
+        label: function() {
+            return this.name || this._("rdk-speechtotext.names.speechtotext");
+        }
+    });
+
+
+})()
+</script>

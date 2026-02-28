@@ -1,0 +1,20 @@
+{
+    "rdk-output": {
+        "names": {
+            "output": "输出统计"
+        },
+        "label": {
+            "name": "名称"
+        },
+        "placeholder": {
+            "name": ""
+        },
+        "errors": {
+        },
+        "status": {
+            
+        },
+        "hints": {
+        }
+    }
+}

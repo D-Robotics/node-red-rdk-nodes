@@ -1,0 +1,252 @@
+[
+    {
+        "id": "bev_tab",
+        "type": "tab",
+        "label": "BEV Perception Algorithm",
+        "disabled": false,
+        "info": "# BEV Perception Algorithm\n\n## Introduction\n\nThe BEV perception algorithm is a BEV multi-task model trained on the nuScenes dataset using OpenExplorer.\n\nThe algorithm takes 6 sets of image data as input: front, front-left, front-right, rear, rear-left, and rear-right. The model outputs 10 categories of objects and corresponding 3D detection boxes, including obstacles, various types of vehicles, traffic signs, etc., as well as semantic segmentation of lane lines, sidewalks, and road edges.\n\nThis example uses local image data as input, utilizes the BPU for algorithm inference, publishes algorithm perception results as rendered image messages, and renders the results on a PC browser.\n\n## Usage Steps\n\n1. **Start BEV Algorithm**: Click the \"🚀 Start BEV Algorithm\" button.\n2. **View Results**: Click the \"👁️ Open Visualization Page\" button to view results in a browser.\n\n## Supported Platforms\n\n- RDK Ultra (Ubuntu 20.04 Foxy)\n- RDK S100, RDK S100P (Ubuntu 22.04 Humble)\n\n## Repository\n\nhttps://github.com/D-Robotics/hobot_bev.git\n\n## Notices\n\n- Algorithm results are published to the `/image_jpeg` topic.\n- Can be viewed via WebSocket in a browser (http://IP:8000)",
+        "env": []
+    },
+    {
+        "id": "comment_start",
+        "type": "comment",
+        "z": "bev_tab",
+        "name": "🚀 Start BEV Algorithm",
+        "info": "Start BEV Perception Algorithm",
+        "x": 150,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "inject_start_bev",
+        "type": "inject",
+        "z": "bev_tab",
+        "name": "🚀 Start BEV Algorithm",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "function_build_cmd"
+            ]
+        ]
+    },
+    {
+        "id": "function_build_cmd",
+        "type": "function",
+        "z": "bev_tab",
+        "name": "Build Start Command",
+        "func": "// Build BEV algorithm start command\n// Based on the user provided command:\n// source /opt/tros/humble/setup.bash\n// if [ -L qat ]; then rm qat; fi\n// ln -s `ros2 pkg prefix hobot_bev`/lib/hobot_bev/qat/ qat\n// ln -s ~/hobot_bev_data/nuscenes_bev_val nuscenes_bev_val\n// ros2 launch hobot_bev hobot_bev.launch.py\n\n// Construct the command chain (commands connected by &&, executed in the working directory)\n// Note: Errors in 'ln' commands do not affect execution, using || true to ignore errors\nvar cmd = 'cd ~/hobot_bev_data && ';\ncmd += 'source /opt/tros/humble/setup.bash && ';\ncmd += 'if [ -L qat ]; then rm qat; fi && ';\ncmd += 'ln -s `ros2 pkg prefix hobot_bev`/lib/hobot_bev/qat/ qat && ';\ncmd += '(ln -s ~/hobot_bev_data/nuscenes_bev_val nuscenes_bev_val 2>/dev/null || true) && ';\ncmd += 'ros2 launch hobot_bev hobot_bev.launch.py';\n\nmsg.payload = cmd;\n\nnode.status({\n    fill: \"blue\",\n    shape: \"dot\",\n    text: \"Command Built\"\n});\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 80,
+        "wires": [
+            [
+                "exec_start_bev"
+            ]
+        ]
+    },
+    {
+        "id": "exec_start_bev",
+        "type": "exec",
+        "z": "bev_tab",
+        "name": "Start BEV Algorithm",
+        "command": "",
+        "addpay": true,
+        "append": "",
+        "useSpawn": true,
+        "timer": "0",
+        "oldrc": false,
+        "x": 600,
+        "y": 80,
+        "wires": [
+            [
+                "debug_output"
+            ],
+            [
+                "debug_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "debug_output",
+        "type": "debug",
+        "z": "bev_tab",
+        "name": "Start Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 810,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "debug_error",
+        "type": "debug",
+        "z": "bev_tab",
+        "name": "Start Error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 810,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "comment_view",
+        "type": "comment",
+        "z": "bev_tab",
+        "name": "👁️ View Results",
+        "info": "View real-time detection results in browser (video stream)",
+        "x": 140,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "inject_browser",
+        "type": "inject",
+        "z": "bev_tab",
+        "name": "Open Visualization Page",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 170,
+        "y": 200,
+        "wires": [
+            [
+                "function_get_url"
+            ]
+        ]
+    },
+    {
+        "id": "function_get_url",
+        "type": "function",
+        "z": "bev_tab",
+        "name": "Get URL",
+        "func": "msg.payload = 'http://{host}:8000';\n\nnode.status({\n    fill: \"blue\",\n    shape: \"dot\",\n    text: \"Opening: \" + msg.payload\n});\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 200,
+        "wires": [
+            [
+                "openurl"
+            ]
+        ]
+    },
+    {
+        "id": "openurl",
+        "type": "rdk-tools openurl",
+        "z": "bev_tab",
+        "name": "Open Browser",
+        "x": 560,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "comment_stop",
+        "type": "comment",
+        "z": "bev_tab",
+        "name": "⏹️ Stop Service",
+        "info": "",
+        "x": 140,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "inject_stop",
+        "type": "inject",
+        "z": "bev_tab",
+        "name": "Stop All Services",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 300,
+        "wires": [
+            [
+                "exec_stop"
+            ]
+        ]
+    },
+    {
+        "id": "exec_stop",
+        "type": "exec",
+        "z": "bev_tab",
+        "name": "Stop Service",
+        "command": "sudo pkill -9 -f hobot_usb_cam; sudo pkill -9 -f hobot_bev; sudo pkill -9 -f hobot_codec_republish; sudo pkill -9 -f websocket; sudo pkill -9 -f python3; sudo pkill -9 -f 'ros2 launch'; sudo pkill -9 -f 'ros2 run'; sleep 2; sudo rm -rf /dev/shm/*; ros2 daemon stop 2>/dev/null; sleep 1; echo '✓ Services stopped completely, resources released'",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "10",
+        "oldrc": false,
+        "x": 350,
+        "y": 300,
+        "wires": [
+            [
+                "debug_stop"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "debug_stop",
+        "type": "debug",
+        "z": "bev_tab",
+        "name": "Stop Status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 550,
+        "y": 300,
+        "wires": []
+    }
+]

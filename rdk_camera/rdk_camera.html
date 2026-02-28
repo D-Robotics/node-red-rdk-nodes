@@ -53,7 +53,7 @@
         category: "RDK Camera",
         color: "#41CAF6",
         defaults: {
-            cameratype: {value:"0", required: true},
+            cameratype: {value:"1", required: true},
             filemode: {value:"2", required:true},
             filename: {value:"", required:false},
             filedefpath: {value:"1", required:true},
@@ -124,8 +124,11 @@
                 }
             });
         },
+        paletteLabel: function() {
+            return this._('rdk-camera.names.takephoto');
+        },
         label: function() {
-            return this.name || this._('rdk-camera.names.takephoto');
+            return (this.name || this._('rdk-camera.names.takephoto')) + (this.cameratype === "0" ? '(MIPI)' : '(USB)');
         }
     });
 </script>
@@ -189,7 +192,7 @@
         category: "RDK Camera",
         color: "#41CAF6",
         defaults: {
-            cameratype: {value:"0", required: true},
+            cameratype: {value:"1", required: true},
             fps: {value:"4", required:true},
             resolution: {value:"2", required:true},
             defport: {value:"1", required:true},
@@ -223,8 +226,11 @@
                 }
             });
         },
+        paletteLabel: function() {
+            return this._('rdk-camera.names.imagestream');
+        },
         label: function() {
-            return this.name || this._('rdk-camera.names.imagestream');
+            return (this.name || this._('rdk-camera.names.imagestream')) + (this.cameratype === "0" ? '(MIPI)' : '(USB)');
         }
     });
 </script>

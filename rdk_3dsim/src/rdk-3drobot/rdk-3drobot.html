@@ -1,0 +1,224 @@
+<script type="text/x-red" data-template-name="rdk-3d 3drobot">
+    <div class="form-row node-input-name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="rdk-3drobot.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]rdk-3drobot.names.3drobot" style="width: 296px;">
+    </div>
+</script>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@latest/build/three.module.min.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/"
+    }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@latest/build/three.module.min.js';
+import { GLTFLoader } from '/3drobot/js/loaders/GLTFLoader.js';
+
+(function() {
+    const width = 640;
+    const height = 480;
+    const states = [ 'Idle', 'Walking', 'Running', 'Dance', 'Death', 'Sitting', 'Standing' ];
+    const emotes = [ 'Jump', 'Yes', 'No', 'Wave', 'Punch', 'ThumbsUp' ];
+
+    let flag = true;
+    let nodeID = '';
+    let $boxframe = undefined;
+    let offscreenCanvas = undefined;
+
+    let scene = undefined;
+    let camera = undefined;
+    let renderer = undefined;
+    let model = undefined;
+    let animations = undefined;
+    let clock = undefined;
+    let mixer = undefined;
+    let actions = {};
+
+    let currentState = 'Idle';
+    let previousAction = undefined;
+    let activeAction = undefined;
+
+    const createFrameImage = (id) => {
+        $boxframe = document.getElementById('boxframe-' + id);
+        if(!$boxframe){
+            const $container = document.getElementById(id);
+            if (!$container) { return };
+
+            const bubble = document.createElementNS("http://www.w3.org/2000/svg", 'polyline');
+            bubble.setAttribute('id', 'bubble-' + id);
+            bubble.setAttribute('style', 'fill:transparent');
+            bubble.setAttribute('stroke', '#999999');
+            $container.insertBefore(bubble, $container.lastChild.nextSibling);
+
+            const img = document.createElementNS("http://www.w3.org/2000/svg", 'image');
+            img.setAttribute('id', 'boxframe-' + id);
+            img.setAttribute('x', '1');
+            img.setAttribute('y', '47');
+
+            $container.insertBefore(img, $container.lastChild.nextSibling);
+            $boxframe = img;
+        }
+    }
+
+    const createOffscreenCanvas = () => {
+        if(!offscreenCanvas){
+            offscreenCanvas = document.createElement('canvas');
+            offscreenCanvas.width = width;
+            offscreenCanvas.height = height;
+        }
+
+        renderer = new THREE.WebGLRenderer({
+            canvas: offscreenCanvas,
+            antialias: true
+        });
+
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color( 0xe0e0e0 );
+        scene.fog = new THREE.Fog( 0xe0e0e0, 20, 100 );
+
+        clock = new THREE.Clock();
+
+        camera = new THREE.PerspectiveCamera( 45, offscreenCanvas.width / offscreenCanvas.height, 0.25, 100 );
+        camera.position.set( - 5, 3, 10 );
+        camera.lookAt( 0, 2, 0 );
+
+        const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x8d8d8d, 3 );
+        hemiLight.position.set( 0, 20, 0 );
+        scene.add( hemiLight );
+
+        const dirLight = new THREE.DirectionalLight( 0xffffff, 3 );
+        dirLight.position.set( 0, 20, 10 );
+        scene.add( dirLight );
+
+        const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 2000, 2000 ), new THREE.MeshPhongMaterial( { color: 0xcbcbcb, depthWrite: false } ) );
+        mesh.rotation.x = - Math.PI / 2;
+        scene.add( mesh );
+
+        const grid = new THREE.GridHelper( 200, 40, 0x000000, 0x000000 );
+        grid.material.opacity = 0.2;
+        grid.material.transparent = true;
+        scene.add( grid );
+
+        const loader = new GLTFLoader();
+        loader.load( '/3drobot/js/models/RobotExpressive.glb', function ( gltf ) {
+            model = gltf.scene;
+            animations = gltf.animations;
+            mixer = new THREE.AnimationMixer( model );
+            scene.add( model );
+
+            for ( let i = 0; i < animations.length; i ++ ) {
+
+                const clip = animations[ i ];
+                const action = mixer.clipAction( clip );
+                actions[ clip.name ] = action;
+
+                if ( emotes.indexOf( clip.name ) >= 0 || states.indexOf( clip.name ) >= 4 ) {
+
+                    action.clampWhenFinished = true;
+                    action.loop = THREE.LoopOnce;
+
+                }
+            }
+
+            activeAction = actions[currentState];
+            activeAction.play();
+
+
+            // setTimeout(() => {
+            //     testAnimation();
+            // }, 5000)
+        }, undefined, function ( e ) {
+            console.error( e );
+        } );
+
+    }
+
+    function fadeToAction( name, duration ) {
+
+        previousAction = activeAction;
+        activeAction = actions[ name ];
+
+        if ( previousAction !== activeAction ) {
+
+            previousAction.fadeOut( duration );
+
+        }
+
+        activeAction
+            .reset()
+            .setEffectiveTimeScale( 1 )
+            .setEffectiveWeight( 1 )
+            .fadeIn( duration )
+            .play();
+
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        flag = !flag;
+        if(!flag){
+            return;
+        }
+
+        const dt = clock.getDelta();
+        if ( mixer ) mixer.update( dt );
+
+        renderer.render(scene, camera);
+
+        if($boxframe){
+            offscreenCanvas.setAttribute('width', width);
+            offscreenCanvas.setAttribute('height', height);
+            $boxframe.setAttribute('href', offscreenCanvas.toDataURL('image/png'));
+        }
+    }
+
+    function testAnimation(){
+        if(states.length === 0) return;
+
+        setTimeout(() => {
+            fadeToAction(states.pop(), 0.2);
+            testAnimation();
+        }, 5000)
+    }
+
+    RED.comms.subscribe("moverobot", function(topic, move){
+        if(move !== currentState){
+            if(states.indexOf(move) >= 0){
+                currentState = move;
+                fadeToAction(currentState, 0.2);
+            }
+        }
+    });
+        
+    RED.nodes.registerType("rdk-3d 3drobot",{
+        category: "RDK 3D Sim",
+        color: "#ff3019",
+        defaults: {
+            name: {value:""}
+        },
+        inputs:1,
+        outputs:0,
+        align: 'right',
+        icon: "robot.svg",
+        paletteLabel: function() {
+            return this._("rdk-3drobot.names.3drobot");
+        },
+        oneditprepare: function() {},
+        label: function() {
+            if(nodeID === '' || !$boxframe){
+                nodeID = this.id;
+                createFrameImage(nodeID);
+                if($boxframe){
+                    createOffscreenCanvas();
+                    animate();
+                }
+            }
+            return this.name || this._("rdk-3drobot.names.3drobot");
+        }
+    });
+})()
+</script>

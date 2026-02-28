@@ -1,0 +1,25 @@
+{
+    "alibaba-qwenvision": {
+        "names": {
+            "qwenvision": "通义千问视觉",
+            "apikey": "API Key"
+        },
+        "label": {
+            "name": "Name",
+            "apikey": "APIKey",
+            "fps": "Sampling Rate",
+            "width": "Width"
+        },
+        "placeholder": {
+        },
+        "errors": {
+            "invalidUrl": "Invalid url, please check!",
+            "postError": "POST error!"
+        },
+        "status": {
+        },
+        "hints": {
+            "validUrl": "Valid URL!"
+        }
+    }
+}

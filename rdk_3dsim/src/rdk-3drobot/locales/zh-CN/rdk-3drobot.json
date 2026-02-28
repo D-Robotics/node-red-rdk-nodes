@@ -1,0 +1,20 @@
+{
+    "rdk-3drobot": {
+        "names": {
+            "3drobot": "3D机器人"
+        },
+        "label": {
+            "name": "名字"
+        },
+        "placeholder": {
+        },
+        "errors": {
+            "invalidUrl": "Invalid web url, please check!"
+        },
+        "status": {
+        },
+        "hints": {
+            "validUrl": "Valid URL!"
+        }
+    }
+}

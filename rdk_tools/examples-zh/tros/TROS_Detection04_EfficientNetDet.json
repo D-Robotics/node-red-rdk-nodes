@@ -1,0 +1,583 @@
+[
+    {
+        "id": "462fdef3d4bb8b9f",
+        "type": "tab",
+        "label": "TROS EfficientNet Det (Object Detection)",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "754b6f0cf371b15a",
+        "type": "group",
+        "z": "462fdef3d4bb8b9f",
+        "name": "软件包智能更新",
+        "style": {
+            "fill": "#ffffbf",
+            "fill-opacity": "0.46",
+            "label": true
+        },
+        "nodes": [
+            "1cd0eb281670d9ab",
+            "dae38e7736de76b1",
+            "e7e7b1571f3979d4"
+        ],
+        "x": 334,
+        "y": 79,
+        "w": 572,
+        "h": 82
+    },
+    {
+        "id": "081ebe91af012ba6",
+        "type": "group",
+        "z": "462fdef3d4bb8b9f",
+        "name": "检查及运行EfficientNet",
+        "style": {
+            "fill": "#e3f3d3",
+            "fill-opacity": "0.5",
+            "label": true
+        },
+        "nodes": [
+            "c02e460b47428ae2",
+            "a3fa640ffbd2c5f9"
+        ],
+        "x": 354,
+        "y": 199,
+        "w": 432,
+        "h": 82
+    },
+    {
+        "id": "d20ad6b636807bc8",
+        "type": "group",
+        "z": "462fdef3d4bb8b9f",
+        "name": "EfficientNet结果展示",
+        "style": {
+            "fill": "#bfdbef",
+            "fill-opacity": "0.47",
+            "label": true
+        },
+        "nodes": [
+            "6de907c5358bde96",
+            "2754515889185823",
+            "ce9d58bb912732ca"
+        ],
+        "x": 154,
+        "y": 319,
+        "w": 372,
+        "h": 122
+    },
+    {
+        "id": "402c309d41c22611",
+        "type": "comment",
+        "z": "462fdef3d4bb8b9f",
+        "name": "名称：TROS目标检测 EfficientNet Det",
+        "info": "",
+        "x": 210,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "d7b0150b21fb5db9",
+        "type": "inject",
+        "z": "462fdef3d4bb8b9f",
+        "name": "了解更多",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/detection/efficientnet",
+        "payloadType": "str",
+        "x": 480,
+        "y": 40,
+        "wires": [
+            [
+                "3c74711b3488c440"
+            ]
+        ]
+    },
+    {
+        "id": "3c74711b3488c440",
+        "type": "rdk-tools openurl",
+        "z": "462fdef3d4bb8b9f",
+        "name": "",
+        "x": 660,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "8be63f210a0ce0da",
+        "type": "comment",
+        "z": "462fdef3d4bb8b9f",
+        "name": "注意：选择对应的摄像头类型",
+        "info": "",
+        "x": 220,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "48501546121244d6",
+        "type": "inject",
+        "z": "462fdef3d4bb8b9f",
+        "name": "启动（USB摄像头）",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "camera",
+                "v": "usb",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "iso",
+        "payloadType": "date",
+        "x": 190,
+        "y": 120,
+        "wires": [
+            [
+                "c02e460b47428ae2",
+                "6de907c5358bde96"
+            ]
+        ]
+    },
+    {
+        "id": "bbf3647298c09419",
+        "type": "inject",
+        "z": "462fdef3d4bb8b9f",
+        "name": "启动（MIPI摄像头）",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "mipi",
+        "payload": "iso",
+        "payloadType": "date",
+        "x": 190,
+        "y": 160,
+        "wires": [
+            [
+                "c02e460b47428ae2",
+                "6de907c5358bde96"
+            ]
+        ]
+    },
+    {
+        "id": "a1419401bb73d302",
+        "type": "inject",
+        "z": "462fdef3d4bb8b9f",
+        "name": "关闭",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 240,
+        "wires": [
+            [
+                "a3fa640ffbd2c5f9"
+            ]
+        ]
+    },
+    {
+        "id": "bbb001cf557ba8a6",
+        "type": "comment",
+        "z": "462fdef3d4bb8b9f",
+        "name": "注意：使用结束后请主动关闭",
+        "info": "",
+        "x": 220,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "1cd0eb281670d9ab",
+        "type": "rdk-tools smartupdate",
+        "z": "462fdef3d4bb8b9f",
+        "g": "754b6f0cf371b15a",
+        "name": "",
+        "x": 420,
+        "y": 120,
+        "wires": [
+            [
+                "dae38e7736de76b1"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "dae38e7736de76b1",
+        "type": "change",
+        "z": "462fdef3d4bb8b9f",
+        "g": "754b6f0cf371b15a",
+        "name": "更新提示",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "智能更新已完成",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 600,
+        "y": 120,
+        "wires": [
+            [
+                "e7e7b1571f3979d4"
+            ]
+        ]
+    },
+    {
+        "id": "e7e7b1571f3979d4",
+        "type": "rdk-tools texttoaudio",
+        "z": "462fdef3d4bb8b9f",
+        "g": "754b6f0cf371b15a",
+        "name": "",
+        "x": 810,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "c02e460b47428ae2",
+        "type": "change",
+        "z": "462fdef3d4bb8b9f",
+        "g": "081ebe91af012ba6",
+        "name": "设定EfficientNet节点",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "launch",
+                "pt": "msg",
+                "to": "dnn_node_example dnn_node_example.launch.py dnn_example_config_file:=config/efficient_det_workconfig.json dnn_example_image_width:=480 dnn_example_image_height:=272",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "insert",
+                "pt": "msg",
+                "to": "$join(['export CAM_TYPE=', msg.camera])",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 240,
+        "wires": [
+            [
+                "a3fa640ffbd2c5f9"
+            ]
+        ]
+    },
+    {
+        "id": "a3fa640ffbd2c5f9",
+        "type": "rdk-tools checkexecute",
+        "z": "462fdef3d4bb8b9f",
+        "g": "081ebe91af012ba6",
+        "name": "",
+        "x": 690,
+        "y": 240,
+        "wires": [
+            [
+                "4702f72d992889d3"
+            ],
+            [
+                "06698437b64723e9"
+            ]
+        ]
+    },
+    {
+        "id": "4702f72d992889d3",
+        "type": "debug",
+        "z": "462fdef3d4bb8b9f",
+        "name": "正确执行提示",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "06698437b64723e9",
+        "type": "debug",
+        "z": "462fdef3d4bb8b9f",
+        "name": "错误执行提示",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "94fe35dc755876e2",
+        "type": "debug",
+        "z": "462fdef3d4bb8b9f",
+        "name": "算法结果输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "6740d446300d6758",
+        "type": "debug",
+        "z": "462fdef3d4bb8b9f",
+        "name": "性能信息输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "6de907c5358bde96",
+        "type": "delay",
+        "z": "462fdef3d4bb8b9f",
+        "g": "d20ad6b636807bc8",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 240,
+        "y": 360,
+        "wires": [
+            [
+                "2754515889185823"
+            ]
+        ]
+    },
+    {
+        "id": "2754515889185823",
+        "type": "change",
+        "z": "462fdef3d4bb8b9f",
+        "g": "d20ad6b636807bc8",
+        "name": "设定链接",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "ws://{host}:8080",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 240,
+        "y": 400,
+        "wires": [
+            [
+                "ce9d58bb912732ca"
+            ]
+        ]
+    },
+    {
+        "id": "ce9d58bb912732ca",
+        "type": "rdk-tools videows",
+        "z": "462fdef3d4bb8b9f",
+        "g": "d20ad6b636807bc8",
+        "name": "",
+        "fps": "4",
+        "width": 640,
+        "active": true,
+        "x": 420,
+        "y": 380,
+        "wires": [
+            [
+                "94fe35dc755876e2",
+                "d5182198f20a814d"
+            ],
+            [
+                "6740d446300d6758"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "518da89f8cbd5c44",
+        "type": "inject",
+        "z": "462fdef3d4bb8b9f",
+        "name": "更新软件包",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "1cd0eb281670d9ab"
+            ]
+        ]
+    },
+    {
+        "id": "685fd28af62c9459",
+        "type": "inject",
+        "z": "462fdef3d4bb8b9f",
+        "name": "打开可视化页面",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 680,
+        "y": 320,
+        "wires": [
+            [
+                "f4c47aa330729815"
+            ]
+        ]
+    },
+    {
+        "id": "f4c47aa330729815",
+        "type": "rdk-tools openurl",
+        "z": "462fdef3d4bb8b9f",
+        "name": "",
+        "x": 880,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "d5182198f20a814d",
+        "type": "change",
+        "z": "462fdef3d4bb8b9f",
+        "name": "提取类型",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "attributes.type",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 140,
+        "y": 480,
+        "wires": [
+            [
+                "780ac5dcd5bd2303"
+            ]
+        ]
+    },
+    {
+        "id": "780ac5dcd5bd2303",
+        "type": "rdk-tools output",
+        "z": "462fdef3d4bb8b9f",
+        "name": "",
+        "active": true,
+        "x": 140,
+        "y": 520,
+        "wires": []
+    }
+]

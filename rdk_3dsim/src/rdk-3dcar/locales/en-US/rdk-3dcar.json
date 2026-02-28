@@ -1,0 +1,20 @@
+{
+    "rdk-3dcar": {
+        "names": {
+            "3dcar": "3D Car"
+        },
+        "label": {
+            "name": "Name"
+        },
+        "placeholder": {
+        },
+        "errors": {
+            "invalidUrl": "Invalid web url, please check!"
+        },
+        "status": {
+        },
+        "hints": {
+            "validUrl": "Valid URL!"
+        }
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "rdk-videows": {
+        "names": {
+            "openurl": "Video WS"
+        },
+        "label": {
+            "name": "Name",
+            "fps": "Sampling Rate",
+            "width": "Width"
+        },
+        "placeholder": {
+        },
+        "errors": {
+            "invalidUrl": "Invalid url, please check!",
+            "postError": "POST error!"
+        },
+        "status": {
+        },
+        "hints": {
+            "validUrl": "Valid URL!"
+        }
+    }
+}

@@ -1,0 +1,638 @@
+[
+    {
+        "id": "ed44aeff9a2ab45d",
+        "type": "tab",
+        "label": "TROS Fall_Detection",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "02a48fdef9c1a002",
+        "type": "group",
+        "z": "ed44aeff9a2ab45d",
+        "name": "核心控制",
+        "style": {
+            "fill": "#e3f3d3",
+            "fill-opacity": "0.6",
+            "label": true
+        },
+        "nodes": [
+            "ec12f06270bbf61e",
+            "0148012327e76b5e",
+            "a995a87dcb620a54"
+        ],
+        "x": 334,
+        "y": 211.5,
+        "w": 572,
+        "h": 97
+    },
+    {
+        "id": "fa1ba96e2af824e3",
+        "type": "group",
+        "z": "ed44aeff9a2ab45d",
+        "name": "结果可视化",
+        "style": {
+            "fill": "#d1e7f5",
+            "fill-opacity": "0.6",
+            "label": true
+        },
+        "nodes": [
+            "7af3f8af2ed45534",
+            "de077b070163e6af",
+            "8f6e2bcfad0f757f"
+        ],
+        "x": 334,
+        "y": 359,
+        "w": 392,
+        "h": 129.5
+    },
+    {
+        "id": "fe8b168a4d8a6535",
+        "type": "group",
+        "z": "ed44aeff9a2ab45d",
+        "name": "软件包智能更新",
+        "style": {
+            "fill": "#fff9c4",
+            "fill-opacity": "0.6",
+            "label": true
+        },
+        "nodes": [
+            "177c8d3b13e1ff73",
+            "67e9da776a8bebda",
+            "dc9be7890d62dc38"
+        ],
+        "x": 334,
+        "y": 79,
+        "w": 572,
+        "h": 82
+    },
+    {
+        "id": "07d81f1bfbd55cd0",
+        "type": "inject",
+        "z": "ed44aeff9a2ab45d",
+        "name": "启动 (USB摄像头)",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "camera",
+                "v": "usb",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 190,
+        "y": 240,
+        "wires": [
+            [
+                "a995a87dcb620a54"
+            ]
+        ]
+    },
+    {
+        "id": "d37338af2c3a65db",
+        "type": "inject",
+        "z": "ed44aeff9a2ab45d",
+        "name": "启动 (MIPI摄像头)",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "camera",
+                "v": "mipi",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 190,
+        "y": 280,
+        "wires": [
+            [
+                "a995a87dcb620a54"
+            ]
+        ]
+    },
+    {
+        "id": "a995a87dcb620a54",
+        "type": "exec",
+        "z": "ed44aeff9a2ab45d",
+        "g": "02a48fdef9c1a002",
+        "command": "cp -r /opt/tros/humble/lib/mono2d_body_detection/config/ . || true",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "",
+        "oldrc": false,
+        "name": "初始化配置 (CP)",
+        "x": 440,
+        "y": 260,
+        "wires": [
+            [
+                "ec12f06270bbf61e",
+                "7af3f8af2ed45534"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "ec12f06270bbf61e",
+        "type": "change",
+        "z": "ed44aeff9a2ab45d",
+        "g": "02a48fdef9c1a002",
+        "name": "配置运行参数",
+        "rules": [
+            {
+                "t": "set",
+                "p": "launch",
+                "pt": "msg",
+                "to": "hobot_falldown_detection hobot_falldown_detection.launch.py",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "insert",
+                "pt": "msg",
+                "to": "$join(['export CAM_TYPE=', msg.camera])",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 640,
+        "y": 260,
+        "wires": [
+            [
+                "0148012327e76b5e"
+            ]
+        ]
+    },
+    {
+        "id": "0148012327e76b5e",
+        "type": "rdk-tools checkexecute",
+        "z": "ed44aeff9a2ab45d",
+        "g": "02a48fdef9c1a002",
+        "name": "",
+        "x": 810,
+        "y": 260,
+        "wires": [
+            [
+                "8f7bfe72e1d14d6d"
+            ],
+            [
+                "29412046c3ffdae9"
+            ]
+        ]
+    },
+    {
+        "id": "51c6dbd7058ff8ad",
+        "type": "inject",
+        "z": "ed44aeff9a2ab45d",
+        "name": "关闭",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 320,
+        "wires": [
+            [
+                "0148012327e76b5e"
+            ]
+        ]
+    },
+    {
+        "id": "cf5df1e9ec0e45aa",
+        "type": "inject",
+        "z": "ed44aeff9a2ab45d",
+        "name": "打开浏览器",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 140,
+        "y": 520,
+        "wires": [
+            [
+                "9c647084cd8be9cf"
+            ]
+        ]
+    },
+    {
+        "id": "9c647084cd8be9cf",
+        "type": "rdk-tools openurl",
+        "z": "ed44aeff9a2ab45d",
+        "name": "",
+        "x": 320,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "7af3f8af2ed45534",
+        "type": "delay",
+        "z": "ed44aeff9a2ab45d",
+        "g": "fa1ba96e2af824e3",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 420,
+        "y": 400,
+        "wires": [
+            [
+                "de077b070163e6af"
+            ]
+        ]
+    },
+    {
+        "id": "de077b070163e6af",
+        "type": "change",
+        "z": "ed44aeff9a2ab45d",
+        "g": "fa1ba96e2af824e3",
+        "name": "设定视频流",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "ws://{host}:8000",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 430,
+        "y": 440,
+        "wires": [
+            [
+                "8f6e2bcfad0f757f"
+            ]
+        ]
+    },
+    {
+        "id": "8f6e2bcfad0f757f",
+        "type": "rdk-tools videows",
+        "z": "ed44aeff9a2ab45d",
+        "g": "fa1ba96e2af824e3",
+        "name": "视频预览",
+        "fps": "10",
+        "width": "480",
+        "active": true,
+        "x": 620,
+        "y": 440,
+        "wires": [
+            [
+                "118f8b516f4e06e8",
+                "45d8a19037a39c6d"
+            ],
+            [
+                "5f3686571ffeabdc"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "d689de6a71262fda",
+        "type": "inject",
+        "z": "ed44aeff9a2ab45d",
+        "name": "检查更新",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 120,
+        "wires": [
+            [
+                "177c8d3b13e1ff73"
+            ]
+        ]
+    },
+    {
+        "id": "177c8d3b13e1ff73",
+        "type": "rdk-tools smartupdate",
+        "z": "ed44aeff9a2ab45d",
+        "g": "fe8b168a4d8a6535",
+        "name": "",
+        "x": 420,
+        "y": 120,
+        "wires": [
+            [
+                "67e9da776a8bebda"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "67e9da776a8bebda",
+        "type": "change",
+        "z": "ed44aeff9a2ab45d",
+        "g": "fe8b168a4d8a6535",
+        "name": "提示内容",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "环境检查完成",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 620,
+        "y": 120,
+        "wires": [
+            [
+                "dc9be7890d62dc38"
+            ]
+        ]
+    },
+    {
+        "id": "dc9be7890d62dc38",
+        "type": "rdk-tools texttoaudio",
+        "z": "ed44aeff9a2ab45d",
+        "g": "fe8b168a4d8a6535",
+        "name": "",
+        "x": 810,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "2030a418d46edefc",
+        "type": "comment",
+        "z": "ed44aeff9a2ab45d",
+        "name": "名称：TROS应用 摔倒检测",
+        "info": "",
+        "x": 150,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "1cfdb92de514e4bc",
+        "type": "inject",
+        "z": "ed44aeff9a2ab45d",
+        "name": "了解更多",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/apps/fall_detection",
+        "payloadType": "str",
+        "x": 420,
+        "y": 40,
+        "wires": [
+            [
+                "a347de8bc1e44264"
+            ]
+        ]
+    },
+    {
+        "id": "a347de8bc1e44264",
+        "type": "rdk-tools openurl",
+        "z": "ed44aeff9a2ab45d",
+        "name": "",
+        "x": 580,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "c3673f8930ce3288",
+        "type": "comment",
+        "z": "ed44aeff9a2ab45d",
+        "name": "注意：选择对应的摄像头类型",
+        "info": "",
+        "x": 180,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "dc5c9e6b1f87bf49",
+        "type": "comment",
+        "z": "ed44aeff9a2ab45d",
+        "name": "注意：使用结束后请主动关闭",
+        "info": "",
+        "x": 180,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "8f7bfe72e1d14d6d",
+        "type": "debug",
+        "z": "ed44aeff9a2ab45d",
+        "name": "正确执行提示",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1040,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "29412046c3ffdae9",
+        "type": "debug",
+        "z": "ed44aeff9a2ab45d",
+        "name": "错误执行提示",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1040,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "118f8b516f4e06e8",
+        "type": "debug",
+        "z": "ed44aeff9a2ab45d",
+        "name": "算法结果输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "5f3686571ffeabdc",
+        "type": "debug",
+        "z": "ed44aeff9a2ab45d",
+        "name": "性能信息输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "45d8a19037a39c6d",
+        "type": "switch",
+        "z": "ed44aeff9a2ab45d",
+        "name": "检测是否摔倒",
+        "property": "attributes.attributes[0].value",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0.5",
+                "vt": "str"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 1,
+        "x": 440,
+        "y": 580,
+        "wires": [
+            [
+                "69e47f3f6daca8af"
+            ]
+        ]
+    },
+    {
+        "id": "9f4e5ef3231d4809",
+        "type": "rdk-tools output",
+        "z": "ed44aeff9a2ab45d",
+        "name": "",
+        "active": true,
+        "x": 420,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "69e47f3f6daca8af",
+        "type": "change",
+        "z": "ed44aeff9a2ab45d",
+        "name": "提取字符串",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "attributes.attributes[0].type",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 430,
+        "y": 620,
+        "wires": [
+            [
+                "9f4e5ef3231d4809"
+            ]
+        ]
+    },
+    {
+        "id": "df9bce1e90b9993f",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-rdk-tools": "0.0.27"
+        }
+    }
+]

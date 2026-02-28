@@ -1,0 +1,20 @@
+{
+    "rdk-3dbox": {
+        "names": {
+            "3dbox": "3D方块"
+        },
+        "label": {
+            "name": "名字"
+        },
+        "placeholder": {
+        },
+        "errors": {
+            "invalidUrl": "Invalid web url, please check!"
+        },
+        "status": {
+        },
+        "hints": {
+            "validUrl": "Valid URL!"
+        }
+    }
+}

@@ -6,8 +6,6 @@ import sys
 import os
 from time import perf_counter
 
-
-
 width = int(sys.argv[1])
 height = int(sys.argv[2])
 fps = int(sys.argv[3])
@@ -17,8 +15,26 @@ port = int(sys.argv[4])
 def signal_handler(signal, frame):
     sys.exit(0)
 
-async def send_image_stream(websocket, path):
-    cap = cv2.VideoCapture(8)
+def is_usb_camera(device):
+    try:
+        cap = cv2.VideoCapture(device)
+        if not cap.isOpened():
+            return False
+        cap.release()
+        return True
+    except Exception:
+        return False
+
+def find_first_usb_camera():
+    video_devices = [os.path.join('/dev', dev) for dev in os.listdir('/dev') if dev.startswith('video')]
+    for dev in video_devices:
+        if is_usb_camera(dev):
+            return dev
+    return None
+
+async def send_image_stream(websocket, path=''):
+    video_device = find_first_usb_camera()
+    cap = cv2.VideoCapture(video_device)
     if(not cap.isOpened()):
         print('failed')
         await websocket.close(reason='exit')
@@ -42,9 +58,19 @@ async def send_image_stream(websocket, path):
     except:
         cap.release()
 
+async def main():
+    async with websockets.serve(send_image_stream, "0.0.0.0", port):
+        await asyncio.Future()
 
 if __name__ == '__main__':
-    signal.signal(signal.SIGINT, signal_handler)
-    ws_server = websockets.serve(send_image_stream, "0.0.0.0", port)
-    asyncio.get_event_loop().run_until_complete(ws_server)
-    asyncio.get_event_loop().run_forever()
+    # signal.signal(signal.SIGINT, signal_handler)
+    # ws_server = websockets.serve(send_image_stream, "0.0.0.0", port)
+    # asyncio.get_event_loop().run_until_complete(ws_server)
+    # asyncio.get_event_loop().run_forever()
+    loop = asyncio.get_event_loop()
+    try:
+        loop.run_until_complete(main())
+    except KeyboardInterrupt:
+        print("Server stopped")
+    finally:
+        loop.close()

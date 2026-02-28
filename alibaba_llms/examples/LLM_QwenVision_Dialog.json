@@ -1,0 +1,525 @@
+[
+    {
+        "id": "c7ccf2f1a16ef78d",
+        "type": "tab",
+        "label": "LLMQwenVisionDialog",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "ff7f402275ed0ffc",
+        "type": "comment",
+        "z": "c7ccf2f1a16ef78d",
+        "name": "使用前请先申请API Key",
+        "info": "",
+        "x": 160,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "ca36a73c769568b3",
+        "type": "inject",
+        "z": "c7ccf2f1a16ef78d",
+        "name": "如何申请API Key",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://help.aliyun.com/zh/model-studio/get-api-key",
+        "payloadType": "str",
+        "x": 180,
+        "y": 100,
+        "wires": [
+            [
+                "376b6d604bb75ecf"
+            ]
+        ]
+    },
+    {
+        "id": "376b6d604bb75ecf",
+        "type": "rdk-tools openurl",
+        "z": "c7ccf2f1a16ef78d",
+        "name": "",
+        "x": 420,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "4bb0c2d288930b2d",
+        "type": "comment",
+        "z": "c7ccf2f1a16ef78d",
+        "name": "打开交互面板",
+        "info": "",
+        "x": 130,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "bd41d8ede408f6db",
+        "type": "inject",
+        "z": "c7ccf2f1a16ef78d",
+        "name": "打开交互面板",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://{host}:1880/dashboard",
+        "payloadType": "str",
+        "x": 170,
+        "y": 220,
+        "wires": [
+            [
+                "376b6d604bb75ecf"
+            ]
+        ]
+    },
+    {
+        "id": "df52af7fe6530412",
+        "type": "ui-button",
+        "z": "c7ccf2f1a16ef78d",
+        "group": "fbe7591e0cdec698",
+        "name": "拍照",
+        "label": "拍照",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "buttonColor": "",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 170,
+        "y": 280,
+        "wires": [
+            [
+                "8474d73963d80388"
+            ]
+        ]
+    },
+    {
+        "id": "8474d73963d80388",
+        "type": "rdk-camera takephoto",
+        "z": "c7ccf2f1a16ef78d",
+        "cameratype": "1",
+        "filemode": "2",
+        "filename": "",
+        "filedefpath": "1",
+        "filepath": "",
+        "fileformat": "jpeg",
+        "resolution": "2",
+        "rotation": "0",
+        "fliph": "0",
+        "flipv": "0",
+        "brightness": "50",
+        "contrast": "0",
+        "sharpness": "0",
+        "quality": "80",
+        "imageeffect": "none",
+        "exposuremode": "auto",
+        "iso": "0",
+        "agcwait": "1.0",
+        "led": "0",
+        "awb": "auto",
+        "name": "",
+        "x": 350,
+        "y": 280,
+        "wires": [
+            [
+                "ac3909ea3a1b7572",
+                "69e11239289e7d88"
+            ]
+        ]
+    },
+    {
+        "id": "ac3909ea3a1b7572",
+        "type": "jimp-image",
+        "z": "c7ccf2f1a16ef78d",
+        "name": "",
+        "data": "payload",
+        "dataType": "msg",
+        "ret": "b64",
+        "parameter1": "",
+        "parameter1Type": "msg",
+        "parameter2": "",
+        "parameter2Type": "msg",
+        "parameter3": "",
+        "parameter3Type": "msg",
+        "parameter4": "",
+        "parameter4Type": "msg",
+        "parameter5": "",
+        "parameter5Type": "msg",
+        "parameter6": "",
+        "parameter6Type": "msg",
+        "parameter7": "",
+        "parameter7Type": "msg",
+        "parameter8": "",
+        "parameter8Type": "msg",
+        "sendProperty": "payload",
+        "sendPropertyType": "msg",
+        "parameterCount": 0,
+        "jimpFunction": "none",
+        "selectedJimpFunction": {
+            "name": "none",
+            "fn": "none",
+            "description": "Just loads the image.",
+            "parameters": []
+        },
+        "x": 510,
+        "y": 280,
+        "wires": [
+            [
+                "26f37d5735f257c8"
+            ]
+        ]
+    },
+    {
+        "id": "26f37d5735f257c8",
+        "type": "ui-template",
+        "z": "c7ccf2f1a16ef78d",
+        "group": "fbe7591e0cdec698",
+        "page": "",
+        "ui": "",
+        "name": "显示图片",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n    <div>\n        <img :src=\"msg.payload\" style=\"width: 100%; padding-top: 1rem;\">\n    </div>\n</template>\n\n<script>\n    export default {\n        data() {\n            // define variables available component-wide\n            // (in <template> and component functions)\n            return {\n                count: 0\n            }\n        },\n        watch: {\n            // watch for any changes of \"count\"\n            count: function () {\n                if (this.count % 5 === 0) {\n                    this.send({payload: 'Multiple of 5'})\n                }\n            }\n        },\n        computed: {\n            // automatically compute this variable\n            // whenever VueJS deems appropriate\n            formattedCount: function () {\n                return this.count + ' Apples'\n            }\n        },\n        methods: {\n            // expose a method to our <template> and Vue Application\n            increase: function () {\n                this.count++\n            }\n        },\n        mounted() {\n            // code here when the component is first loaded\n        },\n        unmounted() {\n            // code here when the component is removed from the Dashboard\n            // i.e. when the user navigates away from the page\n        }\n    }\n</script>\n<style>\n    /* define any styles here - supports raw CSS */\n    .my-class {\n        color: red;\n    }\n</style>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 700,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "925bb69d9523b5ce",
+        "type": "ui-template",
+        "z": "c7ccf2f1a16ef78d",
+        "group": "aef8b68d72e87087",
+        "page": "",
+        "ui": "",
+        "name": "录音机",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "head": "",
+        "format": "<template>\n    <div>\n        <v-btn @mousedown=\"startRecord()\"\n               @mouseup=\"stopRecord()\">{{ recordText }}</v-btn>\n\n        <audio></audio>\n        <br>\n    </div>\n</template>\n\n<script>\n    export default {\n        data() {\n            // define variables available component-wide\n            // (in <template> and component functions)\n            return {\n                count: 0,\n                recordText: '按下录音',\n                recorder: undefined,\n            }\n        },\n        watch: {\n            \n        },\n        computed: {\n            \n        },\n        methods: {\n            // expose a method to our <template> and Vue Application\n            startRecord: function() {\n                this.send({\n                    cmd: 'start'\n                })\n\n                if(this.audioStream){\n                    this.recordText = \"录音中...\"\n\n                    const mediaRecorder = new MediaRecorder(this.audioStream);\n                    this.recorder = mediaRecorder;\n                    let audioChunks = [];\n                    mediaRecorder.ondataavailable = (event) => {\n                        audioChunks.push(event.data);\n                    };\n                    mediaRecorder.onstop = () => {\n                        const audioBlob = new Blob(audioChunks, { type: \"audio/wav\" });\n                        let reader = new FileReader();\n                        reader.readAsDataURL(audioBlob);\n                        reader.onloadend = () => {\n                        let base64Audio = reader.result.split(',')[1]; // 获取Base64数据\n                            // this.send({ payload: base64Audio, format: \"audio/wav\" });\n                        };\n                        const dataUrl = window.URL.createObjectURL(audioBlob);\n                        this.send({\n                            payload: dataUrl\n                        })\n                        // this.send({\n                        //     payload: audioBlob\n                        // })\n                        audioChunks = [];\n                    };\n                    mediaRecorder.start();\n                }\n                else{\n                    this.recordText = \"录音失败\"\n                }\n            },\n            stopRecord: function() {\n                this.send({\n                    cmd: 'stop'\n                })\n\n                if(this.recorder){\n                    this.recorder.stop();\n                    this.recorder = undefined;\n                }\n                this.recordText = \"按下录音\"\n            }\n        },\n        mounted() {\n            // code here when the component is first loaded\n            this.audioStream = unmounted;\n            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {\n                this.audioStream = stream;\n            })\n            .catch((e) => {\n                alert('该示例需要使用麦克风权限')\n            })\n            \n\n        },\n        unmounted() {\n            // code here when the component is removed from the Dashboard\n            // i.e. when the user navigates away from the page\n        }\n    }\n</script>\n<style>\n    /* define any styles here - supports raw CSS */\n    .my-class {\n        color: red;\n    }\n</style>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 170,
+        "y": 440,
+        "wires": [
+            [
+                "1eb0beda6e71afde",
+                "5fbb716d0da1074b"
+            ]
+        ]
+    },
+    {
+        "id": "1eb0beda6e71afde",
+        "type": "ui-audio",
+        "z": "c7ccf2f1a16ef78d",
+        "group": "aef8b68d72e87087",
+        "name": "录音回放",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "src": "",
+        "autoplay": "off",
+        "loop": "off",
+        "muted": "off",
+        "x": 320,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5fbb716d0da1074b",
+        "type": "rdk-tools speechtotext",
+        "z": "c7ccf2f1a16ef78d",
+        "name": "",
+        "x": 340,
+        "y": 500,
+        "wires": [
+            [
+                "4b17be753e6ac43a",
+                "34f149da9bcbf7cb"
+            ]
+        ]
+    },
+    {
+        "id": "4b17be753e6ac43a",
+        "type": "ui-template",
+        "z": "c7ccf2f1a16ef78d",
+        "group": "aef8b68d72e87087",
+        "page": "",
+        "ui": "",
+        "name": "结果展示",
+        "order": 0,
+        "width": 0,
+        "height": "0",
+        "head": "",
+        "format": "<template>\n    <div>\n        <p>{{ msg.payload }}</p>\n        <p>{{ audioText }}</p>\n        <p>{{ recognizeError }}</p>\n    </div>\n</template>\n\n<script>\n    export default {\n        data() {\n            // define variables available component-wide\n            // (in <template> and component functions)\n            return {\n                count: 0,\n                audioText: '',\n                audioRecgonition: undefined,\n                recognizeStatus: false,\n                stopStatus: false,\n                exist: false,\n                recognizeError: \"\",\n            }\n        },\n        watch: {\n            // watch for any changes of \"count\"\n            msg: function(){\n                \n                if(this.msg?.cmd){\n                    if(this.msg.cmd === 'start' && this.recognizeStatus === false){\n                        //start\n                        this.startRecognize();\n                    }\n                    else if(this.msg.cmd === 'stop' && this.recognizeStatus === true && this.stopStatus === false){\n                        //stop\n                        this.stopRecognize();\n                    }\n                }\n            }\n        },\n        computed: {\n            // automatically compute this variable\n            // whenever VueJS deems appropriate\n            \n        },\n        methods: {\n            // expose a method to our <template> and Vue Application\n            startRecognize: function () {\n                this.audioRecognition.start(); // 重新开启识别\n                this.recognizeStatus = true;\n            },\n\n            stopRecognize: function () {\n                this.stopStatus = true;\n                setTimeout(() => {\n                    this.audioRecognition.stop();\n                    this.recognizeStatus = false;\n                    this.stopStatus = false;\n                    this.send({\n                        payload: this.audioText\n                    })\n                }, 1000)\n                \n            }\n        },\n        mounted() {\n            // // code here when the component is first loaded\n            // const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();\n            // recognition.lang = 'zh-CN'; // 设置语言为中文\n            // recognition.interimResults = true; // 返回临时结果\n            // recognition.continuous = false; // 单次识别\n            // // 处理识别结果\n            // recognition.onresult = (event) => {\n            //     const transcript = event.results[0][0].transcript;\n            //     this.audioText = transcript;\n            // };\n            // recognition.onerror = (event) => {\n            //     this.recognizeError = \"Error: \" + event.error;\n            // }\n            // // 处理识别结束\n            // recognition.onend = () => {\n            //     console.log('recgonize finished')\n            // };\n\n            // this.audioRecognition = recognition;\n        },\n        unmounted() {\n            // code here when the component is removed from the Dashboard\n            // i.e. when the user navigates away from the page\n        }\n    }\n</script>\n<style>\n    /* define any styles here - supports raw CSS */\n    .my-class {\n        color: red;\n    }\n</style>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 320,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "69e11239289e7d88",
+        "type": "jimp-image",
+        "z": "c7ccf2f1a16ef78d",
+        "name": "",
+        "data": "payload",
+        "dataType": "msg",
+        "ret": "b64",
+        "parameter1": "",
+        "parameter1Type": "msg",
+        "parameter2": "",
+        "parameter2Type": "msg",
+        "parameter3": "",
+        "parameter3Type": "msg",
+        "parameter4": "",
+        "parameter4Type": "msg",
+        "parameter5": "",
+        "parameter5Type": "msg",
+        "parameter6": "",
+        "parameter6Type": "msg",
+        "parameter7": "",
+        "parameter7Type": "msg",
+        "parameter8": "",
+        "parameter8Type": "msg",
+        "sendProperty": "image",
+        "sendPropertyType": "msg",
+        "parameterCount": 0,
+        "jimpFunction": "none",
+        "selectedJimpFunction": {
+            "name": "none",
+            "fn": "none",
+            "description": "Just loads the image.",
+            "parameters": []
+        },
+        "x": 510,
+        "y": 320,
+        "wires": [
+            [
+                "34f149da9bcbf7cb"
+            ]
+        ]
+    },
+    {
+        "id": "34f149da9bcbf7cb",
+        "type": "alibaba-llms QwenVision",
+        "z": "c7ccf2f1a16ef78d",
+        "name": "",
+        "apikey": "",
+        "x": 540,
+        "y": 380,
+        "wires": [
+            [
+                "6f486748478f9a93",
+                "f4d01cc396c77674",
+                "cdfabebdfc66788f"
+            ]
+        ]
+    },
+    {
+        "id": "6f486748478f9a93",
+        "type": "debug",
+        "z": "c7ccf2f1a16ef78d",
+        "name": "输出",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "f4d01cc396c77674",
+        "type": "rdk-tools texttoaudio",
+        "z": "c7ccf2f1a16ef78d",
+        "name": "",
+        "x": 610,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "cdfabebdfc66788f",
+        "type": "ui-template",
+        "z": "c7ccf2f1a16ef78d",
+        "group": "ee1b0dc340f25361",
+        "page": "",
+        "ui": "",
+        "name": "展示结果",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n    <div v-html=\"msg.payload\" style=\"padding: 1rem;\">\n\n    </div>\n</template>\n\n<script>\n    export default {\n        data() {\n            // define variables available component-wide\n            // (in <template> and component functions)\n            return {\n                count: 0\n            }\n        },\n        watch: {\n            // watch for any changes of \"count\"\n            count: function () {\n                if (this.count % 5 === 0) {\n                    this.send({payload: 'Multiple of 5'})\n                }\n            }\n        },\n        computed: {\n            // automatically compute this variable\n            // whenever VueJS deems appropriate\n            formattedCount: function () {\n                return this.count + ' Apples'\n            }\n        },\n        methods: {\n            // expose a method to our <template> and Vue Application\n            increase: function () {\n                this.count++\n            }\n        },\n        mounted() {\n            // code here when the component is first loaded\n        },\n        unmounted() {\n            // code here when the component is removed from the Dashboard\n            // i.e. when the user navigates away from the page\n        }\n    }\n</script>\n<style>\n    /* define any styles here - supports raw CSS */\n    .my-class {\n        color: red;\n    }\n</style>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 600,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fbe7591e0cdec698",
+        "type": "ui-group",
+        "name": "拍照区域",
+        "page": "8d6fd88776d2103d",
+        "width": "4",
+        "height": "4",
+        "order": -1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "aef8b68d72e87087",
+        "type": "ui-group",
+        "name": "录音区域",
+        "page": "8d6fd88776d2103d",
+        "width": "4",
+        "height": "4",
+        "order": -1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "ee1b0dc340f25361",
+        "type": "ui-group",
+        "name": "结果展示",
+        "page": "8d6fd88776d2103d",
+        "width": "4",
+        "height": "4",
+        "order": -1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "8d6fd88776d2103d",
+        "type": "ui-page",
+        "name": "通义千问多模态",
+        "ui": "942009bed591a42b",
+        "path": "/page2",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "default",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": -1,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "942009bed591a42b",
+        "type": "ui-base",
+        "name": "QwenDashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true
+    }
+]

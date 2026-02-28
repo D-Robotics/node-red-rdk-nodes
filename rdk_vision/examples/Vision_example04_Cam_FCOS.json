@@ -1,0 +1,95 @@
+[
+    {
+        "id": "ff6463214ece834d",
+        "type": "tab",
+        "label": "VisionFCOSwithCam",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "84f40b11011a6cb4",
+        "type": "rdk-camera imagestream",
+        "z": "ff6463214ece834d",
+        "cameratype": "1",
+        "fps": "5",
+        "resolution": "2",
+        "defport": "1",
+        "port": "10888",
+        "name": "",
+        "x": 110,
+        "y": 160,
+        "wires": [
+            [
+                "3aaad0042fcc80f4"
+            ]
+        ]
+    },
+    {
+        "id": "3aaad0042fcc80f4",
+        "type": "rdk-vision fcos",
+        "z": "ff6463214ece834d",
+        "name": "",
+        "x": 110,
+        "y": 220,
+        "wires": [
+            [
+                "5b64618000c6a2c2"
+            ]
+        ]
+    },
+    {
+        "id": "5b64618000c6a2c2",
+        "type": "image viewer",
+        "z": "ff6463214ece834d",
+        "name": "",
+        "width": "480",
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 290,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0f72acd569912d1c",
+        "type": "inject",
+        "z": "ff6463214ece834d",
+        "name": "启动失败时重启",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "start",
+        "payloadType": "str",
+        "x": 120,
+        "y": 100,
+        "wires": [
+            [
+                "84f40b11011a6cb4"
+            ]
+        ]
+    },
+    {
+        "id": "7c29ed1115e3f635",
+        "type": "comment",
+        "z": "ff6463214ece834d",
+        "name": "名称：USB摄像头推理  版本：v0.0.1",
+        "info": "",
+        "x": 180,
+        "y": 40,
+        "wires": []
+    }
+]

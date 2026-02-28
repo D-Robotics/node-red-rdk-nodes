@@ -1,0 +1,20 @@
+{
+    "rdk-output": {
+        "names": {
+            "output": "Output"
+        },
+        "label": {
+            "name": "Name"
+        },
+        "placeholder": {
+            "name": ""
+        },
+        "errors": {
+        },
+        "status": {
+            
+        },
+        "hints": {
+        }
+    }
+}

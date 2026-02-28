@@ -1,0 +1,23 @@
+{
+    "rdk-videows": {
+        "names": {
+            "openurl": "视频WS"
+        },
+        "label": {
+            "name": "名称",
+            "fps": "采样率",
+            "width": "视频宽度"
+        },
+        "placeholder": {
+        },
+        "errors": {
+            "invalidUrl": "网址不完整，请检查！",
+            "postError": "POST请求出错！"
+        },
+        "status": {
+        },
+        "hints": {
+            "validUrl": "网址检查通过！"
+        }
+    }
+}

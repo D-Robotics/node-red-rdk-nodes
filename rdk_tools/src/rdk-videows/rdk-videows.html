@@ -1,0 +1,319 @@
+<script type="text/x-red" data-template-name="rdk-tools videows">
+
+    <div class="form-row node-input-name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="rdk-videows.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]rdk-videows.names.openurl" style="width: 296px;">
+    </div>
+
+    <div class="form-row node-input-fps">
+        <label for="node-input-fps"><i class="fa fa-camera"></i> <span data-i18n="rdk-videows.label.fps"></span></label>
+        <select id="node-input-fps" value="1">
+           <option value="1">1</option>
+           <option value="2">1/2</option>
+           <option value="3">1/3</option>
+           <option value="6">1/6</option>
+           <option value="15">1/15</option>
+           <option value="30">1/30</option>
+       </select>
+   </div>
+
+    <div class="form-row node-input-width">
+        <label for="node-input-width"><i class="fa fa-arrows-h"></i> <span data-i18n="rdk-videows.label.width"></span></label>
+		<input type="number" id="node-input-width">
+    </div>
+</script>
+
+<script type="text/javascript">
+(function() {
+    let urlCreator = window.URL || window.webkitURL;
+    const DEFAULT_WIDTH = 640;
+    let frameSampleCount = 1;
+    let frameCount = 0;
+    let connection = undefined;
+    let AwesomeMessage = undefined;
+    let $status = undefined;
+    let $videows = undefined;
+    let $videoCover = undefined;
+    let canvas = undefined;
+    let canvasContext = undefined;
+    let coverRender = undefined;
+    let nodeID = undefined;
+    let nodeObj = undefined;
+
+    let lastImageUrl = "";
+
+    function _loadNecessaries(){
+        console.log('loading necessaries...');
+        $.getScript('videows/js/protobuf.min.js')
+        .done(function(data, textStatus, jqxhr){
+            window.protobuf.load('videows/protos/x3.proto', function(err, root){
+                if(!err && root){
+                    AwesomeMessage = root.lookupType('x3.FrameMessage');
+                    $.getScript('videows/js/config.js')
+                    .done(function(data, textStatus, jqxhr){
+                        $.getScript('videows/js/processdata.js')
+                        .done(function(data, textStatus, jqxhr){
+                            $.getScript('videows/js/hcanvas.js')
+                            .done(function(data, textStatus, jqxhr){
+                                $.getScript('videows/js/renderdata.js')
+                                .done(function(data, textStatus, jqxhr){
+                                    console.log('renderer loaded')
+                                })
+                                .fail(function(data, textStatus, jqxhr){
+                                    console.log('failed loading hcanvas')
+                                })
+                            })
+                            .fail(function(data, textStatus, jqxhr){
+                                console.log('failed loading hcanvas')
+                            })
+                        })
+                        .fail(function(data, textStatus, jqxhr){
+                            console.log('failed loading process data')
+                        })
+                    })
+                    .fail(function(data, textStatus, jqxhr){
+                        console.log('load config failed')
+                    })
+                    
+                }
+            })
+        })
+        .fail(function(jqxhr, settings, exception){
+            console.log('failed loading protobuf')
+        })
+    }
+    _loadNecessaries();
+
+    function _postMessage(id, processedData){
+        const msg = {
+            topic: "videows-info",
+            payload: {
+                performance: {}
+            }
+        };
+
+        if(Object.hasOwnProperty.call(processedData, 'performance')){
+            const tempObj = msg.payload.performance;
+            if(Array.isArray(processedData.performance)){
+                processedData.performance.forEach((item) => {
+                    tempObj[item.type_] = item?.value_ ?? item.valueString_;
+                })
+            }
+            if(processedData?.smartMsgData){
+                msg.payload.result = processedData.smartMsgData;
+            }
+        }
+
+        $.ajax({
+            url: "videows/" + id,
+            type: "POST",
+            data: JSON.stringify(msg),
+            contentType: "application/json; charset=utf-8",
+            success: function (resp) {
+                // console.log('post a message')
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('post error')
+            }
+        });
+    }
+
+    function setIframe(id, link, node){
+        $videows = document.getElementById('videows-' + id);
+        if (!$videows) {
+            const $container = document.getElementById(id);
+            if (!$container) { return };
+            // $container.style.width = 640;
+            // $container.style.height = 500;
+
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.setAttribute('style', 'fill:red; font-size: 18px;');
+            text.setAttribute('x', '1');
+            text.setAttribute('y', '70');
+            $status = text;
+            $container.insertBefore(text, $container.lastChild.nextSibling);
+
+            const bubble = document.createElementNS("http://www.w3.org/2000/svg", 'polyline');
+            bubble.setAttribute('id', 'bubble-' + id);
+            bubble.setAttribute('style', 'fill:transparent');
+            bubble.setAttribute('stroke', '#999999');
+            $container.insertBefore(bubble, $container.lastChild.nextSibling);
+
+            const img = document.createElementNS("http://www.w3.org/2000/svg", 'image');
+            img.setAttribute('id', 'videows-' + id);
+            img.setAttribute('x', '1');
+            img.setAttribute('y', '47');
+            // img.style.objectFit = 'fill';
+
+            $container.insertBefore(img, $container.lastChild.nextSibling);
+            $videows = img;
+
+            canvas = document.createElement('canvas');
+            canvasContext = canvas.getContext('2d');
+            coverRender = new RenderFrame(canvas);
+        }
+
+        $videoCover = document.getElementById('video-cover-' + id);
+        if(!$videoCover){
+            const $container = document.getElementById(id);
+            if (!$container) { return };
+
+            const img = document.createElementNS("http://www.w3.org/2000/svg", 'image');
+            img.setAttribute('id', 'video-cover-' + id);
+            img.setAttribute('x', '1');
+            img.setAttribute('y', '47');
+
+            $container.insertBefore(img, $container.lastChild.nextSibling);
+            $videoCover = img;
+        }
+
+    }
+
+    function connectWs(link){
+        const url = `ws://${window.location.hostname}:8080`;
+
+        connection = new window.WebSocket(url);
+        connection.binaryType = 'arraybuffer';
+
+        connection.onopen = function(){
+            console.log('connection open')
+            if($status){
+                $status.textContent = '';
+            }
+        }
+
+        connection.onmessage = function(data){
+            if(AwesomeMessage){
+                const processedData = transformData(data.data, AwesomeMessage);
+                _postMessage(nodeID, processedData);
+                // console.log(processedData)
+                if(nodeObj.active && processedData.imageBlob && frameCount%frameSampleCount === 0){
+                    frameCount = 0;
+                    const imageUrl = urlCreator.createObjectURL(processedData.imageBlob);
+                    if($videows){
+                        $videows.style.width = (processedData.imageWidth || $videows.style.width || nodeObj.width || DEFAULT_WIDTH);
+                        $videows.style.height = (processedData.imageHeight || $videows.style.height || nodeObj.width * processedData.imageHeight / processedData.imageWidth);
+                        let width = $videows.style.width;
+                        let height = $videows.style.height;
+                        $videoCover.style.width = width;
+                        $videoCover.style.height = height;
+                        canvas.setAttribute('width', width);
+                        canvas.setAttribute('height', height);
+                        // canvas.width = width;
+                        // canvas.height = height;
+
+                        let videoBBox = $videows.getBBox();
+                        videoBBox.x = 1;
+                        videoBBox.y = 47;
+                        videoBBox.width = width;
+                        videoBBox.height = height;
+                        // $videows.style.objectFit = 'fill';
+                        $videows.setAttribute('href', imageUrl);
+                        // console.log($videows);
+                        
+                        coverRender.renderFrameStart(processedData);
+                        $videoCover.setAttribute('href', canvas.toDataURL('image/png'));
+                        if(lastImageUrl != ""){
+                            urlCreator.revokeObjectURL(lastImageUrl);
+                            console.log('after revoke', lastImageUrl);
+                            lastImageUrl = "";
+                        }
+                        lastImageUrl = imageUrl;
+                    }
+                }
+                frameCount++;
+                delete data;
+            }
+        }
+
+        connection.onerror = function(e){
+            console.log('connection error', e)
+            if($status){
+                $status.textContent = '连接出错，正在重连。。。';
+                setTimeout(() => {
+                    connectWs(link);
+                }, 5000)
+            }
+        }
+
+        connection.onclose = function(){
+            console.log('connection close')
+            connection.close();
+            connection = undefined;
+
+            if($videows){
+                $videows.setAttribute('href', '');
+            }
+            if($videoCover){
+                $videoCover.setAttribute('href', '');
+            }
+        }
+    }
+
+    RED.comms.subscribe("videows-url", function(topic, params){
+        if(params.link.indexOf('{host}') >= 0){
+            params.link = params.link.replace('{host}', window.location.hostname);
+        }
+
+        console.log('params: ', params)
+        nodeID = params.id;
+        nodeObj = RED.nodes.node(params.id);
+        frameSampleCount = parseInt(nodeObj.fps);
+        setIframe(params.id, params.link, RED.nodes.node(params.id));
+        if(!connection){
+            connectWs(params.link);
+        }
+
+        _postMessage(nodeID, { payload: 'test'});
+    });
+
+    RED.nodes.registerType("rdk-tools videows",{
+        category: "RDK Tools",
+        color: "#FF804A",
+        defaults: {
+            name: {value:""},
+            fps: {value:"1", required:true},
+            width: {
+                value: DEFAULT_WIDTH,
+                required: true,
+                validate: function (v) {
+                    return !v || !isNaN(parseInt(v, 10));
+                }
+            },
+            active: {
+                value: true
+            }
+        },
+        inputs:1,
+        outputs:3,
+        align: 'right',
+        icon: "videows.svg",
+        button: {
+            toggle: 'active',
+            onclick: function(){
+                const label = this.name || "videows";
+                var node = this;
+                if($videows){
+                    $videows.style.visibility = node.active ? 'visible' : 'hidden';
+                }
+            }
+        },
+        paletteLabel: function() {
+            return this._("rdk-videows.names.openurl");
+        },
+        oneditprepare: function() {},
+        label: function() {
+            return this.name || this._("rdk-videows.names.openurl");
+        }
+    });
+
+    // RED.events.on('workspace:change', function(event){
+    //     console.log('change workspace', event.id);
+    // })
+
+    // RED.events.on('runtime-event', function(event){
+    //     console.log('runtime event', event.id)
+    // })
+
+})()
+</script>

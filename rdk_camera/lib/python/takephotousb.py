@@ -27,18 +27,41 @@ def latest_buffer(cap):
         t1 = perf_counter()
         _ ,frame = cap.read()
         t2 = perf_counter()
-        #print('interval: ', t2 - t1)
-        if (t2 - t1) > 0.01:
+        # print('interval: ', t2 - t1)
+        interval = t2 - t1
+        if interval > 0.03:
             return frame
 
 def get_datetime_str():
     now = datetime.datetime.now()
     return now.strftime('%Y%m%d-%H%M%S')
 
+def is_usb_camera(device):
+    try:
+        cap = cv2.VideoCapture(device)
+        if not cap.isOpened():
+            return False
+        cap.release()
+        return True
+    except Exception:
+        return False
+
+def find_first_usb_camera():
+    video_devices = [os.path.join('/dev', dev) for dev in os.listdir('/dev') if dev.startswith('video')]
+    for dev in video_devices:
+        if is_usb_camera(dev):
+            return dev
+    return None
+
 def start_camera():
-    cap = cv2.VideoCapture(8)
+    video_device = find_first_usb_camera()
+    if video_device is None:
+        print('failed')
+        sys.exit(-1)
+    cap = cv2.VideoCapture(video_device)
     if(not cap.isOpened()):
-        return cap
+        print('failed')
+        sys.exit(-1)
     codec = cv2.VideoWriter_fourcc( 'M', 'J', 'P', 'G' )
     cap.set(cv2.CAP_PROP_FOURCC, codec)
     cap.set(cv2.CAP_PROP_FPS, 10)
@@ -100,5 +123,5 @@ def take_photo():
             cap.release()
     cap.release()
 
-
-take_photo()
+if __name__ == '__main__':
+    take_photo()

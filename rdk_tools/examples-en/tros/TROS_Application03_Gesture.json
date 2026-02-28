@@ -1,0 +1,921 @@
+[
+    {
+        "id": "23061a35c7794c08",
+        "type": "tab",
+        "label": "TROS Gesture Detection (Application)",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "27893025aa91c2a2",
+        "type": "group",
+        "z": "23061a35c7794c08",
+        "name": "软件包智能更新",
+        "style": {
+            "fill": "#ffffbf",
+            "fill-opacity": "0.46",
+            "label": true
+        },
+        "nodes": [
+            "a8530c32a57a5217",
+            "d1e5c91f4aca552c",
+            "309bf26deb0d8c8a"
+        ],
+        "x": 334,
+        "y": 79,
+        "w": 592,
+        "h": 82
+    },
+    {
+        "id": "4cc5cc61baa74e3f",
+        "type": "group",
+        "z": "23061a35c7794c08",
+        "name": "核心控制和运行",
+        "style": {
+            "fill": "#e3f3d3",
+            "fill-opacity": "0.5",
+            "label": true
+        },
+        "nodes": [
+            "c464500550671c5c",
+            "6228b606fd287f3a"
+        ],
+        "x": 334,
+        "y": 239,
+        "w": 412,
+        "h": 82
+    },
+    {
+        "id": "9d27a41302ec1764",
+        "type": "group",
+        "z": "23061a35c7794c08",
+        "name": "结果可视化",
+        "style": {
+            "fill": "#bfdbef",
+            "fill-opacity": "0.47",
+            "label": true
+        },
+        "nodes": [
+            "e1a1a817ada793be",
+            "fb707f9ff205afa3",
+            "2b8daf8d30f55998"
+        ],
+        "x": 334,
+        "y": 379,
+        "w": 412,
+        "h": 129.5
+    },
+    {
+        "id": "1b8d2e66c36cc3ed",
+        "type": "comment",
+        "z": "23061a35c7794c08",
+        "name": "名称：TROS应用 手势识别",
+        "info": "",
+        "x": 150,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "1a270d021221098f",
+        "type": "inject",
+        "z": "23061a35c7794c08",
+        "name": "了解更多",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/body/hand_gesture_detection",
+        "payloadType": "str",
+        "x": 380,
+        "y": 40,
+        "wires": [
+            [
+                "46588d76b50e4888"
+            ]
+        ]
+    },
+    {
+        "id": "46588d76b50e4888",
+        "type": "rdk-tools openurl",
+        "z": "23061a35c7794c08",
+        "name": "",
+        "x": 560,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "19a9321d64871010",
+        "type": "comment",
+        "z": "23061a35c7794c08",
+        "name": "注意：选择对应的摄像头类型",
+        "info": "",
+        "x": 160,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "1198a93a76be4d25",
+        "type": "inject",
+        "z": "23061a35c7794c08",
+        "name": "启动（USB摄像头）",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "camera",
+                "v": "usb",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "iso",
+        "payloadType": "date",
+        "x": 190,
+        "y": 240,
+        "wires": [
+            [
+                "c464500550671c5c",
+                "e1a1a817ada793be"
+            ]
+        ]
+    },
+    {
+        "id": "4853b2c410708c58",
+        "type": "inject",
+        "z": "23061a35c7794c08",
+        "name": "启动（MIPI摄像头）",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "mipi",
+        "payload": "iso",
+        "payloadType": "date",
+        "x": 190,
+        "y": 280,
+        "wires": [
+            [
+                "c464500550671c5c",
+                "e1a1a817ada793be"
+            ]
+        ]
+    },
+    {
+        "id": "cc126a6dbd098ac5",
+        "type": "inject",
+        "z": "23061a35c7794c08",
+        "name": "关闭",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 320,
+        "wires": [
+            [
+                "6228b606fd287f3a"
+            ]
+        ]
+    },
+    {
+        "id": "cbd3b3e43506b099",
+        "type": "comment",
+        "z": "23061a35c7794c08",
+        "name": "注意：使用结束后请主动关闭",
+        "info": "",
+        "x": 160,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "a8530c32a57a5217",
+        "type": "rdk-tools smartupdate",
+        "z": "23061a35c7794c08",
+        "g": "27893025aa91c2a2",
+        "name": "",
+        "x": 420,
+        "y": 120,
+        "wires": [
+            [
+                "d1e5c91f4aca552c"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "d1e5c91f4aca552c",
+        "type": "change",
+        "z": "23061a35c7794c08",
+        "g": "27893025aa91c2a2",
+        "name": "更新提示",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "智能更新已完成",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 620,
+        "y": 120,
+        "wires": [
+            [
+                "309bf26deb0d8c8a"
+            ]
+        ]
+    },
+    {
+        "id": "309bf26deb0d8c8a",
+        "type": "rdk-tools texttoaudio",
+        "z": "23061a35c7794c08",
+        "g": "27893025aa91c2a2",
+        "name": "",
+        "x": 830,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "c464500550671c5c",
+        "type": "change",
+        "z": "23061a35c7794c08",
+        "g": "4cc5cc61baa74e3f",
+        "name": "配置运行参数",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "launch",
+                "pt": "msg",
+                "to": "hand_gesture_detection hand_gesture_detection.launch.py",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "insert",
+                "pt": "msg",
+                "to": "$join(['export CAM_TYPE=', msg.camera, ' && cp -r /opt/tros/${TROS_DISTRO}/lib/mono2d_body_detection/config/ .', ' && cp -r /opt/tros/${TROS_DISTRO}/lib/hand_lmk_detection/config/ .', ' && cp -r /opt/tros/${TROS_DISTRO}/lib/hand_gesture_detection/config/ .'])",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 280,
+        "wires": [
+            [
+                "6228b606fd287f3a"
+            ]
+        ]
+    },
+    {
+        "id": "6228b606fd287f3a",
+        "type": "rdk-tools checkexecute",
+        "z": "23061a35c7794c08",
+        "g": "4cc5cc61baa74e3f",
+        "name": "",
+        "x": 650,
+        "y": 280,
+        "wires": [
+            [
+                "ea8ecd01f9e7f53e"
+            ],
+            [
+                "030b65f1eacd0294"
+            ]
+        ]
+    },
+    {
+        "id": "ea8ecd01f9e7f53e",
+        "type": "debug",
+        "z": "23061a35c7794c08",
+        "name": "正确执行提示",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "030b65f1eacd0294",
+        "type": "debug",
+        "z": "23061a35c7794c08",
+        "name": "错误执行提示",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "60efbddf407e4957",
+        "type": "debug",
+        "z": "23061a35c7794c08",
+        "name": "算法结果输出",
+        "active": false,
+        "tosidebar": false,
+        "console": true,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "$join(['Gesture: ', msg.attributes.attributes[0].value])",
+        "statusType": "jsonata",
+        "x": 860,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "32fe93b91909de2f",
+        "type": "debug",
+        "z": "23061a35c7794c08",
+        "name": "性能信息输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "e1a1a817ada793be",
+        "type": "delay",
+        "z": "23061a35c7794c08",
+        "g": "9d27a41302ec1764",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "12",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 420,
+        "y": 420,
+        "wires": [
+            [
+                "fb707f9ff205afa3"
+            ]
+        ]
+    },
+    {
+        "id": "fb707f9ff205afa3",
+        "type": "change",
+        "z": "23061a35c7794c08",
+        "g": "9d27a41302ec1764",
+        "name": "设定链接",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "ws://{host}:8080",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 420,
+        "y": 460,
+        "wires": [
+            [
+                "2b8daf8d30f55998"
+            ]
+        ]
+    },
+    {
+        "id": "2b8daf8d30f55998",
+        "type": "rdk-tools videows",
+        "z": "23061a35c7794c08",
+        "g": "9d27a41302ec1764",
+        "name": "视频预览",
+        "fps": "3",
+        "width": 640,
+        "active": true,
+        "x": 640,
+        "y": 460,
+        "wires": [
+            [
+                "60efbddf407e4957",
+                "e450a64144d61776"
+            ],
+            [
+                "32fe93b91909de2f"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "ea0d6f0dedb07b54",
+        "type": "inject",
+        "z": "23061a35c7794c08",
+        "name": "检查更新",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 120,
+        "wires": [
+            [
+                "a8530c32a57a5217"
+            ]
+        ]
+    },
+    {
+        "id": "b0f032ffad30d858",
+        "type": "inject",
+        "z": "23061a35c7794c08",
+        "name": "打开可视化页面",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 180,
+        "y": 540,
+        "wires": [
+            [
+                "ee39686c51cc2a15"
+            ]
+        ]
+    },
+    {
+        "id": "ee39686c51cc2a15",
+        "type": "rdk-tools openurl",
+        "z": "23061a35c7794c08",
+        "name": "",
+        "x": 380,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "e450a64144d61776",
+        "type": "switch",
+        "z": "23061a35c7794c08",
+        "name": "过滤出“手”",
+        "property": "attributes.type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "hand",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 430,
+        "y": 620,
+        "wires": [
+            [
+                "b995328e76d1cb7b"
+            ]
+        ]
+    },
+    {
+        "id": "b995328e76d1cb7b",
+        "type": "switch",
+        "z": "23061a35c7794c08",
+        "name": "过滤出手势",
+        "property": "attributes.attributes.length",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 430,
+        "y": 660,
+        "wires": [
+            [
+                "bfa0e71e690abbfd"
+            ]
+        ]
+    },
+    {
+        "id": "bfa0e71e690abbfd",
+        "type": "switch",
+        "z": "23061a35c7794c08",
+        "name": "过滤手势类别",
+        "property": "attributes.attributes[0].type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "gesture",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 440,
+        "y": 700,
+        "wires": [
+            [
+                "9b79a74ba29e2d43"
+            ]
+        ]
+    },
+    {
+        "id": "9b79a74ba29e2d43",
+        "type": "change",
+        "z": "23061a35c7794c08",
+        "name": "提取手势类别",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "attributes.attributes[0].value",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 740,
+        "wires": [
+            [
+                "ba6479e7065685e0",
+                "4053517b20413f65"
+            ]
+        ]
+    },
+    {
+        "id": "ba6479e7065685e0",
+        "type": "switch",
+        "z": "23061a35c7794c08",
+        "name": "分离手势",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Victory",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Plam",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Awesome",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Thumb Up",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "ThumbLeft",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "ThumbRight",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Okay",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 7,
+        "x": 440,
+        "y": 1060,
+        "wires": [
+            [
+                "cb2c0bb1df5fd1e0"
+            ],
+            [],
+            [
+                "cb2c0bb1df5fd1e0"
+            ],
+            [],
+            [],
+            [],
+            [
+                "cb2c0bb1df5fd1e0"
+            ]
+        ]
+    },
+    {
+        "id": "7ed4d4537326d029",
+        "type": "comment",
+        "z": "23061a35c7794c08",
+        "name": "手势1: 胜利",
+        "info": "",
+        "x": 230,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "dbb90d76801b7b52",
+        "type": "comment",
+        "z": "23061a35c7794c08",
+        "name": "手势2: 手掌",
+        "info": "",
+        "x": 230,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "11c49ffaf20ccf1f",
+        "type": "comment",
+        "z": "23061a35c7794c08",
+        "name": "手势3: 好极了",
+        "info": "",
+        "x": 230,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "53a0f0c654467dcf",
+        "type": "comment",
+        "z": "23061a35c7794c08",
+        "name": "手势4: 大拇指向上",
+        "info": "",
+        "x": 250,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "a665e92bd257d9db",
+        "type": "comment",
+        "z": "23061a35c7794c08",
+        "name": "手势5: 大拇指向左",
+        "info": "",
+        "x": 250,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "16f35d8b04b808d8",
+        "type": "comment",
+        "z": "23061a35c7794c08",
+        "name": "手势6: 大拇指向右",
+        "info": "",
+        "x": 250,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "2fda307060acde4b",
+        "type": "comment",
+        "z": "23061a35c7794c08",
+        "name": "手势7: OK",
+        "info": "",
+        "x": 220,
+        "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "cb2c0bb1df5fd1e0",
+        "type": "rbe",
+        "z": "23061a35c7794c08",
+        "name": "过滤相同手势",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 460,
+        "y": 1180,
+        "wires": [
+            [
+                "e8a01324d3085fd6"
+            ]
+        ]
+    },
+    {
+        "id": "e8a01324d3085fd6",
+        "type": "rdk-tools texttoaudio",
+        "z": "23061a35c7794c08",
+        "name": "",
+        "x": 670,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "4053517b20413f65",
+        "type": "rdk-tools output",
+        "z": "23061a35c7794c08",
+        "name": "",
+        "active": true,
+        "x": 420,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "ff05fbf638699c40",
+        "type": "change",
+        "z": "23061a35c7794c08",
+        "name": "set1",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "1",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 430,
+        "y": 1280,
+        "wires": [
+            [
+                "74c0dfc9c7bdfd48"
+            ]
+        ]
+    },
+    {
+        "id": "c9586d13495e589e",
+        "type": "change",
+        "z": "23061a35c7794c08",
+        "name": "set0",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "0",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 430,
+        "y": 1320,
+        "wires": [
+            [
+                "74c0dfc9c7bdfd48"
+            ]
+        ]
+    },
+    {
+        "id": "74c0dfc9c7bdfd48",
+        "type": "rbe",
+        "z": "23061a35c7794c08",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 590,
+        "y": 1300,
+        "wires": [
+            [
+                "ee589bdec84d99a4"
+            ]
+        ]
+    },
+    {
+        "id": "ee589bdec84d99a4",
+        "type": "rdk-gpio out",
+        "z": "23061a35c7794c08",
+        "name": "",
+        "pin": "23",
+        "set": "",
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "bcm": true,
+        "x": 760,
+        "y": 1300,
+        "wires": []
+    },
+    {
+        "id": "b728d31c0e18b1a4",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-rdk-tools": "0.0.27",
+            "node-red-node-rdk-gpio": "0.0.2"
+        }
+    }
+]

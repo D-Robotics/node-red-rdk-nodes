@@ -1,0 +1,197 @@
+[
+    {
+        "id": "c2299d4a36a5947d",
+        "type": "tab",
+        "label": "Vision Unet",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "33e3335411349149",
+        "type": "inject",
+        "z": "c2299d4a36a5947d",
+        "name": "输入图片",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "/app/pydev_demo/04_segment_sample/segmentation.png",
+        "payloadType": "str",
+        "x": 120,
+        "y": 80,
+        "wires": [
+            [
+                "769112082b5c9d68",
+                "ca561e1a5a3e7f48"
+            ]
+        ]
+    },
+    {
+        "id": "769112082b5c9d68",
+        "type": "jimp-image",
+        "z": "c2299d4a36a5947d",
+        "name": "",
+        "data": "payload",
+        "dataType": "msg",
+        "ret": "img",
+        "parameter1": "",
+        "parameter1Type": "msg",
+        "parameter2": "",
+        "parameter2Type": "msg",
+        "parameter3": "",
+        "parameter3Type": "msg",
+        "parameter4": "",
+        "parameter4Type": "msg",
+        "parameter5": "",
+        "parameter5Type": "msg",
+        "parameter6": "",
+        "parameter6Type": "msg",
+        "parameter7": "",
+        "parameter7Type": "msg",
+        "parameter8": "",
+        "parameter8Type": "msg",
+        "sendProperty": "payload",
+        "sendPropertyType": "msg",
+        "parameterCount": 0,
+        "jimpFunction": "none",
+        "selectedJimpFunction": {},
+        "x": 330,
+        "y": 80,
+        "wires": [
+            [
+                "f4bf1fe1a34b8805"
+            ]
+        ]
+    },
+    {
+        "id": "f4bf1fe1a34b8805",
+        "type": "image viewer",
+        "z": "c2299d4a36a5947d",
+        "name": "",
+        "width": 160,
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 610,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "33002f9ad1ea9a1c",
+        "type": "jimp-image",
+        "z": "c2299d4a36a5947d",
+        "name": "",
+        "data": "payload",
+        "dataType": "msg",
+        "ret": "img",
+        "parameter1": "",
+        "parameter1Type": "msg",
+        "parameter2": "",
+        "parameter2Type": "msg",
+        "parameter3": "",
+        "parameter3Type": "msg",
+        "parameter4": "",
+        "parameter4Type": "msg",
+        "parameter5": "",
+        "parameter5Type": "msg",
+        "parameter6": "",
+        "parameter6Type": "msg",
+        "parameter7": "",
+        "parameter7Type": "msg",
+        "parameter8": "",
+        "parameter8Type": "msg",
+        "sendProperty": "payload",
+        "sendPropertyType": "msg",
+        "parameterCount": 0,
+        "jimpFunction": "none",
+        "selectedJimpFunction": {},
+        "x": 170,
+        "y": 220,
+        "wires": [
+            [
+                "7371b18461fe783a"
+            ]
+        ]
+    },
+    {
+        "id": "7371b18461fe783a",
+        "type": "image viewer",
+        "z": "c2299d4a36a5947d",
+        "name": "",
+        "width": "640",
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 330,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7a1846135c1d89e0",
+        "type": "debug",
+        "z": "c2299d4a36a5947d",
+        "name": "检测结果",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "f5b5e8381a3ede05",
+        "type": "comment",
+        "z": "c2299d4a36a5947d",
+        "name": "名称：Unet图像算法示例",
+        "info": "",
+        "x": 150,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "a7814e2e62c17e7d",
+        "type": "comment",
+        "z": "c2299d4a36a5947d",
+        "name": "注意：需要安装rdk-tools以及image-tools",
+        "info": "",
+        "x": 480,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "ca561e1a5a3e7f48",
+        "type": "rdk-vision unet",
+        "z": "c2299d4a36a5947d",
+        "name": "",
+        "x": 210,
+        "y": 160,
+        "wires": [
+            [
+                "33002f9ad1ea9a1c"
+            ],
+            [
+                "7a1846135c1d89e0"
+            ]
+        ]
+    }
+]

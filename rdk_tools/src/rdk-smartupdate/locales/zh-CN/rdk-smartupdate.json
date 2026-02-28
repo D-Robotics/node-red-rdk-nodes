@@ -13,9 +13,9 @@
             "badEnv": "依赖缺失，请检查！",
             "badInput": "输入有误，请检查！",
             "badOutput": "输出有误，请检查！",
-            "updating": "更新时发生错误！",
-            "upgrading": "升级时发生错误！",
-            "autoremoving": "清理时发生错误！"
+            "updating": "更新时遇到错误，继续升级！",
+            "upgrading": "升级时遇到错误，继续清理！",
+            "autoremoving": "清理时遇到错误，完成自动升级！"
         },
         "status": {
             "working": "运行中",

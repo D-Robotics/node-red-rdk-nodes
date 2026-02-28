@@ -1,0 +1,235 @@
+[
+    {
+        "id": "19b84c272522670e",
+        "type": "tab",
+        "label": "Vision YOLOv3",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a5abb948775e398b",
+        "type": "inject",
+        "z": "19b84c272522670e",
+        "name": "输入图片",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "/app/pydev_demo/06_yolov3_sample/kite.jpg",
+        "payloadType": "str",
+        "x": 160,
+        "y": 100,
+        "wires": [
+            [
+                "f56a0aa8e130027b",
+                "46f489babe85bce0"
+            ]
+        ]
+    },
+    {
+        "id": "f56a0aa8e130027b",
+        "type": "jimp-image",
+        "z": "19b84c272522670e",
+        "name": "",
+        "data": "payload",
+        "dataType": "msg",
+        "ret": "img",
+        "parameter1": "",
+        "parameter1Type": "msg",
+        "parameter2": "",
+        "parameter2Type": "msg",
+        "parameter3": "",
+        "parameter3Type": "msg",
+        "parameter4": "",
+        "parameter4Type": "msg",
+        "parameter5": "",
+        "parameter5Type": "msg",
+        "parameter6": "",
+        "parameter6Type": "msg",
+        "parameter7": "",
+        "parameter7Type": "msg",
+        "parameter8": "",
+        "parameter8Type": "msg",
+        "sendProperty": "payload",
+        "sendPropertyType": "msg",
+        "parameterCount": 0,
+        "jimpFunction": "none",
+        "selectedJimpFunction": {},
+        "x": 370,
+        "y": 100,
+        "wires": [
+            [
+                "abb01607714d342e"
+            ]
+        ]
+    },
+    {
+        "id": "abb01607714d342e",
+        "type": "image viewer",
+        "z": "19b84c272522670e",
+        "name": "",
+        "width": 160,
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 650,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "46f489babe85bce0",
+        "type": "rdk-vision yolov3",
+        "z": "19b84c272522670e",
+        "name": "",
+        "x": 240,
+        "y": 180,
+        "wires": [
+            [
+                "9e181daac60ce2e0"
+            ],
+            [
+                "bafc0ce53d135742"
+            ]
+        ]
+    },
+    {
+        "id": "9e181daac60ce2e0",
+        "type": "jimp-image",
+        "z": "19b84c272522670e",
+        "name": "",
+        "data": "payload",
+        "dataType": "msg",
+        "ret": "img",
+        "parameter1": "",
+        "parameter1Type": "msg",
+        "parameter2": "",
+        "parameter2Type": "msg",
+        "parameter3": "",
+        "parameter3Type": "msg",
+        "parameter4": "",
+        "parameter4Type": "msg",
+        "parameter5": "",
+        "parameter5Type": "msg",
+        "parameter6": "",
+        "parameter6Type": "msg",
+        "parameter7": "",
+        "parameter7Type": "msg",
+        "parameter8": "",
+        "parameter8Type": "msg",
+        "sendProperty": "payload",
+        "sendPropertyType": "msg",
+        "parameterCount": 0,
+        "jimpFunction": "none",
+        "selectedJimpFunction": {},
+        "x": 210,
+        "y": 240,
+        "wires": [
+            [
+                "00f757eca95c48cd"
+            ]
+        ]
+    },
+    {
+        "id": "00f757eca95c48cd",
+        "type": "image viewer",
+        "z": "19b84c272522670e",
+        "name": "",
+        "width": "640",
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 370,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bafc0ce53d135742",
+        "type": "debug",
+        "z": "19b84c272522670e",
+        "name": "检测结果",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 500,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "53dc48f1c60bfb92",
+        "type": "comment",
+        "z": "19b84c272522670e",
+        "name": "名称：YOLOv3图像算法示例",
+        "info": "",
+        "x": 180,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "2d3f577334d8c5d9",
+        "type": "comment",
+        "z": "19b84c272522670e",
+        "name": "注意：需要安装rdk-tools以及image-tools",
+        "info": "",
+        "x": 500,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "30d3a8b8b6fce51d",
+        "type": "inject",
+        "z": "19b84c272522670e",
+        "name": "了解更多",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://developer.horizon.cc/documents_rdk/python_development/pydev_dnn_demo/static_image",
+        "payloadType": "str",
+        "x": 760,
+        "y": 20,
+        "wires": [
+            [
+                "bcce3c0176671331"
+            ]
+        ]
+    },
+    {
+        "id": "bcce3c0176671331",
+        "type": "rdk-tools openurl",
+        "z": "19b84c272522670e",
+        "name": "",
+        "x": 900,
+        "y": 20,
+        "wires": []
+    }
+]

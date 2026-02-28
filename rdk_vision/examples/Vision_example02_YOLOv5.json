@@ -1,0 +1,197 @@
+[
+    {
+        "id": "72588d3fde6dffde",
+        "type": "tab",
+        "label": "Vision YOLOv5",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "ce6a7e074a773ce9",
+        "type": "inject",
+        "z": "72588d3fde6dffde",
+        "name": "输入图片",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "/app/pydev_demo/06_yolov3_sample/kite.jpg",
+        "payloadType": "str",
+        "x": 140,
+        "y": 80,
+        "wires": [
+            [
+                "f37aaef61d230837",
+                "f029a35b83076180"
+            ]
+        ]
+    },
+    {
+        "id": "f37aaef61d230837",
+        "type": "jimp-image",
+        "z": "72588d3fde6dffde",
+        "name": "",
+        "data": "payload",
+        "dataType": "msg",
+        "ret": "img",
+        "parameter1": "",
+        "parameter1Type": "msg",
+        "parameter2": "",
+        "parameter2Type": "msg",
+        "parameter3": "",
+        "parameter3Type": "msg",
+        "parameter4": "",
+        "parameter4Type": "msg",
+        "parameter5": "",
+        "parameter5Type": "msg",
+        "parameter6": "",
+        "parameter6Type": "msg",
+        "parameter7": "",
+        "parameter7Type": "msg",
+        "parameter8": "",
+        "parameter8Type": "msg",
+        "sendProperty": "payload",
+        "sendPropertyType": "msg",
+        "parameterCount": 0,
+        "jimpFunction": "none",
+        "selectedJimpFunction": {},
+        "x": 350,
+        "y": 80,
+        "wires": [
+            [
+                "3d5b76a98a30b7a0"
+            ]
+        ]
+    },
+    {
+        "id": "3d5b76a98a30b7a0",
+        "type": "image viewer",
+        "z": "72588d3fde6dffde",
+        "name": "",
+        "width": 160,
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 630,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5af949918a41f881",
+        "type": "jimp-image",
+        "z": "72588d3fde6dffde",
+        "name": "",
+        "data": "payload",
+        "dataType": "msg",
+        "ret": "img",
+        "parameter1": "",
+        "parameter1Type": "msg",
+        "parameter2": "",
+        "parameter2Type": "msg",
+        "parameter3": "",
+        "parameter3Type": "msg",
+        "parameter4": "",
+        "parameter4Type": "msg",
+        "parameter5": "",
+        "parameter5Type": "msg",
+        "parameter6": "",
+        "parameter6Type": "msg",
+        "parameter7": "",
+        "parameter7Type": "msg",
+        "parameter8": "",
+        "parameter8Type": "msg",
+        "sendProperty": "payload",
+        "sendPropertyType": "msg",
+        "parameterCount": 0,
+        "jimpFunction": "none",
+        "selectedJimpFunction": {},
+        "x": 190,
+        "y": 220,
+        "wires": [
+            [
+                "62878f25f9e0bd50"
+            ]
+        ]
+    },
+    {
+        "id": "62878f25f9e0bd50",
+        "type": "image viewer",
+        "z": "72588d3fde6dffde",
+        "name": "",
+        "width": "640",
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 350,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fe4e31b24c5867ca",
+        "type": "debug",
+        "z": "72588d3fde6dffde",
+        "name": "检测结果",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 480,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "f029a35b83076180",
+        "type": "rdk-vision yolov5",
+        "z": "72588d3fde6dffde",
+        "name": "",
+        "x": 220,
+        "y": 160,
+        "wires": [
+            [
+                "5af949918a41f881"
+            ],
+            [
+                "fe4e31b24c5867ca"
+            ]
+        ]
+    },
+    {
+        "id": "bc1af9c0ae51ff79",
+        "type": "comment",
+        "z": "72588d3fde6dffde",
+        "name": "名称：YOLOv5图像算法示例",
+        "info": "",
+        "x": 180,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "fdf9440fb61d8546",
+        "type": "comment",
+        "z": "72588d3fde6dffde",
+        "name": "注意：需要安装rdk-tools以及image-tools",
+        "info": "",
+        "x": 500,
+        "y": 20,
+        "wires": []
+    }
+]

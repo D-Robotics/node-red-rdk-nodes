@@ -1,0 +1,240 @@
+<script type="text/x-red" data-template-name="rdk-3d 3dcar">
+    <div class="form-row node-input-name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="rdk-3dcar.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]rdk-3drobot.names.3dcar" style="width: 296px;">
+    </div>
+</script>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@latest/build/three.module.min.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/"
+    }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@latest/build/three.module.min.js';
+import { DRACOLoader } from '/3dcar/js/loaders/DRACOLoader.js';
+import { GLTFLoader } from '/3dcar/js/loaders/GLTFLoader.js';
+
+(function() {
+    const width = 640;
+    const height = 480;
+    const states = [ 'Drive', 'Park', 'Reverse' ];
+
+    let flag = true;
+    let nodeID = '';
+    let $boxframe = undefined;
+    let offscreenCanvas = undefined;
+
+    let scene = undefined;
+    let camera = undefined;
+    let renderer = undefined;
+    let model = undefined;
+    let animations = undefined;
+    let clock = undefined;
+    let mixer = undefined;
+    let actions = {};
+    let wheels = [];
+    let grid = undefined;
+
+    let currentState = 'Park';
+    let previousAction = undefined;
+    let activeAction = undefined;
+
+    const createFrameImage = (id) => {
+        $boxframe = document.getElementById('boxframe-' + id);
+        if(!$boxframe){
+            const $container = document.getElementById(id);
+            if (!$container) { return };
+
+            const bubble = document.createElementNS("http://www.w3.org/2000/svg", 'polyline');
+            bubble.setAttribute('id', 'bubble-' + id);
+            bubble.setAttribute('style', 'fill:transparent');
+            bubble.setAttribute('stroke', '#999999');
+            $container.insertBefore(bubble, $container.lastChild.nextSibling);
+
+            const img = document.createElementNS("http://www.w3.org/2000/svg", 'image');
+            img.setAttribute('id', 'boxframe-' + id);
+            img.setAttribute('x', '1');
+            img.setAttribute('y', '47');
+
+            $container.insertBefore(img, $container.lastChild.nextSibling);
+            $boxframe = img;
+        }
+    }
+
+    const createOffscreenCanvas = () => {
+        if(!offscreenCanvas){
+            offscreenCanvas = document.createElement('canvas');
+            offscreenCanvas.width = width;
+            offscreenCanvas.height = height;
+        }
+
+        renderer = new THREE.WebGLRenderer({
+            canvas: offscreenCanvas,
+            antialias: true
+        });
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 0.85;
+
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color( 0xe0e0e0 );
+        scene.fog = new THREE.Fog( 0xe0e0e0, 20, 100 );
+
+        clock = new THREE.Clock();
+
+        camera = new THREE.PerspectiveCamera( 45, offscreenCanvas.width / offscreenCanvas.height, 0.25, 100 );
+        camera.position.set( 4.25, 1.4, - 4.5 );
+        camera.lookAt( 0, 0.5, 0 );
+
+        const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x8d8d8d, 3 );
+        hemiLight.position.set( 0, 20, 0 );
+        scene.add( hemiLight );
+
+        const dirLight = new THREE.DirectionalLight( 0xffffff, 3 );
+        dirLight.position.set( 0, 20, 10 );
+        scene.add( dirLight );
+
+        const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 2000, 2000 ), new THREE.MeshPhongMaterial( { color: 0xcbcbcb, depthWrite: false } ) );
+        mesh.rotation.x = - Math.PI / 2;
+        scene.add( mesh );
+
+        grid = new THREE.GridHelper( 20, 40, 0x000000, 0x000000 );
+        grid.material.opacity = 0.2;
+        grid.material.depthWrite = false;
+        grid.material.transparent = true;
+        scene.add( grid );
+
+        const bodyMaterial = new THREE.MeshPhysicalMaterial( {
+            color: 0xff0000, metalness: 1.0, roughness: 0.5, clearcoat: 1.0, clearcoatRoughness: 0.03
+        } );
+
+        const detailsMaterial = new THREE.MeshStandardMaterial( {
+            color: 0xffffff, metalness: 1.0, roughness: 0.5
+        } );
+
+        const glassMaterial = new THREE.MeshPhysicalMaterial( {
+            color: 0xffffff, metalness: 0.25, roughness: 0, transmission: 1.0
+        } );
+
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath( '/3dcar/js/decoders/gltf/' );
+
+
+        const loader = new GLTFLoader();
+        loader.setDRACOLoader( dracoLoader );
+        loader.load( '/3dcar/js/models/ferrari.glb', function ( gltf ) {
+            const carModel = gltf.scene.children[ 0 ];
+
+            model = gltf.scene.children[0];
+            scene.add( model );
+
+            console.log('model: ', model)
+
+            carModel.getObjectByName( 'body' ).material = bodyMaterial;
+
+            carModel.getObjectByName( 'rim_fl' ).material = detailsMaterial;
+            carModel.getObjectByName( 'rim_fr' ).material = detailsMaterial;
+            carModel.getObjectByName( 'rim_rr' ).material = detailsMaterial;
+            carModel.getObjectByName( 'rim_rl' ).material = detailsMaterial;
+            carModel.getObjectByName( 'trim' ).material = detailsMaterial;
+
+            carModel.getObjectByName( 'glass' ).material = glassMaterial;
+
+
+            wheels.push(
+                carModel.getObjectByName( 'wheel_fl' ),
+                carModel.getObjectByName( 'wheel_fr' ),
+                carModel.getObjectByName( 'wheel_rl' ),
+                carModel.getObjectByName( 'wheel_rr' )
+            );
+            // setTimeout(() => {
+            //     testAnimation();
+            // }, 5000)
+        }, undefined, function ( e ) {
+            console.error( e );
+        } );
+
+    }
+
+
+    function animate() {
+        requestAnimationFrame(animate);
+        flag = !flag;
+        if(!flag){
+            return;
+        }
+
+        const dt = clock.getDelta();
+
+        const time = - performance.now() / 1000;
+
+        if(currentState === 'Drive' || currentState === 'Reverse'){
+            const direction = currentState === 'Drive' ? 1 : -1;
+
+            for ( let i = 0; i < wheels.length; i ++ ) {
+
+                wheels[ i ].rotation.x = direction*time * Math.PI * 2;
+
+            }
+
+            grid.position.z = - direction*( time ) % 1;
+        }
+
+        
+
+        renderer.render(scene, camera);
+
+        if($boxframe){
+            offscreenCanvas.setAttribute('width', width);
+            offscreenCanvas.setAttribute('height', height);
+            $boxframe.setAttribute('href', offscreenCanvas.toDataURL('image/png'));
+        }
+    }
+
+    function testAnimation(){
+
+        setTimeout(() => {
+            testAnimation();
+        }, 5000)
+    }
+
+    RED.comms.subscribe("movecar", function(topic, move){
+        if(move !== currentState){
+            if(states.indexOf(move) >= 0){
+                currentState = move;
+            }
+        }
+    });
+        
+    RED.nodes.registerType("rdk-3d 3dcar",{
+        category: "RDK 3D Sim",
+        color: "#ff3019",
+        defaults: {
+            name: {value:""}
+        },
+        inputs:1,
+        outputs:0,
+        align: 'right',
+        icon: "car.svg",
+        paletteLabel: function() {
+            return this._("rdk-3dcar.names.3dcar");
+        },
+        oneditprepare: function() {},
+        label: function() {
+            if(nodeID === '' || !$boxframe){
+                nodeID = this.id;
+                createFrameImage(nodeID);
+                if($boxframe){
+                    createOffscreenCanvas();
+                    animate();
+                }
+            }
+            return this.name || this._("rdk-3dcar.names.3dcar");
+        }
+    });
+})()
+</script>

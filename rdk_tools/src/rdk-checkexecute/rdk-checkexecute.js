@@ -1,6 +1,7 @@
 module.exports = function(RED) {
     "use strict";
     var settings = RED.settings;
+    var fs = require('fs');
     var execSync = require("child_process").execSync;
     var exec = require("child_process").exec;
 
@@ -11,6 +12,13 @@ module.exports = function(RED) {
     var sourceCommand = 'source /opt/tros/setup.bash';
     var launchCommand = 'ros2 launch ';
     var runCommand = 'ros2 run ';
+    var VersionList = ['humble'];
+    var CurrentVersion = '';
+
+    if(fs.existsSync('/opt/tros/humble')){
+        sourceCommand = 'source /opt/tros/humble/setup.bash';
+        CurrentVersion = 'humble';
+    }
 
     function sleep(ms) {
         return new Promise((resolve) => {
@@ -30,6 +38,15 @@ module.exports = function(RED) {
             return;
         }
         return;
+    }
+
+    function needsAppendingVersion(name){
+        for(const version of VersionList){
+            if(name.indexOf(version) >= 0){
+                return false;
+            }
+        }
+        return true;
     }
 
     function RDKToolsCheckUpdateNode(config){
@@ -55,6 +72,11 @@ module.exports = function(RED) {
             var packageName = msg.payload;
             var launchName = msg.launch;
             var runName = msg.run;
+
+            if(needsAppendingVersion(packageName)){
+                packageName = packageName.replace('tros-', `tros-${CurrentVersion}-`);
+            }
+
             if(typeof packageName != 'string'){
                 node.status({fill:"red",shape:"dot",text:"rdk-checkexecute.errors.inputtype"});
             }
@@ -110,6 +132,7 @@ module.exports = function(RED) {
             else{
                 assembledCommand += launchName;
             }
+            assembledCommand += ' > /dev/null 2>&1';
             // console.log(assembledCommand);
             var childProcess = exec(assembledCommand, {
                 shell: '/bin/bash'

@@ -1,0 +1,500 @@
+[
+    {
+        "id": "mobilenet_unet_tab",
+        "type": "tab",
+        "label": "MobileNet_UNet 语义分割",
+        "disabled": false,
+        "info": "# MobileNet_UNet 语义分割\n\n## 功能介绍\n\nMobileNet_UNet语义分割算法，支持USB摄像头拍照、USB视频流和MIPI视频流三种模式。\n\n## 使用流程\n\n### 模式1：USB拍照分割\n1. **拍照**：点击\"📷 USB摄像头拍照\"按钮\n2. **自动分割**：系统会自动对照片进行MobileNet_UNet分割\n3. **查看结果**：分割结果会直接显示在Node-RED编辑器中\n\n### 模式2：USB视频流分割（实时）\n1. **启动视频流**：点击\"🎥 USB摄像头视频流\"按钮\n2. **查看可视化**：点击\"打开可视化页面\"在浏览器中查看实时分割结果\n3. **停止服务**：完成后点击\"停止所有服务\"\n\n### 模式3：MIPI视频流分割（实时）\n1. **启动视频流**：点击\"📹 MIPI摄像头视频流\"按钮\n2. **查看可视化**：点击\"打开可视化页面\"在浏览器中查看实时分割结果\n3. **停止服务**：完成后点击\"停止所有服务\"\n\n## 支持平台\n\n- RDK X5\n- RDK S100\n- RDK X3\n\n## 核心通信配置\n\n### WebSocket视频流\n- **视频流地址**: `http://{host}:8000`\n- **图像Topic**: `/image` (JPEG编码的图像流)\n- **性能**: 实时检测，延迟低\n\n## 注意事项\n\n- 拍照模式的分割结果会自动保存到 `/tmp/mobilenet_unet/` 目录\n- 视频流模式需要先启动视频流，再打开可视化页面\n- 分割过程需要几秒钟时间，请耐心等待",
+        "env": []
+    },
+    {
+        "id": "global_config_mobilenet_unet",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-rdk-camera": "0.0.17",
+            "node-red-contrib-image-tools": "2.1.1"
+        }
+    },
+    {
+        "id": "comment_photo_section",
+        "type": "comment",
+        "z": "mobilenet_unet_tab",
+        "name": "📷 拍照分割流程",
+        "info": "点击拍照按钮，系统会自动进行分割并显示结果",
+        "x": 150,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "inject_take_photo",
+        "type": "inject",
+        "z": "mobilenet_unet_tab",
+        "name": "📷 USB摄像头拍照",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "rdk_camera_take_photo"
+            ]
+        ]
+    },
+    {
+        "id": "rdk_camera_take_photo",
+        "type": "rdk-camera takephoto",
+        "z": "mobilenet_unet_tab",
+        "cameratype": "1",
+        "filemode": "2",
+        "filename": "photo.jpg",
+        "filedefpath": "0",
+        "filepath": "/tmp/mobilenet_unet",
+        "fileformat": "jpeg",
+        "resolution": "2",
+        "rotation": "0",
+        "fliph": "0",
+        "flipv": "0",
+        "brightness": "50",
+        "contrast": "0",
+        "sharpness": "0",
+        "quality": "80",
+        "imageeffect": "none",
+        "exposuremode": "auto",
+        "iso": "0",
+        "agcwait": "1.0",
+        "led": "0",
+        "awb": "auto",
+        "name": "拍照",
+        "x": 350,
+        "y": 100,
+        "wires": [
+            [
+                "debug_camera_output",
+                "function_prepare_segmentation"
+            ]
+        ]
+    },
+    {
+        "id": "debug_camera_output",
+        "type": "debug",
+        "z": "mobilenet_unet_tab",
+        "name": "调试：拍照节点输出",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 550,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "debug_prepare_seg",
+        "type": "debug",
+        "z": "mobilenet_unet_tab",
+        "name": "调试：准备分割",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 750,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "function_prepare_segmentation",
+        "type": "function",
+        "z": "mobilenet_unet_tab",
+        "name": "准备分割",
+        "func": "// 确保目录存在并获取照片路径\n// fs 和 path 已在 libs 中声明，直接使用\nconst saveDir = '/tmp/mobilenet_unet';\n\n// 确保目录存在\nif (!fs.existsSync(saveDir)) {\n    fs.mkdirSync(saveDir, { recursive: true });\n}\n\n// rdk-camera takephoto节点会在msg.payload中返回实际保存的文件路径\n// 例如: \"/tmp/mobilenet_unet/image-20251121-154610.jpg\"\nlet photoPath = null;\nlet photoFileName = null;\n\n// 优先使用msg.payload中的文件路径（字符串）\nif (msg.payload && typeof msg.payload === 'string' && msg.payload.trim()) {\n    photoPath = msg.payload.trim();\n    \n    // 检查文件是否存在\n    if (fs.existsSync(photoPath)) {\n        photoFileName = path.basename(photoPath);\n        node.status({ fill: 'green', shape: 'dot', text: '照片: ' + photoFileName });\n        \n        // 文件存在，直接使用\n        msg.photoPath = photoPath;\n        msg.photoFileName = photoFileName;\n        msg.photoDir = saveDir;\n        \n        return msg;\n    } else {\n        // 文件不存在，等待一下（最多2.5秒）\n        const self = node;\n        let retryCount = 0;\n        const maxRetries = 5;\n        \n        const checkFile = function() {\n            if (fs.existsSync(photoPath)) {\n                const newMsg = {\n                    photoPath: photoPath,\n                    photoFileName: path.basename(photoPath),\n                    photoDir: saveDir\n                };\n                self.status({ fill: 'green', shape: 'dot', text: '照片已找到' });\n                self.send(newMsg);\n            } else if (retryCount < maxRetries) {\n                retryCount++;\n                setTimeout(checkFile, 500);\n            } else {\n                self.error('照片文件不存在: ' + photoPath);\n                self.status({ fill: 'red', shape: 'dot', text: '照片不存在' });\n            }\n        };\n        \n        setTimeout(checkFile, 500);\n        return null;\n    }\n} else if (msg.payload && Buffer.isBuffer(msg.payload)) {\n    // 如果payload是Buffer，保存到指定目录\n    photoFileName = 'photo.jpg';\n    photoPath = path.join(saveDir, photoFileName);\n    try {\n        fs.writeFileSync(photoPath, msg.payload);\n        node.status({ fill: 'green', shape: 'dot', text: '照片已保存' });\n        \n        msg.photoPath = photoPath;\n        msg.photoFileName = photoFileName;\n        msg.photoDir = saveDir;\n        \n        return msg;\n    } catch (err) {\n        node.error('保存照片失败: ' + err.message);\n        return null;\n    }\n} else {\n    // 如果都没有，尝试使用默认路径\n    photoFileName = 'photo.jpg';\n    photoPath = path.join(saveDir, photoFileName);\n    if (!fs.existsSync(photoPath)) {\n        node.error('无法找到照片文件，请检查拍照节点配置');\n        node.status({ fill: 'red', shape: 'dot', text: '照片不存在' });\n        return null;\n    }\n    node.status({ fill: 'green', shape: 'dot', text: '使用默认路径' });\n    \n    msg.photoPath = photoPath;\n    msg.photoFileName = photoFileName;\n    msg.photoDir = saveDir;\n    \n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "fs",
+                "module": "fs"
+            },
+            {
+                "var": "path",
+                "module": "path"
+            }
+        ],
+        "x": 550,
+        "y": 100,
+        "wires": [
+            [
+                "debug_prepare_seg",
+                "function_build_seg_command"
+            ]
+        ]
+    },
+    {
+        "id": "function_build_seg_command",
+        "type": "function",
+        "z": "mobilenet_unet_tab",
+        "name": "构建分割命令",
+        "func": "// 构建分割命令\n// 根据官方文档：本地图片回灌使用 dnn_node_example_feedback.launch.py\n// 官方示例：ros2 launch dnn_node_example dnn_node_example_feedback.launch.py dnn_example_config_file:=config/mobilenet_unet_workconfig.json dnn_example_image:=config/test.jpg\n// 注意：dnn_example_image 参数是相对于工作目录的路径\n// 渲染结果保存在运行路径下，命名格式：render_frameid_时间戳秒_时间戳纳秒.jpg\nconst photoDir = msg.photoDir || '/tmp/mobilenet_unet';\nconst photoFileName = msg.photoFileName || 'photo.jpg';\n\n// 确保图片文件在工作目录下（如果不在，需要复制）\n// 构建完整的launch命令\n// 工作目录设置为 photoDir，图片文件应该在 photoDir 下\nconst pwdCmd = 'pwd';\nmsg.payload = 'cd ' + photoDir + ' && source /opt/tros/humble/setup.bash && cp -r /opt/tros/humble/lib/dnn_node_example/config/ . 2>/dev/null || true && echo \"=== 开始MobileNet_UNet分割 ===\" && echo \"工作目录: $(pwd)\" && echo \"图片文件: ' + photoFileName + '\" && echo \"检查图片是否存在...\" && ls -lh ' + photoFileName + ' 2>&1 && echo \"启动分割...\" && ros2 launch dnn_node_example dnn_node_example_feedback.launch.py dnn_example_config_file:=config/mobilenet_unet_workconfig.json dnn_example_image:=' + photoFileName + ' dnn_example_dump_render_img:=1';\n\nnode.status({ fill: 'blue', shape: 'dot', text: '命令已构建' });\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 100,
+        "wires": [
+            [
+                "debug_build_command",
+                "exec_start_segmentation"
+            ]
+        ]
+    },
+    {
+        "id": "debug_build_command",
+        "type": "debug",
+        "z": "mobilenet_unet_tab",
+        "name": "调试：构建的命令",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 950,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "exec_start_segmentation",
+        "type": "exec",
+        "z": "mobilenet_unet_tab",
+        "command": "",
+        "addpay": true,
+        "append": "",
+        "useSpawn": true,
+        "timer": "0",
+        "oldrc": false,
+        "name": "启动分割",
+        "x": 950,
+        "y": 100,
+        "wires": [
+            [
+                "debug_seg_output",
+                "function_wait_and_refresh"
+            ],
+            [
+                "debug_seg_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "debug_seg_output",
+        "type": "debug",
+        "z": "mobilenet_unet_tab",
+        "name": "分割输出",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 1180,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "debug_seg_error",
+        "type": "debug",
+        "z": "mobilenet_unet_tab",
+        "name": "分割错误",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 1180,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "inject_refresh_display",
+        "type": "inject",
+        "z": "mobilenet_unet_tab",
+        "name": "刷新显示",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 110,
+        "y": 240,
+        "wires": [
+            [
+                "exec_find_latest"
+            ]
+        ]
+    },
+    {
+        "id": "exec_find_latest",
+        "type": "exec",
+        "z": "mobilenet_unet_tab",
+        "command": "cd /tmp/mobilenet_unet && ls -t render_*.jpg render_*.jpeg 2>/dev/null | head -1",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "",
+        "oldrc": false,
+        "name": "查找最新结果",
+        "x": 320,
+        "y": 240,
+        "wires": [
+            [
+                "function_check_file"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "exec_list_dir",
+        "type": "exec",
+        "z": "mobilenet_unet_tab",
+        "command": "cd /tmp/mobilenet_unet && echo \"当前目录: $(pwd)\" && echo \"目录内容:\" && ls -lh 2>&1",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "",
+        "oldrc": false,
+        "name": "列出目录内容（调试）",
+        "x": 320,
+        "y": 280,
+        "wires": [
+            [
+                "debug_find_result"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "debug_find_result",
+        "type": "debug",
+        "z": "mobilenet_unet_tab",
+        "name": "调试：查找结果",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 520,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "function_check_file",
+        "type": "function",
+        "z": "mobilenet_unet_tab",
+        "name": "检查文件路径",
+        "func": "// 提取文件路径（exec节点输出可能包含换行符）\nvar output = msg.payload ? msg.payload.toString().trim() : '';\n\n// 如果输出为空，说明没有找到文件\nif (!output) {\n    node.status({ fill: 'yellow', shape: 'dot', text: '未找到文件' });\n    return null;\n}\n\n// 提取第一行（文件路径）\nvar lines = output.split('\\n').filter(line => line.trim().length > 0);\nvar filename = lines.length > 0 ? lines[0].trim() : '';\n\n// 如果文件名不是完整路径，添加目录前缀\nif (filename && !filename.startsWith('/')) {\n    filename = '/tmp/mobilenet_unet/' + filename;\n}\n\nif (!filename) {\n    node.warn('无法提取文件路径');\n    node.status({ fill: 'red', shape: 'dot', text: '路径提取失败' });\n    return null;\n}\n\nmsg.filename = filename;\nnode.status({ fill: 'green', shape: 'dot', text: '找到文件: ' + path.basename(filename) });\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "path",
+                "module": "path"
+            }
+        ],
+        "x": 520,
+        "y": 240,
+        "wires": [
+            [
+                "debug_file_path",
+                "file_read_image"
+            ]
+        ]
+    },
+    {
+        "id": "debug_file_path",
+        "type": "debug",
+        "z": "mobilenet_unet_tab",
+        "name": "调试：文件路径",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 720,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "file_read_image",
+        "type": "file in",
+        "z": "mobilenet_unet_tab",
+        "name": "读取图片",
+        "filename": "",
+        "format": "buffer",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 720,
+        "y": 240,
+        "wires": [
+            [
+                "image_viewer_result"
+            ]
+        ]
+    },
+    {
+        "id": "image_viewer_result",
+        "type": "image viewer",
+        "z": "mobilenet_unet_tab",
+        "name": "显示分割结果",
+        "width": "640",
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 920,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "comment_control_section",
+        "type": "comment",
+        "z": "mobilenet_unet_tab",
+        "name": "🎮 控制功能",
+        "info": "停止分割服务",
+        "x": 120,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "inject_stop",
+        "type": "inject",
+        "z": "mobilenet_unet_tab",
+        "name": "停止服务",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "stop",
+        "payloadType": "str",
+        "x": 100,
+        "y": 380,
+        "wires": [
+            [
+                "exec_stop_all"
+            ]
+        ]
+    },
+    {
+        "id": "exec_stop_all",
+        "type": "exec",
+        "z": "mobilenet_unet_tab",
+        "command": "sudo pkill -2 -f ros; sleep 3;",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "10",
+        "winHide": false,
+        "oldrc": false,
+        "name": "停止服务",
+        "x": 320,
+        "y": 380,
+        "wires": [
+            [
+                "debug_stop_info"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "debug_stop_info",
+        "type": "debug",
+        "z": "mobilenet_unet_tab",
+        "name": "停止状态",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 520,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "function_wait_and_refresh",
+        "type": "function",
+        "z": "mobilenet_unet_tab",
+        "name": "等待分割完成",
+        "func": "// 轮询检查分割结果文件是否生成\n// 根据官方文档：渲染结果保存在运行路径下，命名方式为 render_frameid_时间戳秒_时间戳纳秒.jpg\n// fs 和 path 已在 libs 中声明，直接使用\nconst saveDir = '/tmp/mobilenet_unet';\n\n// 使用全局变量来避免重复触发和处理\nif (typeof global.refreshScheduled === 'undefined') {\n    global.refreshScheduled = false;\n}\nif (typeof global.processedFiles === 'undefined') {\n    global.processedFiles = new Set();\n}\n\nif (!global.refreshScheduled) {\n    global.refreshScheduled = true;\n    \n    // 轮询检查文件是否存在，最多等待20秒（分割需要时间）\n    let checkCount = 0;\n    const maxChecks = 40; // 40次 × 500ms = 20秒\n    const self = node;\n    let timerId = null;\n    \n    const checkFile = function() {\n        checkCount++;\n        \n        // 查找最新的render文件（命名格式：render_frameid_时间戳秒_时间戳纳秒.jpg）\n        try {\n            if (!fs.existsSync(saveDir)) {\n                self.warn('目录不存在: ' + saveDir);\n                if (checkCount < maxChecks) {\n                    timerId = setTimeout(checkFile, 500);\n                } else {\n                    global.refreshScheduled = false;\n                    self.status({ fill: 'red', shape: 'dot', text: '目录不存在' });\n                }\n                return;\n            }\n            \n            const files = fs.readdirSync(saveDir).filter(f => \n                f.startsWith('render_') && (f.endsWith('.jpg') || f.endsWith('.jpeg') || f.endsWith('.JPG') || f.endsWith('.JPEG'))\n            );\n            \n            if (files.length > 0) {\n                // 按修改时间排序，取最新的\n                files.sort((a, b) => {\n                    const statA = fs.statSync(path.join(saveDir, a));\n                    const statB = fs.statSync(path.join(saveDir, b));\n                    return statB.mtime - statA.mtime;\n                });\n                \n                const latestFile = files[0];\n                const filePath = path.join(saveDir, latestFile);\n                const fileStat = fs.statSync(filePath);\n                \n                // 检查文件是否在最近10秒内被修改（说明刚生成）\n                const now = Date.now();\n                const fileTime = fileStat.mtime.getTime();\n                const timeDiff = (now - fileTime) / 1000; // 秒\n                \n                // 检查是否已经处理过这个文件\n                if (global.processedFiles.has(filePath)) {\n                    // 文件已处理，停止轮询\n                    if (timerId) clearTimeout(timerId);\n                    global.refreshScheduled = false;\n                    self.status({ fill: 'green', shape: 'dot', text: '结果已显示' });\n                    return;\n                }\n                \n                if (timeDiff < 10) {\n                    // 文件刚生成且未处理过，标记为已处理并发送\n                    global.processedFiles.add(filePath);\n                    if (timerId) clearTimeout(timerId);\n                    global.refreshScheduled = false;\n                    self.status({ fill: 'green', shape: 'dot', text: '结果已生成: ' + latestFile });\n                    self.send({filename: filePath});\n                    return;\n                } else {\n                    // 文件太旧，继续检查\n                    self.status({ fill: 'blue', shape: 'dot', text: '等待新文件... (' + checkCount + '/' + maxChecks + ')' });\n                }\n            } else {\n                self.status({ fill: 'yellow', shape: 'dot', text: '检查中... (' + checkCount + '/' + maxChecks + ')' });\n            }\n        } catch (err) {\n            // 目录不存在或读取失败，继续等待\n            self.warn('检查文件失败: ' + err.message);\n        }\n        \n        if (checkCount < maxChecks) {\n            // 继续检查\n            timerId = setTimeout(checkFile, 500); // 每500ms检查一次\n        } else {\n            // 超时，停止轮询\n            global.refreshScheduled = false;\n            self.status({ fill: 'yellow', shape: 'dot', text: '超时，未找到新结果' });\n        }\n    };\n    \n    // 延迟3秒后开始检查（给分割一些启动时间）\n    timerId = setTimeout(checkFile, 3000);\n}\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "fs",
+                "module": "fs"
+            },
+            {
+                "var": "path",
+                "module": "path"
+            }
+        ],
+        "x": 1180,
+        "y": 100,
+        "wires": [
+            [
+                "debug_file_path",
+                "file_read_image"
+            ]
+        ]
+    }
+]

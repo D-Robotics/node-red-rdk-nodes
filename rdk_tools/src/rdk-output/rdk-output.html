@@ -1,0 +1,108 @@
+<script type="text/x-red" data-template-name="rdk-tools output">
+    <div class="form-row node-input-name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="rdk-output.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]rdk-output.names.output" style="width: 296px;">
+    </div>
+</script>
+
+<script type="text/javascript">
+(function() {
+    var voices;
+    let $outputpanel = undefined;
+    let $svgcontainer = undefined;
+    let canvas = undefined;
+    let canvasContext = undefined;
+    let coverRender = undefined;
+    let nodeObj = undefined;
+    let statisticsObj = {};
+
+    function createPanel(id){
+        $outputpanel = document.getElementById('rdkoutput-' + id);
+        if(!$outputpanel){
+            const $container = document.getElementById(id);
+            $svgcontainer = $container;
+            
+        }
+    }
+
+    function createSVGText(index){
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute('style', 'fill:orangered; font-size: 24px;');
+        text.setAttribute('x', '1');
+        text.setAttribute('y', (50 + 30*index).toString());
+
+        $svgcontainer.insertBefore(text, $svgcontainer.lastChild.nextSibling);
+
+        return text;
+    }
+
+    function updatePanel(data){
+        if(Object.hasOwnProperty.call(statisticsObj, data)){
+            statisticsObj[data].count += 1;
+        }
+        else{
+            const svgtext = createSVGText(Object.keys(statisticsObj).length);
+            statisticsObj[data] = {
+                count: 1,
+                text: svgtext
+            }
+        }
+
+        for(var label in statisticsObj){
+            const obj = statisticsObj[label];
+            obj.text.textContent = label + " : " + obj.count;
+        }
+        
+    }
+
+    function clearPanel(){
+        for(var label in statisticsObj){
+            const obj = statisticsObj[label];
+            obj.text.remove();
+        }
+        statisticsObj = {};
+    }
+
+    RED.comms.subscribe("rdkoutput", function(t, obj){
+        if(!nodeObj){
+            nodeObj = RED.nodes.node(obj.id);
+        }
+        
+        if(!nodeObj.active) return;
+
+        if(!$outputpanel){
+            createPanel(obj.id);
+        }
+
+        updatePanel(obj.payload);
+    });
+        
+    RED.nodes.registerType("rdk-tools output",{
+        category: "RDK Tools",
+        color: "#FF804A",
+        defaults: {
+            name: {value: ""},
+            active: {value: true}
+        },
+        inputs:1,
+        outputs:0,
+        align: 'right',
+        icon: "output.svg",
+        button: {
+            toggle: 'active',
+            onclick: function(){
+                const label = this.name || "rdkoutput";
+                var node = this;
+                clearPanel();
+            }
+        },
+        paletteLabel: function() {
+            return this._("rdk-output.names.output");
+        },
+        oneditprepare: function() {},
+        label: function() {
+            return this.name || this._("rdk-output.names.output");
+        }
+    });
+})()
+</script>

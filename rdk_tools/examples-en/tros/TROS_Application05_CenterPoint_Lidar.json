@@ -1,0 +1,238 @@
+[
+    {
+        "id": "centerpoint_tab",
+        "type": "tab",
+        "label": "LiDAR Object Detection (CenterPoint)",
+        "info": "# LiDAR Object Detection Algorithm (CenterPoint)\n\n**Function Description**: Uses LiDAR point cloud file playback to perform inference. The rendered algorithm results are sent as image messages via WebSocket to be displayed on a PC browser.\n\n## 🎯 Quick Start\n\n### Usage Steps\n1. **Prepare Point Cloud**: Files are downloaded and extracted automatically during installation.\n2. **Start Detection**: Click the \"Start CenterPoint Detection\" button.\n3. **View Results**: Click \"Open Visualization Page\" to view rendered images and algorithm results in the browser.\n4. **Stop Services**: Click \"Stop All Services\" when finished.\n\n## Supported Platforms\n- RDK X3 / X5 / S100\n- TROS Humble\n\n## Core Features\n- LiDAR Point Cloud Object Detection\n- Point Cloud Data Replay\n- Algorithm Result Visualization Rendering\n- Real-time WebSocket Display\n\n## Core Communication Config\n\n### WebSocket Video Stream\n- **Stream URL**: `http://{host}:8000`\n- **Image Topic**: `/image` (Rendered image)\n- **Result Topic**: Configured by launch file\n- **Performance**: Real-time detection, low latency\n\n## Parameters\n- **Data Directory**: `~/centerpoint_data`\n- **QAT Directory**: Linked from `hobot_centerpoint` package\n- **Launch File**: `hobot_centerpoint/hobot_centerpoint.launch.py`\n- **Visualization URL**: http://{host}:8000 (WebSocket Stream)\n\n## Notices\n- Point cloud files need to be downloaded before first use (done automatically during install).\n- Ensure `hobot_centerpoint` ROS2 package is installed.\n- Point cloud files are large, download might take some time."
+    },
+    {
+        "id": "comment_prepare_section",
+        "type": "comment",
+        "z": "centerpoint_tab",
+        "name": "1️⃣ Prepare Environment (First Run)",
+        "info": "Point cloud files are automatically downloaded and symlinked during installation",
+        "x": 200,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "comment_start_section",
+        "type": "comment",
+        "z": "centerpoint_tab",
+        "name": "2️⃣ Start Detection Service",
+        "info": "Start CenterPoint LiDAR Object Detection",
+        "x": 200,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "inject_start",
+        "type": "inject",
+        "z": "centerpoint_tab",
+        "name": "Start CenterPoint Detection",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "start_detection",
+        "payload": "start",
+        "payloadType": "str",
+        "x": 160,
+        "y": 120,
+        "wires": [
+            [
+                "exec_start_centerpoint"
+            ]
+        ]
+    },
+    {
+        "id": "exec_start_centerpoint",
+        "type": "exec",
+        "z": "centerpoint_tab",
+        "name": "CenterPoint Launcher",
+        "command": "cd /tmp && source /opt/tros/humble/setup.bash && if [ -L qat ]; then rm qat; fi && ln -s `ros2 pkg prefix hobot_centerpoint`/lib/hobot_centerpoint/qat/ qat && ln -sf ~/centerpoint_data centerpoint_data && echo \"=== Start CenterPoint LiDAR Object Detection ===\" && ros2 launch hobot_centerpoint hobot_centerpoint.launch.py",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "120",
+        "oldrc": false,
+        "x": 400,
+        "y": 120,
+        "wires": [
+            [
+                "debug_output"
+            ],
+            [
+                "debug_error"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "comment_browser_section",
+        "type": "comment",
+        "z": "centerpoint_tab",
+        "name": "3️⃣ View Detection Results",
+        "info": "View rendered images and algorithm results in the browser",
+        "x": 200,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "inject_browser",
+        "type": "inject",
+        "z": "centerpoint_tab",
+        "name": "Open Visualization Page",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://{host}:8000",
+        "payloadType": "str",
+        "x": 160,
+        "y": 200,
+        "wires": [
+            [
+                "openurl_browser"
+            ]
+        ]
+    },
+    {
+        "id": "openurl_browser",
+        "type": "rdk-tools openurl",
+        "z": "centerpoint_tab",
+        "name": "",
+        "x": 400,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "comment_stop_section",
+        "type": "comment",
+        "z": "centerpoint_tab",
+        "name": "4️⃣ Stop Services",
+        "info": "Stop all detection related services",
+        "x": 180,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "inject_stop",
+        "type": "inject",
+        "z": "centerpoint_tab",
+        "name": "Stop All Services",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "stop",
+        "payload": "stop",
+        "payloadType": "str",
+        "x": 160,
+        "y": 280,
+        "wires": [
+            [
+                "exec_stop_all"
+            ]
+        ]
+    },
+    {
+        "id": "exec_stop_all",
+        "type": "exec",
+        "z": "centerpoint_tab",
+        "name": "Stop All Services",
+        "command": "sudo pkill -9 -f hobot_usb_cam; sudo pkill -9 -f hobot_centerpoint; sudo pkill -9 -f hobot_codec_republish; sudo pkill -9 -f websocket; sudo pkill -9 -f python3; sudo pkill -9 -f 'ros2 launch'; sudo pkill -9 -f 'ros2 run'; sleep 2; sudo rm -rf /dev/shm/*; ros2 daemon stop 2>/dev/null; sleep 1; echo '✓ Services stopped completely, resources released'",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "10",
+        "oldrc": false,
+        "x": 400,
+        "y": 280,
+        "wires": [
+            [
+                "debug_stop_info"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "debug_output",
+        "type": "debug",
+        "z": "centerpoint_tab",
+        "name": "Detection Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 650,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "debug_error",
+        "type": "debug",
+        "z": "centerpoint_tab",
+        "name": "Error Info",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "debug_stop_info",
+        "type": "debug",
+        "z": "centerpoint_tab",
+        "name": "Stop Service Status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 650,
+        "y": 280,
+        "wires": []
+    }
+]

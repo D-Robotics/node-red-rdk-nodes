@@ -49,19 +49,28 @@ module.exports = function(RED) {
             node.child = spawn(command);
             node.running = true;
             node.child.stdout.on('data', function(data){
-                var dataStr = data.toString();
+                var dataStr = data.toString().trim();
+                var dataObj = {};
                 dataStr = dataStr.replace(/\r?\n/g, '');
                 if(dataStr.indexOf('notavailable') >= 0){
                     node.status({fill:"yellow",shape:"ring",text:"rdk-vision.errors.badOutput"});
                 }
-                else if(dataStr.indexOf('[') >= 0){
+                else if(dataStr.indexOf('"file":') >= 0){
+                    dataStr = dataStr.substr(dataStr.indexOf('{"file":'));
+                    dataObj = JSON.parse(dataStr);
+                    node.send([
+                        {
+                            payload: dataObj.file
+                        },
+                        {
+                            payload: dataObj.list
+                        }
+                    ]);
+                }
+                else{
                     //skip
                 }
-                else if(fs.existsSync(dataStr)){
-                    node.send({
-                        payload: dataStr
-                    });
-                }
+                
             })
             node.status({fill:"green",shape:"dot",text:"rdk-vision.status.working"});
     

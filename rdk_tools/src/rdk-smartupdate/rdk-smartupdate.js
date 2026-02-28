@@ -25,7 +25,7 @@ module.exports = function(RED) {
             error: 'rdk-smartupdate.errors.updating'
         };
         var command2 = {
-            command: 'sudo apt upgrade -y',
+            command: 'sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y',
             status: 'rdk-smartupdate.status.upgrading',
             error: 'rdk-smartupdate.errors.upgrading'
         };
@@ -57,8 +57,9 @@ module.exports = function(RED) {
                     processExecQueue(tasks, msg);
                 }
                 else{
-                    node.status({fill:"red",shape:"ring",text: task.error});
-                    node.send([null, {payload: task.error}])
+                    node.status({fill:"gray",shape:"ring",text: task.error});
+                    // node.send([null, {payload: task.error}])
+                    processExecQueue(tasks, msg);
                 }
             })
         }
