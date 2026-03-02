@@ -1,90 +1,464 @@
 [
     {
-        "id": "pose_yolo_fix_tab",
+        "id": "41bd393e9b93f02f",
         "type": "tab",
-        "label": "YOLO Pose",
+        "label": "TROS FCOS (Object Detection)",
         "disabled": false,
-        "info": ""
+        "info": "",
+        "env": []
     },
     {
-        "id": "tab1",
-        "type": "tab",
-        "label": "S100 Pose Detection",
-        "info": "S100人体检测和跟踪(YOLO Pose) - 一键启动"
-    },
-    {
-        "id": "group_env_fix",
+        "id": "cb01c990e53afb60",
         "type": "group",
-        "z": "pose_yolo_fix_tab",
-        "name": "环境准备",
+        "z": "41bd393e9b93f02f",
+        "name": "软件包智能更新",
         "style": {
-            "fill": "#fff9c4",
-            "fill-opacity": "0.6",
+            "fill": "#ffffbf",
+            "fill-opacity": "0.46",
             "label": true
         },
         "nodes": [
-            "inject_update_fix",
-            "smart_update_fix",
-            "change_notify_fix",
-            "audio_notify_fix"
+            "3dcace4b163bc682",
+            "71f59c4d4b715a11",
+            "f12cfad3b74b3321"
         ],
-        "x": 94,
-        "y": 99,
-        "w": 652,
+        "x": 354,
+        "y": 79,
+        "w": 572,
         "h": 82
     },
     {
-        "id": "group_ctrl_fix",
+        "id": "f4c4361755ae5c67",
         "type": "group",
-        "z": "pose_yolo_fix_tab",
-        "name": "核心控制",
+        "z": "41bd393e9b93f02f",
+        "name": "检查及运行YOLO Pose节点",
         "style": {
             "fill": "#e3f3d3",
-            "fill-opacity": "0.6",
+            "fill-opacity": "0.51",
             "label": true
         },
         "nodes": [
-            "inject_usb_fix",
-            "inject_mipi_fix",
-            "exec_init_fix",
-            "change_config_fix",
-            "node_execute_fix",
-            "inject_stop_fix",
-            "debug_log_fix"
+            "868b2da5ad39c31d",
+            "4e0b61b0441c2a2a"
         ],
-        "x": 94,
-        "y": 219,
-        "w": 1012,
-        "h": 182
-    },
-    {
-        "id": "group_viz_fix",
-        "type": "group",
-        "z": "pose_yolo_fix_tab",
-        "name": "可视化",
-        "style": {
-            "fill": "#d1e7f5",
-            "fill-opacity": "0.6",
-            "label": true
-        },
-        "nodes": [
-            "inject_browser_fix",
-            "open_browser_fix",
-            "delay_preview_fix",
-            "set_ws_fix",
-            "video_preview_fix"
-        ],
-        "x": 94,
-        "y": 459,
+        "x": 414,
+        "y": 199,
         "w": 412,
-        "h": 169.5
+        "h": 82
     },
     {
-        "id": "inject_update_fix",
+        "id": "7990eae8ec566482",
+        "type": "group",
+        "z": "41bd393e9b93f02f",
+        "name": "YOLO Pose结果展示",
+        "style": {
+            "fill": "#bfdbef",
+            "fill-opacity": "0.47",
+            "label": true
+        },
+        "nodes": [
+            "7f36299e8dc30fdb",
+            "b97878a7a2096c59",
+            "fbf750e466027ace"
+        ],
+        "x": 154,
+        "y": 319,
+        "w": 352,
+        "h": 122
+    },
+    {
+        "id": "a0af2a1299b4cb0b",
+        "type": "comment",
+        "z": "41bd393e9b93f02f",
+        "name": "名称：YOLO Pose",
+        "info": "",
+        "x": 130,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "84c9be578cfe4b20",
+        "type": "comment",
+        "z": "41bd393e9b93f02f",
+        "name": "注意：选择对应的摄像头类型",
+        "info": "",
+        "x": 220,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "6c30b23e940d3fb7",
         "type": "inject",
-        "z": "pose_yolo_fix_tab",
-        "g": "group_env_fix",
-        "name": "检查更新",
+        "z": "41bd393e9b93f02f",
+        "name": "了解更多",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "https://developer.d-robotics.cc/rdk_doc/Robot_development/boxs/detection/fcos",
+        "payloadType": "str",
+        "x": 420,
+        "y": 40,
+        "wires": [
+            [
+                "dc47b3f5014a51ef"
+            ]
+        ]
+    },
+    {
+        "id": "dc47b3f5014a51ef",
+        "type": "rdk-tools openurl",
+        "z": "41bd393e9b93f02f",
+        "name": "",
+        "x": 580,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "e724db9829d49ab9",
+        "type": "inject",
+        "z": "41bd393e9b93f02f",
+        "name": "启动（USB摄像头）",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "camera",
+                "v": "usb",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "iso",
+        "payloadType": "date",
+        "x": 190,
+        "y": 120,
+        "wires": [
+            [
+                "868b2da5ad39c31d",
+                "7f36299e8dc30fdb"
+            ]
+        ]
+    },
+    {
+        "id": "754087505cbc434b",
+        "type": "inject",
+        "z": "41bd393e9b93f02f",
+        "name": "启动（MIPI摄像头）",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "mipi",
+        "payload": "iso",
+        "payloadType": "date",
+        "x": 190,
+        "y": 160,
+        "wires": [
+            [
+                "868b2da5ad39c31d",
+                "7f36299e8dc30fdb"
+            ]
+        ]
+    },
+    {
+        "id": "3dcace4b163bc682",
+        "type": "rdk-tools smartupdate",
+        "z": "41bd393e9b93f02f",
+        "g": "cb01c990e53afb60",
+        "name": "",
+        "x": 440,
+        "y": 120,
+        "wires": [
+            [
+                "71f59c4d4b715a11"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "71f59c4d4b715a11",
+        "type": "change",
+        "z": "41bd393e9b93f02f",
+        "g": "cb01c990e53afb60",
+        "name": "更新提示",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "智能更新已完成",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 620,
+        "y": 120,
+        "wires": [
+            [
+                "f12cfad3b74b3321"
+            ]
+        ]
+    },
+    {
+        "id": "f12cfad3b74b3321",
+        "type": "rdk-tools texttoaudio",
+        "z": "41bd393e9b93f02f",
+        "g": "cb01c990e53afb60",
+        "name": "",
+        "x": 830,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "868b2da5ad39c31d",
+        "type": "change",
+        "z": "41bd393e9b93f02f",
+        "g": "f4c4361755ae5c67",
+        "name": "设定YOLO Pose节点",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "launch",
+                "pt": "msg",
+                "to": "mono2d_body_detection mono2d_body_detection.launch.py kps_model_type:=1 kps_model_file_name:=config/yolo11x_pose_nashe_640x640_nv12.hbm",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "insert",
+                "pt": "msg",
+                "to": "$join(['export CAM_TYPE=', msg.camera])",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 540,
+        "y": 240,
+        "wires": [
+            [
+                "4e0b61b0441c2a2a"
+            ]
+        ]
+    },
+    {
+        "id": "4e0b61b0441c2a2a",
+        "type": "rdk-tools checkexecute",
+        "z": "41bd393e9b93f02f",
+        "g": "f4c4361755ae5c67",
+        "name": "",
+        "x": 730,
+        "y": 240,
+        "wires": [
+            [
+                "d44e16c8b177c020"
+            ],
+            [
+                "75ca2b13e5113dc2"
+            ]
+        ]
+    },
+    {
+        "id": "d44e16c8b177c020",
+        "type": "debug",
+        "z": "41bd393e9b93f02f",
+        "name": "正确执行提示",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "75ca2b13e5113dc2",
+        "type": "debug",
+        "z": "41bd393e9b93f02f",
+        "name": "错误执行提示",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "20132bee7476989a",
+        "type": "inject",
+        "z": "41bd393e9b93f02f",
+        "name": "关闭",
+        "props": [
+            {
+                "p": "kill",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 240,
+        "wires": [
+            [
+                "4e0b61b0441c2a2a"
+            ]
+        ]
+    },
+    {
+        "id": "3caad0dafed3124b",
+        "type": "comment",
+        "z": "41bd393e9b93f02f",
+        "name": "注意：使用结束后请主动关闭",
+        "info": "",
+        "x": 220,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "7f36299e8dc30fdb",
+        "type": "delay",
+        "z": "41bd393e9b93f02f",
+        "g": "7990eae8ec566482",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 240,
+        "y": 360,
+        "wires": [
+            [
+                "b97878a7a2096c59"
+            ]
+        ]
+    },
+    {
+        "id": "b97878a7a2096c59",
+        "type": "change",
+        "z": "41bd393e9b93f02f",
+        "g": "7990eae8ec566482",
+        "name": "设定链接",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "ws://{host}:8080",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 240,
+        "y": 400,
+        "wires": [
+            [
+                "fbf750e466027ace"
+            ]
+        ]
+    },
+    {
+        "id": "975203282da7bef8",
+        "type": "debug",
+        "z": "41bd393e9b93f02f",
+        "name": "算法结果输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "6b453c4c4953b34f",
+        "type": "debug",
+        "z": "41bd393e9b93f02f",
+        "name": "性能信息输出",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "2c8983ad195d6889",
+        "type": "inject",
+        "z": "41bd393e9b93f02f",
+        "name": "更新软件包",
         "props": [
             {
                 "p": "payload"
@@ -101,260 +475,27 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 200,
-        "y": 140,
+        "x": 160,
+        "y": 80,
         "wires": [
             [
-                "smart_update_fix"
+                "3dcace4b163bc682"
             ]
         ]
     },
     {
-        "id": "smart_update_fix",
-        "type": "rdk-tools smartupdate",
-        "z": "pose_yolo_fix_tab",
-        "g": "group_env_fix",
+        "id": "a5f5e623839368d3",
+        "type": "rdk-tools openurl",
+        "z": "41bd393e9b93f02f",
         "name": "",
-        "x": 360,
-        "y": 140,
-        "wires": [
-            [
-                "change_notify_fix"
-            ],
-            []
-        ]
-    },
-    {
-        "id": "change_notify_fix",
-        "type": "change",
-        "z": "pose_yolo_fix_tab",
-        "g": "group_env_fix",
-        "name": "提示内容",
-        "rules": [
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "环境检查完成",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 520,
-        "y": 140,
-        "wires": [
-            [
-                "audio_notify_fix"
-            ]
-        ]
-    },
-    {
-        "id": "audio_notify_fix",
-        "type": "rdk-tools texttoaudio",
-        "z": "pose_yolo_fix_tab",
-        "g": "group_env_fix",
-        "name": "",
-        "x": 650,
-        "y": 140,
-        "wires": []
-    },
-    {
-        "id": "inject_usb_fix",
-        "type": "inject",
-        "z": "pose_yolo_fix_tab",
-        "g": "group_ctrl_fix",
-        "name": "启动 (USB摄像头)",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "camera",
-                "v": "usb",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 230,
-        "y": 260,
-        "wires": [
-            [
-                "exec_init_fix"
-            ]
-        ]
-    },
-    {
-        "id": "inject_mipi_fix",
-        "type": "inject",
-        "z": "pose_yolo_fix_tab",
-        "g": "group_ctrl_fix",
-        "name": "启动 (MIPI摄像头)",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "camera",
-                "v": "mipi",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 230,
-        "y": 300,
-        "wires": [
-            [
-                "exec_init_fix"
-            ]
-        ]
-    },
-    {
-        "id": "exec_init_fix",
-        "type": "exec",
-        "z": "pose_yolo_fix_tab",
-        "g": "group_ctrl_fix",
-        "command": "cp -r /opt/tros/humble/lib/mono2d_body_detection/config/ . || true",
-        "addpay": false,
-        "append": "",
-        "useSpawn": false,
-        "timer": "",
-        "oldrc": false,
-        "name": "初始化配置 (CP)",
-        "x": 440,
-        "y": 280,
-        "wires": [
-            [
-                "change_config_fix",
-                "delay_preview_fix"
-            ],
-            [],
-            []
-        ]
-    },
-    {
-        "id": "change_config_fix",
-        "type": "change",
-        "z": "pose_yolo_fix_tab",
-        "g": "group_ctrl_fix",
-        "name": "配置流参数",
-        "rules": [
-            {
-                "t": "set",
-                "p": "launch",
-                "pt": "msg",
-                "to": "mono2d_body_detection mono2d_body_detection.launch.py kps_model_type:=1 kps_model_file_name:=config/yolo11x_pose_nashe_640x640_nv12.hbm",
-                "tot": "str"
-            },
-            {
-                "t": "set",
-                "p": "insert",
-                "pt": "msg",
-                "to": "$join(['export CAM_TYPE=', msg.camera])",
-                "tot": "jsonata"
-            },
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 650,
-        "y": 280,
-        "wires": [
-            [
-                "node_execute_fix"
-            ]
-        ]
-    },
-    {
-        "id": "node_execute_fix",
-        "type": "rdk-tools checkexecute",
-        "z": "pose_yolo_fix_tab",
-        "g": "group_ctrl_fix",
-        "name": "执行检测",
-        "x": 840,
-        "y": 320,
-        "wires": [
-            [
-                "debug_log_fix"
-            ],
-            [
-                "debug_log_fix"
-            ]
-        ]
-    },
-    {
-        "id": "inject_stop_fix",
-        "type": "inject",
-        "z": "pose_yolo_fix_tab",
-        "g": "group_ctrl_fix",
-        "name": "关闭服务",
-        "props": [
-            {
-                "p": "kill",
-                "v": "",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "x": 200,
-        "y": 360,
-        "wires": [
-            [
-                "node_execute_fix"
-            ]
-        ]
-    },
-    {
-        "id": "debug_log_fix",
-        "type": "debug",
-        "z": "pose_yolo_fix_tab",
-        "g": "group_ctrl_fix",
-        "name": "系统日志",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1000,
+        "x": 860,
         "y": 320,
         "wires": []
     },
     {
-        "id": "inject_browser_fix",
+        "id": "ef78cfefcc74efdc",
         "type": "inject",
-        "z": "pose_yolo_fix_tab",
-        "g": "group_viz_fix",
+        "z": "41bd393e9b93f02f",
         "name": "打开浏览器",
         "props": [
             {
@@ -372,63 +513,48 @@
         "topic": "",
         "payload": "http://{host}:8000",
         "payloadType": "str",
-        "x": 200,
-        "y": 500,
+        "x": 680,
+        "y": 320,
         "wires": [
             [
-                "open_browser_fix"
+                "a5f5e623839368d3"
             ]
         ]
     },
     {
-        "id": "open_browser_fix",
-        "type": "rdk-tools openurl",
-        "z": "pose_yolo_fix_tab",
-        "g": "group_viz_fix",
+        "id": "fbf750e466027ace",
+        "type": "rdk-tools videows",
+        "z": "41bd393e9b93f02f",
+        "g": "7990eae8ec566482",
         "name": "",
-        "x": 380,
-        "y": 500,
-        "wires": []
-    },
-    {
-        "id": "delay_preview_fix",
-        "type": "delay",
-        "z": "pose_yolo_fix_tab",
-        "g": "group_viz_fix",
-        "name": "",
-        "pauseType": "delay",
-        "timeout": "5",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "allowrate": false,
-        "outputs": 1,
-        "x": 220,
-        "y": 540,
+        "fps": "2",
+        "width": 640,
+        "active": true,
+        "x": 400,
+        "y": 380,
         "wires": [
             [
-                "set_ws_fix"
-            ]
+                "975203282da7bef8",
+                "f910c04de6db2536"
+            ],
+            [
+                "6b453c4c4953b34f"
+            ],
+            []
         ]
     },
     {
-        "id": "set_ws_fix",
+        "id": "f910c04de6db2536",
         "type": "change",
-        "z": "pose_yolo_fix_tab",
-        "g": "group_viz_fix",
-        "name": "设定视频流",
+        "z": "41bd393e9b93f02f",
+        "name": "提取类型",
         "rules": [
             {
                 "t": "set",
                 "p": "payload",
                 "pt": "msg",
-                "to": "ws://{host}:8000",
-                "tot": "str"
+                "to": "attributes.type",
+                "tot": "msg"
             }
         ],
         "action": "",
@@ -436,385 +562,30 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 370,
-        "y": 540,
+        "x": 180,
+        "y": 480,
         "wires": [
             [
-                "video_preview_fix"
+                "17d8c38b6c59f970"
             ]
         ]
     },
     {
-        "id": "video_preview_fix",
-        "type": "rdk-tools videows",
-        "z": "pose_yolo_fix_tab",
-        "g": "group_viz_fix",
-        "name": "Web预览",
-        "fps": "10",
-        "width": "480",
+        "id": "17d8c38b6c59f970",
+        "type": "rdk-tools output",
+        "z": "41bd393e9b93f02f",
+        "name": "",
         "active": true,
-        "x": 400,
-        "y": 580,
-        "wires": [
-            [],
-            [],
-            []
-        ]
-    },
-    {
-        "id": "inject_mipi_start",
-        "type": "inject",
-        "z": "tab1",
-        "name": "MIPI摄像头检测",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "topic": "mipi_detection",
-        "payload": "start",
-        "payloadType": "str",
-        "x": 140,
-        "y": 100,
-        "wires": [
-            [
-                "exec_mipi_detection"
-            ]
-        ]
-    },
-    {
-        "id": "exec_mipi_detection",
-        "type": "exec",
-        "z": "tab1",
-        "command": "cd /tmp && source /opt/tros/humble/setup.bash && cp -r /opt/tros/humble/lib/mono2d_body_detection/config/ . 2>/dev/null || true && export CAM_TYPE=mipi && echo \"启动MIPI摄像头人体检测...\" && ros2 launch mono2d_body_detection mono2d_body_detection.launch.py kps_model_type:=1 kps_image_width:=1920 kps_image_height:=1080 kps_model_file_name:=config/yolo11x_pose_nashe_640x640_nv12.hbm",
-        "addpay": false,
-        "append": "",
-        "useSpawn": false,
-        "timer": "120",
-        "oldrc": false,
-        "name": "MIPI检测启动器",
-        "x": 380,
-        "y": 100,
-        "wires": [
-            [
-                "debug_mipi_output"
-            ],
-            [
-                "debug_mipi_error"
-            ],
-            []
-        ]
-    },
-    {
-        "id": "inject_usb_start",
-        "type": "inject",
-        "z": "tab1",
-        "name": "USB摄像头检测",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "topic": "usb_detection",
-        "payload": "start",
-        "payloadType": "str",
-        "x": 140,
-        "y": 160,
-        "wires": [
-            [
-                "exec_usb_detection"
-            ]
-        ]
-    },
-    {
-        "id": "exec_usb_detection",
-        "type": "exec",
-        "z": "tab1",
-        "command": "cd /tmp && source /opt/tros/humble/setup.bash && cp -r /opt/tros/humble/lib/mono2d_body_detection/config/ . 2>/dev/null || true && export CAM_TYPE=usb && echo \"启动USB摄像头人体检测...\" && ros2 launch mono2d_body_detection mono2d_body_detection.launch.py kps_model_type:=1 kps_image_width:=1920 kps_image_height:=1080 kps_model_file_name:=config/yolo11x_pose_nashe_640x640_nv12.hbm",
-        "addpay": false,
-        "append": "",
-        "useSpawn": false,
-        "timer": "120",
-        "oldrc": false,
-        "name": "USB检测启动器",
-        "x": 380,
-        "y": 160,
-        "wires": [
-            [
-                "debug_usb_output"
-            ],
-            [
-                "debug_usb_error"
-            ],
-            []
-        ]
-    },
-    {
-        "id": "inject_fb_start",
-        "type": "inject",
-        "z": "tab1",
-        "name": "本地图片检测",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "topic": "fb_detection",
-        "payload": "start",
-        "payloadType": "str",
-        "x": 140,
-        "y": 220,
-        "wires": [
-            [
-                "exec_fb_detection"
-            ]
-        ]
-    },
-    {
-        "id": "exec_fb_detection",
-        "type": "exec",
-        "z": "tab1",
-        "command": "cd /tmp && source /opt/tros/humble/setup.bash && cp -r /opt/tros/humble/lib/mono2d_body_detection/config/ . 2>/dev/null || true && cp -r /opt/tros/humble/lib/dnn_node_example/config/ . 2>/dev/null || true && export CAM_TYPE=fb && echo \"启动本地图片人体检测...\" && ros2 launch mono2d_body_detection mono2d_body_detection.launch.py publish_image_source:=config/person_body.jpg publish_image_format:=jpg kps_model_type:=1 kps_image_width:=640 kps_image_height:=640 kps_model_file_name:=config/yolo11x_pose_nashe_640x640_nv12.hbm",
-        "addpay": false,
-        "append": "",
-        "useSpawn": false,
-        "timer": "60",
-        "oldrc": false,
-        "name": "本地图片检测器",
-        "x": 380,
-        "y": 220,
-        "wires": [
-            [
-                "debug_fb_output"
-            ],
-            [
-                "debug_fb_error"
-            ],
-            []
-        ]
-    },
-    {
-        "id": "inject_browser",
-        "type": "inject",
-        "z": "tab1",
-        "name": "打开可视化页面",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "http://{host}:8000",
-        "payloadType": "str",
-        "x": 140,
-        "y": 300,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "inject_stop",
-        "type": "inject",
-        "z": "tab1",
-        "name": "停止所有服务",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "topic": "stop",
-        "payload": "stop",
-        "payloadType": "str",
-        "x": 140,
-        "y": 360,
-        "wires": [
-            [
-                "exec_stop_all"
-            ]
-        ]
-    },
-    {
-        "id": "exec_stop_all",
-        "type": "exec",
-        "z": "tab1",
-        "command": "sudo pkill -9 -f hobot_usb_cam; sudo pkill -9 -f hobot_dosod; sudo pkill -9 -f hobot_codec_republish; sudo pkill -9 -f websocket; sudo pkill -9 -f python3; sudo pkill -9 -f \"ros2 launch\"; sudo pkill -9 -f \"ros2 run\"; sleep 2; sudo rm -rf /dev/shm/*; ros2 daemon stop 2>/dev/null; sleep 1; echo \"✓ 服务已彻底停止，资源已释放\"",
-        "addpay": false,
-        "append": "",
-        "useSpawn": false,
-        "timer": "10",
-        "oldrc": false,
-        "name": "停止所有服务",
-        "x": 380,
-        "y": 360,
-        "wires": [
-            [
-                "debug_stop_info"
-            ],
-            [],
-            []
-        ]
-    },
-    {
-        "id": "debug_mipi_output",
-        "type": "debug",
-        "z": "tab1",
-        "name": "MIPI检测输出",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 650,
-        "y": 80,
+        "x": 180,
+        "y": 520,
         "wires": []
     },
     {
-        "id": "debug_mipi_error",
-        "type": "debug",
-        "z": "tab1",
-        "name": "MIPI错误信息",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 650,
-        "y": 120,
-        "wires": []
-    },
-    {
-        "id": "debug_usb_output",
-        "type": "debug",
-        "z": "tab1",
-        "name": "USB检测输出",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 650,
-        "y": 140,
-        "wires": []
-    },
-    {
-        "id": "debug_usb_error",
-        "type": "debug",
-        "z": "tab1",
-        "name": "USB错误信息",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 650,
-        "y": 180,
-        "wires": []
-    },
-    {
-        "id": "debug_fb_output",
-        "type": "debug",
-        "z": "tab1",
-        "name": "本地检测输出",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 650,
-        "y": 200,
-        "wires": []
-    },
-    {
-        "id": "debug_fb_error",
-        "type": "debug",
-        "z": "tab1",
-        "name": "本地检测错误",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 650,
-        "y": 240,
-        "wires": []
-    },
-    {
-        "id": "debug_stop_info",
-        "type": "debug",
-        "z": "tab1",
-        "name": "停止服务状态",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 640,
-        "y": 360,
-        "wires": []
-    },
-    {
-        "id": "6b3de4eb567acbd1",
+        "id": "f1d04f9cab167f9b",
         "type": "global-config",
         "env": [],
         "modules": {
-            "node-red-node-rdk-tools": "0.0.27"
+            "node-red-node-rdk-tools": "0.0.30"
         }
     }
 ]
